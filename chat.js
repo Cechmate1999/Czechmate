@@ -58,13 +58,9 @@ const ChatEngine = (() => {
   ];
 
   // ── SPANISH GRAMMAR CORRECTIONS ────────────────────
+  // Note: "quiero" is NOT corrected — it's perfectly valid in Latin America
+  // and across Spanish. Only universal grammar errors are flagged here.
   const ES_CORRECTIONS = [
-    {
-      test: i => /\bquiero\s+(una|un|cerveza|cafe|agua|vino|tapa)/i.test(i),
-      wrong: 'quiero una/un...',
-      right: 'ponme una/un... / dame...',
-      explain: '"Quiero" (I want) is grammatically fine but sounds blunt at a bar. "Ponme" (pour/get me) or "Dame" (give me) sounds much more natural.'
-    },
     {
       test: i => /\bcomo\s+se\s+llamas\b/i.test(norm(i)),
       wrong: 'como se llamas',
@@ -905,6 +901,20 @@ const ChatEngine = (() => {
     return !!ALL_CHAT_SCENARIOS[scenarioId];
   }
 
-  return { init, process, getAvailableScenarios, hasChatSupport };
+  // ── SAVE / RESTORE STATE ───────────────────────────────
+  // Returns a snapshot of internal state for localStorage persistence.
+  function getState() {
+    return { state: currentState, messageCount, correctionsGiven };
+  }
+
+  // Restores engine to a previously saved snapshot (for conversation resume).
+  function restoreState(snapshot) {
+    if (!currentScenario || !snapshot) return;
+    currentState      = snapshot.state      || 'start';
+    messageCount      = snapshot.messageCount      || 0;
+    correctionsGiven  = snapshot.correctionsGiven  || 0;
+  }
+
+  return { init, process, getAvailableScenarios, hasChatSupport, getState, restoreState };
 
 })();
