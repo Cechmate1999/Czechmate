@@ -239,6 +239,221 @@ const ChatEngine = (() => {
           fallback: { text: 'Nashledanou! Přijďte brzy znovu! 👋', translation: 'Goodbye! Come back soon! (Excellent — you survived Sunday lunch! 🎉)' }
         }
       }
+    },
+
+    police: {
+      language: 'czech',
+      persona: {
+        name: 'Paní Horáková',
+        role: 'Úřednice — Foreign Police Officer',
+        avatar: '👮‍♀️',
+        description: 'She has processed thousands of residence permit extensions. She is not unkind — she is thorough. Polite persistence and organized documents are the only currency that works here.'
+      },
+      vocabulary: [
+        { cz: 'povolení k pobytu', en: 'residence permit' },
+        { cz: 'chybí vám', en: 'you are missing' },
+        { cz: 'doklady', en: 'documents' },
+        { cz: 'formulář', en: 'form / application' },
+        { cz: 'nerozumím', en: 'I don\'t understand' },
+        { cz: 'můžete to napsat?', en: 'can you write that down?' },
+        { cz: 'kdy přijde rozhodnutí?', en: 'when will the decision come?' },
+        { cz: 'potvrzení o příjmu', en: 'proof of income' }
+      ],
+      context: 'You\'re at the Czech Foreign Police to renew your residence permit. Paní Horáková is your officer. Be polite, systematic, and don\'t panic when something is "missing." Accents optional!',
+      tip: 'Start with "Dobry den" then state your purpose: "Prisel jsem kvuli prodlouzeni povoleni k pobytu."',
+      opening: { text: 'Další! Co potřebujete? 📋', translation: 'Next! What do you need?' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['dobry den', 'dobry', 'hello', 'ahoj', 'good morning', 'good day', 'dobrý'], text: 'Dobrý den. Co potřebujete?', translation: 'Good day. What do you need?', next: 'purpose', positive: true }
+          ],
+          fallback: { text: 'Haló? Jsem zaneprázdněná. Pozdravte mě, prosím.', translation: 'Hello? I\'m busy. Please greet me first. (Try: "Dobry den")' }
+        },
+        purpose: {
+          responses: [
+            { triggers: ['prodlouzeni', 'extension', 'prolong', 'pobyt', 'permit', 'residence', 'povoleni', 'pobytove', 'viza', 'visa'], text: 'Prodloužení pobytu. Dobře. Máte pas, fotografii, formulář a potvrzení o ubytování?', translation: 'Residence extension. Fine. Do you have passport, photo, form and proof of accommodation?', next: 'documents', positive: true },
+            { triggers: ['nevim', 'help', 'pomoc', 'co potrebuji', 'what', 'co', 'need', 'chci'], text: 'Co přesně? Prodloužení pobytu? Registrace? Řekněte mi.', translation: 'What exactly? Residence extension? Registration? Tell me. (Try: "prodlouzeni povoleni k pobytu")' }
+          ],
+          fallback: { text: 'Řekněte mi účel návštěvy. (Try: "Prisel jsem kvuli prodlouzeni povoleni k pobytu")', translation: 'Tell me the purpose of your visit. (Try stating you\'re here for a residence permit extension)' }
+        },
+        documents: {
+          responses: [
+            { triggers: ['ano', 'yes', 'mam', 'vsechno', 'all', 'here', 'tady', 'mám', 'dokumenty', 'prepared'], text: 'Hmm. Chybí vám potvrzení o příjmu. Máte výpis ze mzdy nebo pracovní smlouvu?', translation: 'Hmm. You\'re missing proof of income. Do you have a pay slip or work contract?', next: 'missing_doc', positive: true },
+            { triggers: ['pas', 'passport', 'fotografie', 'photo', 'formular', 'form', 'ubytovani', 'accommodation'], text: 'Dobrý. A ještě formulář a potvrzení o ubytování — vše máte?', translation: 'Good. And the form and proof of accommodation — do you have those too?', next: 'documents', positive: true }
+          ],
+          fallback: { text: 'Ukažte mi doklady. Pas, fotku, formulář a ubytování?', translation: 'Show me your documents. Passport, photo, form and accommodation? (Say "ano, mam" to continue)' }
+        },
+        missing_doc: {
+          responses: [
+            { triggers: ['mam', 'yes', 'ano', 'tady', 'here', 'smlouva', 'contract', 'pracovni', 'work', 'zamestnavatel', 'employer', 'mzda', 'salary'], text: 'Dobře. Ukažte. Hmm... v pořádku. Ještě kopii smlouvy, prosím.', translation: 'Fine. Show me. Hmm... alright. One copy of the contract, please.', next: 'provide_doc', positive: true },
+            { triggers: ['nerozumim', 'understand', 'co', 'what', 'jaky', 'which', 'explain', 'vysvetlit', 'napsat', 'write', 'pomaleji', 'slowly'], text: 'Potvrzení o příjmu — výpis ze mzdy nebo pracovní smlouva. Rozumíte?', translation: 'Proof of income — pay slip or work contract. Do you understand?', next: 'provide_doc', positive: true },
+            { triggers: ['nemam', 'no', 'dont have', 'forgot', 'zapomenout', 'left', 'home', 'doma'], text: 'Bohužel bez toho nemohu pokračovat. Přijďte příště s dokladem o příjmu.', translation: 'Unfortunately without that I cannot continue. Come back next time with proof of income.', next: 'waiting' }
+          ],
+          fallback: { text: 'Potvrzení o příjmu je nutné. Máte pracovní smlouvu? (Say "mam smlouva" or "nerozumim")', translation: 'Proof of income is required. Do you have a work contract?' }
+        },
+        provide_doc: {
+          responses: [
+            { triggers: ['prosim', 'please', 'tady', 'here', 'take', 'predavam', 'dame', 'dej', 'giving', 'tady je'], text: 'Děkuji. Vše v pořádku. Rozhodnutí přijde poštou do 60 dní.', translation: 'Thank you. Everything in order. The decision will come by post within 60 days.', next: 'waiting', positive: true },
+            { triggers: ['kdy', 'when', 'jak dlouho', 'how long', 'rozhodnuti', 'decision', 'vysledek', 'result'], text: 'Do 60 dní od podání žádosti. Dostanete dopis na adresu v dokladech.', translation: 'Within 60 days of the application. You\'ll receive a letter at the address in your documents.', next: 'waiting', positive: true }
+          ],
+          fallback: { text: 'Předejte mi doklady, prosím. (Say "tady prosim" to hand them over)', translation: 'Please hand me the documents.' }
+        },
+        waiting: {
+          responses: [
+            { triggers: ['dekuji', 'thank', 'diky', 'nashledanou', 'goodbye', 'bye', 'rozumel', 'understood', 'ok', 'dobře', 'clear', 'jasne'], text: 'Nashledanou. Sledujte poštu. Přijďte, až dostanete dopis. 📋', translation: 'Goodbye. Watch your post. Come back when you receive the letter. (Czech bureaucracy survived! 🎉)', next: 'done', positive: true },
+            { triggers: ['kdy', 'when', 'problem', 'issue', 'chybi', 'missing', 'dalsi', 'next', 'dotaz', 'question'], text: 'Rozhodnutí do 60 dní. Máte ještě otázku?', translation: 'Decision within 60 days. Do you have another question?', next: 'waiting' }
+          ],
+          fallback: { text: 'Máte ještě dotaz? Nebo: "Dekuji, nashledanou."', translation: 'Any more questions? Or try: "Dekuji, nashledanou."' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Nashledanou! Hodně štěstí. 📋', translation: 'Goodbye! Good luck. (Foreign police scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    office: {
+      language: 'czech',
+      persona: {
+        name: 'Pavel',
+        role: 'Kolega — Czech Colleague',
+        avatar: '👨‍💻',
+        description: 'Pavel has worked here 6 years. He\'s not unfriendly — he\'s Czech. Dry humor, efficient, and the one who knows the best lunch spot. Get in with Pavel and you\'re in.'
+      },
+      vocabulary: [
+        { cz: 'nastoupil jsem', en: 'I started (work)' },
+        { cz: 'zatím dobrý', en: 'so far so good' },
+        { cz: 'těší mě', en: 'nice to meet you' },
+        { cz: 'kde tu dobře vaří?', en: 'where\'s good food around here?' },
+        { cz: 'jdeme na oběd?', en: 'shall we go for lunch?' },
+        { cz: 'učím se česky', en: 'I\'m learning Czech' }
+      ],
+      context: 'It\'s your first week at a Prague office. Pavel, a Czech colleague, approaches you. Keep it understated and genuine — "zatím dobrý" beats "I love it here!" every time.',
+      tip: 'Start with "Dobry den" and introduce yourself calmly. Czechs respect honesty over enthusiasm.',
+      opening: { text: 'Dobrý den. Vy jste ten nový, co? 👋', translation: 'Hello. You\'re the new one, right?' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['dobry den', 'ahoj', 'hello', 'hi', 'good', 'ano', 'yes', 'jsem', 'i am', 'novy', 'new'], text: 'Já jsem Pavel. Jak se jmenujete?', translation: 'I\'m Pavel. What\'s your name?', next: 'name', positive: true }
+          ],
+          fallback: { text: 'Haló? Pozdravte mě! (Try: "Dobry den, jsem [name]")', translation: 'Hello? Greet me first! (Try: "Dobry den, jsem [your name]")' }
+        },
+        name: {
+          responses: [
+            { triggers: ['jsem', 'i am', 'jmenuji', 'my name', 'jmeno', 'name', 'tesi me', 'nice to meet', 'pleased', 'hello', 'ahoj'], text: 'Těší mě. Jak se vám tu líbí? První týden, ne?', translation: 'Nice to meet you. How do you like it here? First week, right?', next: 'impression', positive: true }
+          ],
+          fallback: { text: 'Promiňte — jak se jmenujete? (Just say your name!)', translation: 'Sorry — what\'s your name? (Try: "Jsem Tom, tesi me.")' }
+        },
+        impression: {
+          responses: [
+            { triggers: ['zatim', 'so far', 'fajn', 'ok', 'dobry', 'good', 'dobre', 'ujde'], text: 'To je upřímné. Česky umíte trochu?', translation: 'That\'s honest. Do you speak a bit of Czech?', next: 'czech_attempt', positive: true },
+            { triggers: ['skvele', 'amazing', 'great', 'uzasne', 'wonderful', 'love it', 'super'], text: 'Hmm. Tak uvidíme za měsíc. 😄 Česky umíte?', translation: 'Hmm. We\'ll see in a month. 😄 Do you speak Czech?', next: 'czech_attempt' },
+            { triggers: ['tezke', 'hard', 'slozite', 'difficult', 'complicated', 'struggle', 'hodne prace'], text: 'Je to normální. Přijde to. Česky umíte trochu?', translation: 'That\'s normal. It comes with time. Do you speak a bit of Czech?', next: 'czech_attempt', positive: true }
+          ],
+          fallback: { text: 'Jak se vám tu líbí? (Try: "Zatim dobry" = so far so good)', translation: 'How do you like it here? (Try: "Zatim dobry")' }
+        },
+        czech_attempt: {
+          responses: [
+            { triggers: ['trochu', 'a little', 'malinko', 'ucim se', 'learning', 'zkusim', 'try', 'snazim', 'ano', 'yes', 'jeste se ucim'], text: 'Dobrý! Respekt. Jdeme na oběd ve dvanáct — chcete jít s námi?', translation: 'Good! Respect. We\'re going for lunch at twelve — do you want to come?', next: 'lunch', positive: true },
+            { triggers: ['ne', 'no', 'nemluvim', 'neumim', 'dont speak', 'jen anglicky', 'only english'], text: 'Škoda. Začínáme na "pivo" — snadné. 😄 Jdeme na oběd — chcete jít?', translation: 'Shame. We start with "pivo" — easy. 😄 We\'re going for lunch — want to join?', next: 'lunch' }
+          ],
+          fallback: { text: 'Umíte česky? (Try: "Trochu" or "Ucim se" = I\'m learning)', translation: 'Do you know any Czech? (Try: "Trochu" or "Ucim se")' }
+        },
+        lunch: {
+          responses: [
+            { triggers: ['jo', 'ano', 'yes', 'rad', 'sure', 'dobry', 'dobre', 'rád', 'samozrejme', 'of course', 'pojdme', 'chci'], text: 'Super. Ve dvanáct u výtahu. Tady je dobrá hospůdka — svíčková za 149. 👍', translation: 'Great. At twelve by the lift. There\'s a good pub nearby — svíčková for 149. 👍', next: 'lunch_detail', positive: true },
+            { triggers: ['ne', 'no', 'nemuzem', 'cant', 'busy', 'zaneprazdneny', 'prace', 'work', 'mam schuzku'], text: 'Dobře. Zítra snad. Kafe chcete aspoň?', translation: 'Alright. Maybe tomorrow. Want at least a coffee?', next: 'coffee' }
+          ],
+          fallback: { text: 'Jdeme na oběd? Ano nebo ne? 😄 (Try: "Jo, rad!" or "Ne, nemuzem")', translation: 'Coming for lunch? Yes or no? 😄' }
+        },
+        lunch_detail: {
+          responses: [
+            { triggers: ['skvele', 'great', 'dobre', 'good', 'vyborne', 'excellent', 'dekuji', 'thanks', 'diky', 'kde', 'where', 'svickova', 'fajn', 'super'], text: 'Výborně. A na víkend — jste v Praze? Jde se na fotbal, pokud chcete.', translation: 'Excellent. And on the weekend — are you in Prague? We\'re going to a match if you\'re interested.', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Tak ve dvanáct u výtahu. Těšíte se? (Say "skvele" or "dobre")', translation: 'See you at twelve by the lift. Looking forward? (Say something positive!)' }
+        },
+        coffee: {
+          responses: [
+            { triggers: ['ano', 'yes', 'jo', 'sure', 'kafe', 'coffee', 'prosim', 'please', 'rad', 'dobre'], text: 'Dobrý. Já dám dvě. Tak vítejte v kolektivu. Těší mě.', translation: 'Good. I\'ll grab two. Welcome to the team. Nice to meet you.', next: 'done', positive: true },
+            { triggers: ['ne', 'no', 'dekuji', 'thanks', 'diky', 'nechci', 'dont want'], text: 'Žádný problém. Tak zítra na oběd. Nashledanou!', translation: 'No problem. Tomorrow for lunch then. Goodbye!', next: 'done' }
+          ],
+          fallback: { text: 'Kafe? Ano nebo ne?', translation: 'Coffee? Yes or no?' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Nashledanou! Vítejte v kolektivu. 😄', translation: 'Goodbye! Welcome to the team. (Office scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    date: {
+      language: 'czech',
+      persona: {
+        name: 'Anička',
+        role: 'Vaše rande — Your Czech date',
+        avatar: '❤️',
+        description: 'Warm but not easily impressed. She values authenticity over performance. The fact that you\'re learning Czech already earns you points — don\'t blow it by being fake or planning-free.'
+      },
+      vocabulary: [
+        { cz: 'vypadáš skvěle', en: 'you look great' },
+        { cz: 'snažím se', en: 'I\'m trying' },
+        { cz: 'líbí se mi tady', en: 'I like it here' },
+        { cz: 'máš chuť na...?', en: 'are you in the mood for...?' },
+        { cz: 'bylo to moc fajn', en: 'it was really nice' },
+        { cz: 'uvidíme se znovu?', en: 'will we see each other again?' }
+      ],
+      context: 'First date with Anička. You\'re meeting at a bar in Vinohrady. Keep it genuine, have a plan, and try some Czech — she\'ll respect the effort far more than perfection.',
+      tip: 'Start by greeting her. Then pay a compliment: "Vypadáš skvěle." No accents needed!',
+      opening: { text: 'Čekal jsi dlouho? 😊', translation: 'Were you waiting long?' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['ne', 'no', 'prave', 'just', 'ted', 'now', 'prave prichazel', 'arrived', 'chvili', 'kratce'], text: 'Fajn! Dobře vypadáš mimochodem. 😊', translation: 'Cool! You look good by the way. 😊', next: 'compliment', positive: true },
+            { triggers: ['trochu', 'a little', 'par minut', 'few minutes', 'ano', 'yes', 'chvili', 'a while'], text: 'Promiň! Ale vypadáš skvěle — promíjíš mi?', translation: 'Sorry! But you look great — do you forgive me?', next: 'compliment', positive: true }
+          ],
+          fallback: { text: 'Čekal jsi dlouho? Odpověz! 😄 (Try: "Ne" or "Trochu")', translation: 'Were you waiting long? Say something! (Try: "Ne" = no, or "Trochu" = a little)' }
+        },
+        compliment: {
+          responses: [
+            { triggers: ['vypadaš', 'vypadas', 'skvele', 'great', 'krasna', 'beautiful', 'hezka', 'pretty', 'dobre', 'good', 'wow', 'super'], text: 'Díky! Ty taky. Kam jdeme — máš plán?', translation: 'Thanks! You too. Where are we going — do you have a plan?', next: 'plan', positive: true },
+            { triggers: ['taky', 'ty taky', 'you too', 'diky', 'thanks', 'dekuji', 'thank you', 'fajn'], text: 'Haha. Tak kam jdeme? Máš rezervaci?', translation: 'Haha. So where are we going? Do you have a reservation?', next: 'plan', positive: true }
+          ],
+          fallback: { text: 'Řekni mi něco pěkného! (Try: "Vypadás skvele" = you look great)', translation: 'Say something nice! (Try: "Vypadás skvele")' }
+        },
+        plan: {
+          responses: [
+            { triggers: ['rezervace', 'reservation', 'rezervoval', 'booked', 'stul', 'table', 'restaurace', 'restaurant', 'bar', 'kavarna', 'cafe', 'mam misto', 'mam plan', 'zarezervoval'], text: 'Oooh, máš rezervaci! To se mi líbí. Kam přesně?', translation: 'Oooh, you have a reservation! I like that. Where exactly?', next: 'location', positive: true },
+            { triggers: ['nevim', 'don\'t know', 'cokoli', 'whatever', 'kam chces', 'where you want', 'tobe', 'uvidime'], text: '"Nevím" není odpověď na první rande. 😅 Zkus navrhnout něco konkrétního!', translation: '"I don\'t know" is not an answer for a first date. 😅 Try suggesting something specific!', next: 'plan' }
+          ],
+          fallback: { text: 'Máš plán? (Try: "Zarezervoval jsem stul v restauraci" = I booked a table)', translation: 'Do you have a plan? (Try: "Zarezervoval jsem stul" = I booked a table)' }
+        },
+        location: {
+          responses: [
+            { triggers: ['vinohrady', 'zizkov', 'mala strana', 'stare mesto', 'dejvice', 'smichov', 'restaurace', 'italiana', 'italian', 'thai', 'french', 'ceska', 'czech', 'sushi', 'japonska', 'tapas', 'bar'], text: 'Dobrá volba! A česky — snažíš se trochu? 😊', translation: 'Good choice! And Czech — are you trying a little? 😊', next: 'czech_attempt', positive: true }
+          ],
+          fallback: { text: 'Kde máš tu rezervaci? (Say the area or cuisine — e.g. "restaurace v Vinohradech")', translation: 'Where is that reservation? (Say the neighborhood or type of food)' }
+        },
+        czech_attempt: {
+          responses: [
+            { triggers: ['snazim', 'try', 'ucim se', 'learning', 'trochu', 'a little', 'ano', 'yes', 'jeste se ucim', 'still learning', 'zkusim', 'snazim se'], text: 'To je tak roztomilé! Proč ses začal učit česky?', translation: 'That\'s so sweet! Why did you start learning Czech?', next: 'reason', positive: true },
+            { triggers: ['ne', 'no', 'neumim', 'cant', 'nemluvim', 'dont speak', 'jen anglicky', 'only english'], text: 'Ale to "Vypadáš skvěle" bylo celkem dobré. 😄 Proč ses víc nenaučil?', translation: 'But that "Vypadáš skvěle" was pretty good. 😄 Why haven\'t you learned more?', next: 'reason' }
+          ],
+          fallback: { text: 'Snažíš se s češtinou? (Try: "Snazim se" or "Ucim se")', translation: 'Are you trying with Czech? (Try: "Snazim se" = I\'m trying)' }
+        },
+        reason: {
+          responses: [
+            { triggers: ['libi', 'like', 'mam rad', 'love', 'krasa', 'beautiful', 'zajimava', 'interesting', 'zustat', 'stay', 'zit', 'live', 'kvuli', 'for you', 'prace', 'work', 'firma', 'company'], text: 'Aww. Tak tě musím naučit správně. Opakuj: "Líbíš se mi." Jde to?', translation: 'Aww. Then I\'ll have to teach you properly. Repeat: "Líbíš se mi." Can you say it?', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Proč ses začal učit česky? (Just say honestly — any reason works!)', translation: 'Why did you start learning Czech? (Just be honest!)' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Bylo to moc fajn. Uvidíme se znovu? ❤️', translation: 'It was really nice. Will we see each other again? (Czech date scenario complete! 🎉)' }
+        }
+      }
     }
   };
 
@@ -381,6 +596,211 @@ const ChatEngine = (() => {
         done: {
           responses: [],
           fallback: { text: '¡Hasta pronto! ¡Vuelve cuando quieras! 👋', translation: 'See you soon! Come back whenever! (Sunday lunch scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    es_nie: {
+      language: 'spanish',
+      persona: {
+        name: 'Funcionaria López',
+        role: 'Funcionaria — NIE Office Civil Servant',
+        avatar: '👩‍💼',
+        description: 'She has processed thousands of NIE applications. Nothing surprises her. Be polite, say "por favor" at every opportunity, and have your documents in order. It genuinely helps.'
+      },
+      vocabulary: [
+        { cz: 'vengo a solicitar el NIE', en: 'I\'m here to apply for the NIE' },
+        { cz: '¿qué documentos necesito?', en: 'what documents do I need?' },
+        { cz: 'el empadronamiento', en: 'local address registration' },
+        { cz: 'perdone, no entiendo', en: 'excuse me, I don\'t understand' },
+        { cz: '¿puede repetirlo?', en: 'can you repeat that?' },
+        { cz: 'falta...', en: 'is missing...' },
+        { cz: '¿cuándo estará listo?', en: 'when will it be ready?' },
+        { cz: 'el justificante', en: 'proof document / supporting evidence' }
+      ],
+      context: 'You\'re at the Spanish NIE office to get your foreigner ID number. Funcionaria López is at the window. Stay calm, be polite, and ask clearly when you don\'t understand.',
+      tip: 'Start with "Buenos dias" then: "Vengo a solicitar el NIE, por favor." — the magic words.',
+      opening: { text: '¡El siguiente! ¿Qué trámite viene a hacer? 📋', translation: 'Next! What procedure are you here for?' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['buenos dias', 'buenas', 'hola', 'good morning', 'hello', 'buenas tardes'], text: 'Buenos días. ¿En qué le puedo ayudar?', translation: 'Good morning. How can I help you?', next: 'purpose', positive: true }
+          ],
+          fallback: { text: 'Por favor, salude primero. Estoy ocupada. (Try: "Buenos dias")', translation: 'Please greet me first. I\'m busy. (Try: "Buenos dias")' }
+        },
+        purpose: {
+          responses: [
+            { triggers: ['nie', 'numero identificacion', 'foreign id', 'solicitar', 'extranjero', 'identidad'], text: 'NIE. ¿Trae el formulario EX-15, dos fotos, el pasaporte y fotocopia?', translation: 'NIE. Do you have form EX-15, two photos, passport and photocopy?', next: 'documents', positive: true },
+            { triggers: ['empadronamiento', 'padron', 'registration', 'registro', 'ayuntamiento'], text: 'El empadronamiento es en el Ayuntamiento, no aquí. Pero — ¿viene por el NIE también?', translation: 'Local registration is at the town hall, not here. But — are you also here for the NIE?', next: 'purpose' },
+            { triggers: ['no se', 'dont know', 'help', 'ayuda', 'que necesito', 'what'], text: '¿Para qué necesita el NIE? ¿Trabajo, alquiler, banco? Dígame. (Try: "Vengo a solicitar el NIE")', translation: 'What do you need the NIE for? Work, rental, bank? Tell me.' }
+          ],
+          fallback: { text: 'Dígame el trámite que necesita. (Try: "Vengo a solicitar el NIE, por favor")', translation: 'Tell me what procedure you need.' }
+        },
+        documents: {
+          responses: [
+            { triggers: ['si', 'yes', 'tengo todo', 'aqui', 'here', 'todo', 'all', 'documentos', 'traigo', 'brought'], text: 'Veamos... EX-15 correcto. Fotos bien. Pasaporte... falta el justificante del motivo de solicitud.', translation: 'Let\'s see... EX-15 correct. Photos fine. Passport... missing the proof of reason for application.', next: 'missing_doc', positive: true },
+            { triggers: ['formulario', 'form', 'fotos', 'photos', 'pasaporte', 'passport', 'fotocopia', 'copy', 'ex-15', 'ex15'], text: 'Bien. ¿Y el justificante del motivo de solicitud? ¿Contrato de trabajo, matrícula?', translation: 'Good. And the proof of reason for application? Work contract, university enrollment?', next: 'documents', positive: true }
+          ],
+          fallback: { text: 'Enséñeme los documentos. ¿Tiene el formulario EX-15 y el pasaporte?', translation: 'Show me your documents. Do you have form EX-15 and passport? (Say "si, tengo todo")' }
+        },
+        missing_doc: {
+          responses: [
+            { triggers: ['contrato', 'contract', 'trabajo', 'work', 'empleo', 'employment', 'tengo contrato', 'have contract', 'laboral'], text: 'Perfecto, el contrato de trabajo es válido. Déjemelo ver, por favor.', translation: 'Perfect, a work contract is valid. Let me see it, please.', next: 'provide_doc', positive: true },
+            { triggers: ['universidad', 'university', 'matricula', 'enrollment', 'estudios', 'estudio', 'estudiar'], text: 'La matrícula universitaria también vale. ¿La tiene aquí?', translation: 'University enrollment also works. Do you have it here?', next: 'provide_doc', positive: true },
+            { triggers: ['perdon', 'perdone', 'no entiendo', 'no comprendo', 'understand', 'explain', 'explicar', 'que es', 'what is', 'repita', 'repeat'], text: 'Es un documento que justifica por qué necesita el NIE: contrato de trabajo, matrícula o escritura de propiedad.', translation: 'It\'s a document justifying why you need the NIE: work contract, university enrollment, or property deed.', next: 'provide_doc', positive: true },
+            { triggers: ['no tengo', 'dont have', 'lo olvide', 'forgot', 'left', 'en casa', 'at home', 'no lo tengo'], text: 'Sin ese documento no puedo continuar hoy. Vuelva con él. ¿Tiene nueva cita?', translation: 'Without that document I cannot continue today. Come back with it. Do you have a new appointment?', next: 'waiting' }
+          ],
+          fallback: { text: 'Falta el justificante. ¿Tiene contrato de trabajo? (Say "tengo contrato" or "no entiendo")', translation: 'Proof of reason is missing. Do you have a work contract?' }
+        },
+        provide_doc: {
+          responses: [
+            { triggers: ['aqui', 'here', 'tome', 'toma', 'le doy', 'giving', 'por favor', 'please', 'aqui tiene', 'here you go'], text: 'Perfecto. Todo en orden. La resolución llega por correo en unos 30 días. Guarde este resguardo.', translation: 'Perfect. Everything in order. The resolution arrives by post in about 30 days. Keep this receipt.', next: 'waiting', positive: true },
+            { triggers: ['cuanto', 'how long', 'cuando', 'when', 'tardara', 'take', 'tiempo', 'dias', 'days'], text: 'Unos 30 días. Le llegará una carta a su domicilio. Guarde el resguardo.', translation: 'About 30 days. You\'ll receive a letter at your address. Keep the receipt.', next: 'waiting', positive: true }
+          ],
+          fallback: { text: 'Entrégueme el documento, por favor. (Say "aqui tiene" or "tome, por favor")', translation: 'Please hand me the document.' }
+        },
+        waiting: {
+          responses: [
+            { triggers: ['gracias', 'muchas gracias', 'thank you', 'thanks', 'entendido', 'understood', 'claro', 'perfecto', 'ok', 'bien', 'hasta luego', 'goodbye', 'adios'], text: 'De nada. ¡Buena suerte con todo! ¡El siguiente! 📋', translation: 'You\'re welcome. Good luck with everything! Next! (NIE office survived! 🎉)', next: 'done', positive: true },
+            { triggers: ['cuando', 'when', 'cuanto', 'how long', 'problema', 'issue', 'pregunta', 'question', 'que pasa si'], text: 'Aproximadamente 30 días. Si no llega, puede consultar en la sede electrónica de extranjería.', translation: 'Approximately 30 days. If it doesn\'t arrive, you can check on the immigration electronic office.', next: 'waiting' }
+          ],
+          fallback: { text: '¿Alguna pregunta más? (Try: "Muchas gracias, hasta luego.")', translation: 'Any more questions? (Try: "Muchas gracias, hasta luego.")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Hasta luego! ¡Buena suerte! 📋', translation: 'Goodbye! Good luck! (NIE office complete! 🎉)' }
+        }
+      }
+    },
+
+    es_office: {
+      language: 'spanish',
+      persona: {
+        name: 'Elena',
+        role: 'Compañera de trabajo — Spanish Colleague',
+        avatar: '☕',
+        description: 'Elena from accounting. Chatty, warm, the social hub of the office. She knows everyone\'s coffee order and the real org chart. Get in with Elena and the rest follows naturally.'
+      },
+      vocabulary: [
+        { cz: 'empecé ayer', en: 'I started yesterday' },
+        { cz: '¡claro que sí!', en: 'of course! absolutely!' },
+        { cz: 'muy bien hasta ahora', en: 'very good so far' },
+        { cz: 'es muy majo/maja', en: 'he\'s/she\'s really nice (Spain Spanish)' },
+        { cz: '¿vamos a por un café?', en: 'shall we go for a coffee?' },
+        { cz: 'me alegra saberlo', en: 'glad to hear it' }
+      ],
+      context: 'Your first week at a Madrid office. Elena from accounting approaches you. The sacred 10am coffee ritual is about to begin. Say yes — it\'s not optional.',
+      tip: 'Start with "Buenos dias" and introduce yourself. Use "Claro que si!" for the coffee invite — warmer than just "si".',
+      opening: { text: '¡Buenos días! ¿Eres el nuevo de marketing? ☕', translation: 'Good morning! Are you the new one from marketing?' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['buenos dias', 'buenas', 'hola', 'si', 'yes', 'soy', 'i am', 'nuevo', 'new', 'hello'], text: '¡Qué bien! Yo soy Elena, de contabilidad. ¿Cómo te llamas?', translation: 'How great! I\'m Elena, from accounting. What\'s your name?', next: 'name', positive: true }
+          ],
+          fallback: { text: '¡Ey! ¡Salúdame! 😄 (Try: "Buenos dias, soy [name]")', translation: 'Hey! Say hello! (Try: "Buenos dias, soy [your name]")' }
+        },
+        name: {
+          responses: [
+            { triggers: ['soy', 'i am', 'llamo', 'name is', 'encantado', 'encantada', 'mucho gusto', 'pleasure', 'james', 'tom', 'alex'], text: '¡Encantada! ¿Qué tal el primer día? ¿O llevas más tiempo ya?', translation: 'Pleased to meet you! How\'s the first day? Or have you been here a while?', next: 'impression', positive: true }
+          ],
+          fallback: { text: '¿Cómo te llamas? ¡Preséntate! (Say "Soy [name], encantado/a")', translation: 'What\'s your name? Introduce yourself!' }
+        },
+        impression: {
+          responses: [
+            { triggers: ['bien', 'good', 'muy bien', 'genial', 'great', 'hasta ahora', 'so far', 'majo', 'maja', 'majos', 'nice', 'todos', 'guay'], text: '¡Me alegra! Todos son muy majos aquí de verdad. ¿Vamos a por un café?', translation: 'Glad to hear it! Everyone is really nice here honestly. Shall we go for a coffee?', next: 'coffee', positive: true },
+            { triggers: ['complicado', 'complicated', 'dificil', 'difficult', 'mucho', 'lot', 'abrumado', 'overwhelmed', 'confundido', 'confusing'], text: '¡Normal al principio! Ya verás. ¿Un café para sobrevivir?', translation: 'Normal at the start! You\'ll see. A coffee to survive?', next: 'coffee', positive: true }
+          ],
+          fallback: { text: '¿Qué tal te va? (Try: "Muy bien hasta ahora" or "Es todo muy majo")', translation: 'How\'s it going? (Try: "Muy bien hasta ahora" = very good so far)' }
+        },
+        coffee: {
+          responses: [
+            { triggers: ['claro', 'si', 'yes', 'venga', 'vamos', 'por supuesto', 'encantado', 'encantada', 'quiero', 'necesito', 'need', 'of course'], text: '¡Qué bien! El café de las diez es sagrado aquí. 😄 ¿Qué tomas — café con leche, cortado?', translation: 'How great! The 10am coffee is sacred here. 😄 What do you drink — café con leche, cortado?', next: 'coffee_order', positive: true },
+            { triggers: ['no', 'no gracias', 'ahora no', 'not now', 'busy', 'ocupado', 'tengo que', 'trabajo'], text: '¡Uy! El café de las diez no se rechaza, ¿eh? 😅 ¿Seguro que no?', translation: 'Oh! The 10am coffee is not refused here, you know? 😅 Are you sure?', next: 'coffee' }
+          ],
+          fallback: { text: '¿Vamos a por un café? 😄 (Try: "Claro que si!" — much warmer than just "si")', translation: 'Shall we go for a coffee? (Try: "Claro que si!" or "Venga!")' }
+        },
+        coffee_order: {
+          responses: [
+            { triggers: ['cafe con leche', 'con leche', 'cortado', 'solo', 'americano', 'cappuccino', 'cafe', 'lo mismo', 'same', 'igual', 'cualquiera', 'anything'], text: '¡Perfecto! ¿Y qué te parece la empresa? ¿Del Madrid o del Barça? Hay que saber. 😄', translation: 'Perfect! And what do you think of the company? Real Madrid or Barça? We need to know. 😄', next: 'football', positive: true }
+          ],
+          fallback: { text: '¿Qué tomas? ¿Café con leche? ¿Cortado? (Just name your coffee!)', translation: 'What do you drink? Café con leche? Cortado? (Just say what you want!)' }
+        },
+        football: {
+          responses: [
+            { triggers: ['madrid', 'real madrid', 'hala madrid', 'blancos'], text: '¡Ay! Yo soy del Atleti. Pero bueno — bienvenido igualmente. 😄', translation: 'Oh! I\'m an Atlético fan. But hey — welcome anyway. 😄', next: 'done', positive: true },
+            { triggers: ['barcelona', 'barça', 'barca', 'blaugrana', 'culé'], text: '¡En Madrid no digas eso muy alto! 😅 Bienvenido de todas formas.', translation: 'Don\'t say that too loud in Madrid! 😅 Welcome anyway.', next: 'done', positive: true },
+            { triggers: ['atletico', 'atleti', 'colchonero'], text: '¡Eso es! ¡Una más de los nuestros! Bienvenido al equipo. 😄', translation: 'That\'s it! One more of us! Welcome to the team. 😄', next: 'done', positive: true },
+            { triggers: ['local', 'equipo local', 'no se', 'dont know', 'ninguno', 'neither', 'no me gusta', 'futbol', 'football', 'no tengo'], text: '¡Respuesta diplomática! Perfecto para el trabajo. 😄 Te presento a todos con el café.', translation: 'Diplomatic answer! Perfect for work. 😄 I\'ll introduce you to everyone with the coffee.', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Del Madrid, del Barça, o del Atleti? ¡Hay que elegir! 😄 (Or: "No tengo equipo")', translation: 'Madrid, Barça, or Atlético? You have to choose! 😄' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Bienvenido al equipo! ☕', translation: 'Welcome to the team! ☕ (Spanish office scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    es_date: {
+      language: 'spanish',
+      persona: {
+        name: 'Carmen',
+        role: 'Tu cita — Your Spanish date',
+        avatar: '🌹',
+        description: 'Warm, expressive, and she appreciates directness. She loves that you\'re learning Spanish. Have a plan, give compliments freely, and don\'t check your phone. Dinner starts at 9pm.'
+      },
+      vocabulary: [
+        { cz: 'estás muy guapo/guapa', en: 'you look really handsome/beautiful' },
+        { cz: 'me lo paso genial', en: 'I\'m having a great time' },
+        { cz: 'me caes muy bien', en: 'I really like you (as a person)' },
+        { cz: '¿quedamos otro día?', en: 'shall we meet again another day?' },
+        { cz: 'lo intento', en: 'I try / I\'m trying' },
+        { cz: '¿qué te apetece?', en: 'what do you feel like?' }
+      ],
+      context: 'First date with Carmen in Madrid. You\'re meeting outside a restaurant. Be direct, give compliments, have a reservation — and try some Spanish! The effort matters more than the accent.',
+      tip: 'Start by greeting her and paying a compliment: "Hola! Estás muy guapa esta noche."',
+      opening: { text: '¡Hola! ¿Llevas mucho esperando? 😊', translation: 'Hi! Have you been waiting long?' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['no', 'acabo', 'just arrived', 'nada', 'poco', 'poquito', 'recien', 'ahora mismo'], text: '¡Qué bien! Oye, estás muy guapo/guapa esta noche. 😊', translation: 'How great! Hey, you look really handsome/beautiful tonight. 😊', next: 'compliment', positive: true },
+            { triggers: ['si', 'yes', 'un poco', 'a little', 'rato', 'while', 'bastante', 'mucho', 'tiempo'], text: '¡Lo siento! Llegué lo antes que pude. ¿Me perdonas?', translation: 'I\'m sorry! I got here as fast as I could. Do you forgive me?', next: 'compliment', positive: true }
+          ],
+          fallback: { text: '¿Llevas mucho? ¡Di algo! 😄 (Try: "No, acabo de llegar" or "Un poco")', translation: 'Have you been waiting long? Say something! (Try: "No, acabo de llegar" = I just arrived)' }
+        },
+        compliment: {
+          responses: [
+            { triggers: ['guapa', 'beautiful', 'bonita', 'preciosa', 'guapo', 'handsome', 'estas muy', 'you look', 'increible', 'impresionante', 'estupenda', 'genial'], text: '¡Gracias! Tú también estás muy guapo/a. ¿Tienes reserva? Porque tengo mucha hambre. 😄', translation: 'Thank you! You look really great too. Do you have a reservation? Because I\'m very hungry. 😄', next: 'reservation', positive: true },
+            { triggers: ['gracias', 'tu tambien', 'you too', 'igualmente', 'tú también'], text: 'Jaja. ¡Qué galante! ¿Y tenemos reserva o improvisamos? 😄', translation: 'Haha. How gallant! And do we have a reservation or are we improvising? 😄', next: 'reservation', positive: true }
+          ],
+          fallback: { text: '¡Di algo bonito! 😄 (Try: "Estás muy guapa esta noche" or "Gracias, tú también")', translation: 'Say something nice! (Try: "Estás muy guapa" = you look beautiful)' }
+        },
+        reservation: {
+          responses: [
+            { triggers: ['reserva', 'reservation', 'he reservado', 'mesa', 'table', 'restaurante', 'restaurant', 'sitio', 'lugar', 'place', 'tengo mesa'], text: '¡Me encanta un hombre/mujer con plan! ¿Dónde es?', translation: 'I love a person with a plan! Where is it?', next: 'location', positive: true },
+            { triggers: ['no', 'no tengo', 'dont have', 'improvisamos', 'improvise', 'buscar', 'find', 'no reserve', 'sin reserva'], text: 'Hmm... sin reserva. Bueno, soy flexible. ¿Qué tipo de comida te apetece?', translation: 'Hmm... no reservation. Okay, I\'m flexible. What kind of food do you feel like?', next: 'location' }
+          ],
+          fallback: { text: '¿Tenemos reserva? (Try: "Si, he reservado una mesa" or "No, improvisamos")', translation: 'Do we have a reservation? (Try: "Si, he reservado una mesa en...")' }
+        },
+        location: {
+          responses: [
+            { triggers: ['malasana', 'chueca', 'lavapies', 'salamanca', 'retiro', 'sol', 'gran via', 'latina', 'italiana', 'italian', 'marisco', 'seafood', 'japones', 'japanese', 'thai', 'fusion', 'espanol', 'spanish', 'cocina', 'cuisine', 'marisqueria', 'asador'], text: '¡Buena zona! Oye, ¿hablas español o vamos a hacer mímica toda la noche? 😄', translation: 'Nice area! Hey, do you speak Spanish or are we doing mime all night? 😄', next: 'spanish_attempt', positive: true }
+          ],
+          fallback: { text: '¿Dónde vamos a cenar? (Say the area or type of food)', translation: 'Where are we having dinner? (Say the neighborhood or type of restaurant)' }
+        },
+        spanish_attempt: {
+          responses: [
+            { triggers: ['lo intento', 'intento', 'try', 'todavia aprendiendo', 'still learning', 'un poco', 'poquito', 'aprendo', 'learning', 'estudiando', 'me esfuerzo'], text: '¡Me encanta! Lo más bonito es el esfuerzo. Enséñame algo en tu idioma también. 😊', translation: 'I love it! The effort is the sweetest thing. Teach me something in your language too. 😊', next: 'done', positive: true },
+            { triggers: ['no', 'no hablo', 'dont speak', 'solo ingles', 'only english', 'bad', 'malo', 'fatal', 'poco', 'poquito'], text: 'Pero si antes dijiste algo en español y sonó muy bien. ¡Sigue así! 😄', translation: 'But you just said something in Spanish and it sounded great. Keep going! 😄', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Hablas español? (Try: "Lo intento" = I try, or "Todavia aprendiendo" = still learning)', translation: 'Do you speak Spanish? (Try: "Lo intento" or "Todavia aprendiendo")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Me lo paso genial! ¿Quedamos otro día? 🌹', translation: 'I\'m having a great time! Shall we meet again? (Spanish date scenario complete! 🎉)' }
         }
       }
     }
