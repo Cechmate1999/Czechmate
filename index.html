@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CzechMate — Real Czech for Real Life</title>
+  <meta name="description" content="Learn Czech you'll actually use. Not textbook nonsense. Real scenarios, real phrases, real culture.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Hero mockup visual */
+    .hero-visual {
+      margin-top: 4rem;
+      position: relative;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .mock-phone {
+      background: var(--s2);
+      border: 1px solid var(--border-l);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: left;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .mock-phone::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+    }
+    .mock-scene-label {
+      font-size: .75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--red); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .mock-chat { display: flex; flex-direction: column; gap: .75rem; }
+    .mock-msg {
+      padding: .65rem 1rem; border-radius: 14px; font-size: .88rem; max-width: 80%;
+    }
+    .mock-msg.ai { background: var(--s3); border: 1px solid var(--border); align-self: flex-start; }
+    .mock-msg.user { background: var(--red); color: #fff; align-self: flex-end; border-radius: 14px 14px 4px 14px; }
+    .mock-correction {
+      background: rgba(244,162,97,.1); border: 1px solid rgba(244,162,97,.3);
+      border-radius: 10px; padding: .6rem .9rem; font-size: .78rem; color: var(--gold);
+    }
+    .mock-correction span { font-weight: 700; }
+    .mock-trans { font-size: .75rem; color: var(--t3); margin-top: .2rem; }
+    .float-badge {
+      position: absolute;
+      background: var(--s1);
+      border: 1px solid var(--border-l);
+      border-radius: 12px;
+      padding: .65rem 1rem;
+      font-size: .82rem;
+      display: flex; align-items: center; gap: .5rem;
+      box-shadow: var(--shadow);
+    }
+    .float-badge.tl { top: 1rem; left: -3rem; }
+    .float-badge.br { bottom: 1rem; right: -3rem; }
+    @media (max-width: 640px) {
+      .float-badge { display: none; }
+    }
+    /* comparison strip */
+    .compare-strip {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.75rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      max-width: 700px;
+      margin: 3rem auto 0;
+    }
+    .compare-side { text-align: center; }
+    .compare-side .label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .6rem; }
+    .compare-side.bad .label { color: var(--t3); }
+    .compare-side.good .label { color: var(--green); }
+    .compare-side .phrase { font-size: 1rem; font-weight: 600; }
+    .compare-side.bad .phrase { color: var(--t3); text-decoration: line-through; }
+    .compare-side.good .phrase { color: var(--t1); }
+    .compare-side .sub { font-size: .8rem; color: var(--t3); margin-top: .3rem; }
+    .compare-arrow { color: var(--red); font-size: 1.5rem; }
+    /* scenario preview */
+    .scenario-preview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .sp-card {
+      background: var(--s2); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 1.5rem; text-align: center; text-decoration: none; color: inherit;
+      transition: all .25s;
+    }
+    .sp-card:hover { border-color: var(--border-l); transform: translateY(-3px); box-shadow: var(--shadow); }
+    .sp-card .icon { font-size: 2rem; display: block; margin-bottom: .75rem; }
+    .sp-card h4 { font-size: .95rem; font-weight: 600; margin-bottom: .3rem; }
+    .sp-card p { font-size: .8rem; color: var(--t2); line-height: 1.5; }
+    @media (max-width: 640px) {
+      .scenario-preview { grid-template-columns: 1fr; }
+      .compare-strip { grid-template-columns: 1fr; }
+      .compare-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">
+      <span class="flag">🇨🇿</span>Czech<span class="accent">Mate</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="scenarios.html">Scenarios</a></li>
+      <li><a href="scenarios.html">Practice</a></li>
+      <li><a href="#how">How it works</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="scenarios.html" class="btn btn-primary">Start Learning →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div>
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Built for expats living in Czech Republic
+      </div>
+
+      <h1>
+        Stop Nodding.
+        <span class="line-red">Start Understanding.</span>
+        <span class="line-dim">Real Czech for real life — not textbook nonsense.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Duolingo won't save you when the waiter is staring at you and you can't remember how to order a beer. We will.
+      </p>
+
+      <div class="hero-cta">
+        <a href="scenarios.html" class="btn btn-primary btn-xl">Start Learning Free →</a>
+        <a href="#scenarios" class="btn btn-ghost btn-lg">See Scenarios</a>
+      </div>
+
+      <div class="hero-proof">
+        <div class="proof-avatars">
+          <span>🇬🇧</span><span>🇺🇸</span><span>🇩🇪</span><span>🇫🇷</span><span>🇯🇵</span>
+        </div>
+        &nbsp;Joined by 3,200+ expats learning real Czech
+      </div>
+
+      <hr class="hero-divider">
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Real scenarios</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Cartoon owls</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Stuff you'll actually use</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM SECTION -->
+  <div class="full-section">
+    <div class="section">
+      <div class="section-tag">The Problem</div>
+      <h2 class="section-title">Why your Czech isn't working</h2>
+      <p class="section-sub">You've been doing apps for months. You can say "The apple is red" in Czech. Cool. Has that helped you once?</p>
+
+      <div class="pain-grid">
+        <div class="pain-card">
+          <div class="pain-icon">🦜</div>
+          <h3>Apps teach you to talk like a parrot</h3>
+          <p><span class="strike">"The book is on the table."</span><br>
+          You need: <strong>"Another beer, please"</strong> without sounding like a lost tourist.</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">📚</div>
+          <h3>Textbooks teach you tourist Czech</h3>
+          <p>Formal, stiff, awkward. Real Czechs hear it and quietly cringe. Nobody says <em>"Rád bych si objednal pivo"</em> when they mean <em>"Jedno pivo."</em></p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">😐</div>
+          <h3>Nobody explains the cultural layer</h3>
+          <p>You said the right words but got a weird look. Why? Because Czech isn't just language — it's timing, tone, and unspoken rules. We cover all of it.</p>
+        </div>
+      </div>
+
+      <!-- comparison -->
+      <div class="compare-strip">
+        <div class="compare-side bad">
+          <div class="label">Textbook Czech</div>
+          <div class="phrase">"Rád bych si objednal jedno pivo, prosím."</div>
+          <div class="sub">10 words. Technically correct. Everyone knows you're foreign.</div>
+        </div>
+        <div class="compare-arrow">→</div>
+        <div class="compare-side good">
+          <div class="label">Real Czech</div>
+          <div class="phrase">"Jedno pivo."</div>
+          <div class="sub">Two words. What Czechs actually say. Waiter respects you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div id="how">
+    <div class="section">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">Learn Czech in 3 steps</h2>
+      <p class="section-sub">No levels, no XP, no streaks. Just real situations and real language.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Pick your situation</h3>
+          <p>Ordering at a pub? Surviving the foreign police? Meeting the parents? Choose the scenario you'll actually face this week.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Learn the real dialogue</h3>
+          <p>See what Czechs actually say (not what the textbook says they say). With cultural tips that explain the <em>why</em>.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Practice with AI</h3>
+          <p>Chat with a simulated Czech character for your scenario. Get corrected gently. Build confidence before the real thing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO PREVIEW -->
+  <div id="scenarios" class="full-section">
+    <div class="section">
+      <div class="section-tag">Scenarios</div>
+      <h2 class="section-title">Pick your challenge</h2>
+      <p class="section-sub">5 real-life situations. Dialogue, cultural tips, and AI practice for each.</p>
+
+      <div class="scenario-preview">
+        <a href="scenario.html?id=pub" class="sp-card">
+          <span class="icon">🍺</span>
+          <h4>At the Pub</h4>
+          <p>Order like a local. Survive the silent waiter stare.</p>
+        </a>
+        <a href="scenario.html?id=parents" class="sp-card">
+          <span class="icon">👨‍👩‍👧</span>
+          <h4>Meeting the Parents</h4>
+          <p>Sunday lunch. Three courses. Her father watching.</p>
+        </a>
+        <a href="scenario.html?id=police" class="sp-card">
+          <span class="icon">🏛️</span>
+          <h4>Foreign Police</h4>
+          <p>Bring documents. All of them. Come back Tuesday.</p>
+        </a>
+        <a href="scenario.html?id=office" class="sp-card">
+          <span class="icon">💼</span>
+          <h4>Office Small Talk</h4>
+          <p>Your Czech coworkers aren't cold. They're just loading.</p>
+        </a>
+        <a href="scenario.html?id=date" class="sp-card">
+          <span class="icon">❤️</span>
+          <h4>First Date</h4>
+          <p>Have a plan. Mean what you say. Use "fajn."</p>
+        </a>
+        <a href="scenarios.html" class="sp-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;gap:.5rem;font-weight:600;color:var(--t2)">
+          + More coming →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section">
+    <div class="section-tag">Who It's For</div>
+    <h2 class="section-title">From expats who've been there</h2>
+    <p class="section-sub">People who were tired of Duolingo and needed Czech that actually works.</p>
+
+    <div class="testimonials-grid" style="margin-top:2.5rem">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I ordered my first beer correctly in Czech and the waiter visibly relaxed. I felt like I'd unlocked something. That never happened with any app."</blockquote>
+        <div class="t-author">
+          <div class="t-avatar">🇬🇧</div>
+          <div>
+            <div class="t-name">James, London → Prague</div>
+            <div class="t-info">Software engineer, living in Žižkov</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <blockquote>"The 'Meeting the Parents' scenario literally saved me. I knew to say výborné, I knew to finish my plate, and I knew not to wave at the waiter. His parents liked me."</blockquote>
+        <div class="t-author">
+          <div class="t-avatar">🇫🇷</div>
+          <div>
+            <div class="t-name">Marc, Paris → Brno</div>
+            <div class="t-info">Marketing manager, dating a Czech</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <blockquote>"The Foreign Police scenario is the most useful thing I've found for expats. The cultural notes alone are worth it — I knew exactly what to expect and what to say."</blockquote>
+        <div class="t-author">
+          <div class="t-avatar">🇺🇸</div>
+          <div>
+            <div class="t-name">Sarah, NYC → Prague</div>
+            <div class="t-info">Teacher, 2 years in Czech Republic</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <div class="section-tag">Ready?</div>
+    <h2>Stop nodding. Start understanding.</h2>
+    <p>Pick a scenario you'll actually face this week. Learn in 10 minutes.</p>
+    <a href="scenarios.html" class="btn btn-primary btn-xl">Choose Your Scenario →</a>
+    <div class="cta-note">No account needed. No app to download. Just open and learn.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <a href="index.html" class="logo" style="font-size:1.1rem">🇨🇿 Czech<span style="color:var(--red)">Mate</span></a>
+      </div>
+      <div>Real Czech for real life.</div>
+      <div style="display:flex;gap:1.5rem">
+        <a href="scenarios.html">Scenarios</a>
+        <a href="practice.html?scenario=pub">Practice</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

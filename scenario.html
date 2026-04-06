@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario — CzechMate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js"></script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <span class="flag">🇨🇿</span>Czech<span class="accent">Mate</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="scenarios.html">Scenarios</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#" id="navPracticeBtn" class="btn btn-primary">Practice This →</a>
+    </div>
+  </nav>
+
+  <div class="detail-header" id="scenarioHeader">
+    <a href="scenarios.html" class="back-link">← All Scenarios</a>
+  </div>
+
+  <div class="content-body" id="scenarioContent"></div>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="index.html" class="logo" style="font-size:1.1rem">🇨🇿 Czech<span style="color:var(--red)">Mate</span></a>
+      <div style="color:var(--t3);font-size:.82rem">Real language for real life.</div>
+    </div>
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id') || 'pub';
+    const scenario = SCENARIOS.find(s => s.id === id) || SCENARIOS[0];
+
+    const LANG_FLAGS = { czech: '🇨🇿', spanish: '🇪🇸' };
+    const LANG_LABELS = { czech: 'Czech', spanish: 'Spanish' };
+
+    // The dialogue column header changes per language
+    const COL_LABELS = {
+      czech: { phraseCol: 'Czech', notePrefix: '💡' },
+      spanish: { phraseCol: 'Spanish', notePrefix: '💡' }
+    };
+    const lang = scenario.language || 'czech';
+    const cols = COL_LABELS[lang] || COL_LABELS.czech;
+
+    document.getElementById('navPracticeBtn').href = `practice.html?scenario=${scenario.id}`;
+    document.title = `${scenario.title} — CzechMate`;
+
+    // ── HEADER ──
+    document.getElementById('scenarioHeader').innerHTML = `
+      <a href="scenarios.html" class="back-link">← All Scenarios</a>
+      <h1>${scenario.icon} ${scenario.title}</h1>
+      <div class="detail-cz">${scenario.subtitle}</div>
+      <p>${scenario.context}</p>
+      <div class="detail-badges">
+        <span class="badge difficulty ${scenario.difficulty}">${scenario.difficulty}</span>
+        <span class="badge">${scenario.category}</span>
+        <span class="badge">${LANG_FLAGS[lang]} ${LANG_LABELS[lang]}</span>
+        <span class="badge">${scenario.dialogue.length} lines of dialogue</span>
+      </div>
+    `;
+
+    // ── DIALOGUE ──
+    const dialogueHtml = `
+      <div class="content-block">
+        <div class="content-block-title">💬 The Dialogue</div>
+        <div class="dialogue-box">
+          ${scenario.dialogue.map(line => `
+            <div class="dialogue-line ${line.role === 'you' ? 'you-line' : ''}">
+              <div class="dl-speaker">${line.role === 'you' ? 'You' : line.speaker}</div>
+              <div>
+                <div class="dl-czech">${line.czech}</div>
+                <div class="dl-english">${line.english}</div>
+                ${line.note ? `<div class="dl-note">${cols.notePrefix} ${line.note}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    // ── KEY PHRASES ──
+    // Czech scenarios use .czech / .english / .phonetic
+    // Spanish scenarios also use same structure (we reused the field names)
+    const phrasesHtml = `
+      <div class="content-block">
+        <div class="content-block-title">🔑 Key Phrases</div>
+        <div class="phrases-list">
+          ${scenario.keyPhrases.map(p => `
+            <div class="phrase-row">
+              <div class="p-cz">${p.czech}</div>
+              <div class="p-en">${p.english}</div>
+              <div class="p-ph">${p.phonetic}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    // ── CULTURAL TIPS ──
+    const flagLabel = LANG_FLAGS[lang] || '🌍';
+    const tipsHtml = `
+      <div class="content-block">
+        <div class="content-block-title">${flagLabel} Cultural Tips</div>
+        <div class="tips-list">
+          ${scenario.culturalTips.map(t => `
+            <div class="tip">
+              <h4>${t.title}</h4>
+              <p>${t.body}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    // ── REAL VS TEXTBOOK ──
+    const rvtHtml = `
+      <div class="content-block">
+        <div class="content-block-title">⚡ Real vs. Textbook</div>
+        <div class="rvt-grid">
+          <div class="rvt-col textbook">
+            <h4>📖 Textbook says...</h4>
+            ${scenario.realVsTextbook.map(r => `<div class="rvt-item">${r.textbook}</div>`).join('')}
+          </div>
+          <div class="rvt-col real">
+            <h4>✅ Locals actually say...</h4>
+            ${scenario.realVsTextbook.map(r => `<div class="rvt-item">${r.real}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // ── PRACTICE CTA ──
+    const ctaHtml = `
+      <div class="practice-cta-box">
+        <h3>Ready to practice?</h3>
+        <p>Chat with a simulated ${LANG_LABELS[lang]} character. Get gentle corrections. Build confidence before the real thing.</p>
+        <a href="practice.html?scenario=${scenario.id}" class="btn btn-primary btn-lg">Start AI Practice →</a>
+      </div>
+    `;
+
+    // ── NEXT SCENARIO ──
+    const currentIdx = SCENARIOS.findIndex(s => s.id === id);
+    const sameLangScenarios = SCENARIOS.filter(s => s.language === lang);
+    const nextIdx = (sameLangScenarios.findIndex(s => s.id === id) + 1) % sameLangScenarios.length;
+    const nextScenario = sameLangScenarios[nextIdx];
+    const nextHtml = nextScenario ? `
+      <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <span style="color:var(--t3);font-size:.88rem">Next ${LANG_LABELS[lang]} scenario:</span>
+        <a href="scenario.html?id=${nextScenario.id}" class="btn btn-ghost">
+          ${nextScenario.icon} ${nextScenario.title} →
+        </a>
+      </div>
+    ` : '';
+
+    document.getElementById('scenarioContent').innerHTML =
+      dialogueHtml + phrasesHtml + tipsHtml + rvtHtml + ctaHtml + nextHtml;
+  </script>
+</body>
+</html>

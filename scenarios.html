@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenarios — CzechMate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js"></script>
+  <style>
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: .3rem .4rem;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+    }
+    .lang-btn {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .45rem 1rem; border-radius: 100px; border: none;
+      font-family: var(--font-b); font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; background: transparent; color: var(--t2);
+    }
+    .lang-btn.active { background: var(--s3); color: var(--t1); box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+    .lang-btn:hover:not(.active) { color: var(--t1); }
+    .lang-divider {
+      display: flex; align-items: center; gap: 1rem;
+      color: var(--t3); font-size: .75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .08em;
+      margin: 1.75rem 0 1rem;
+    }
+    .lang-divider::before, .lang-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">
+      <span class="flag">🇨🇿</span>Czech<span class="accent">Mate</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="scenarios.html" style="color:var(--t1)">Scenarios</a></li>
+      <li><a href="index.html#how">How it works</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="practice.html?scenario=pub" class="btn btn-primary">Practice Now →</a>
+    </div>
+  </nav>
+
+  <div class="scenarios-page">
+    <div class="page-hero">
+      <div class="section-tag">All Scenarios</div>
+      <h1>Pick your situation.<br>Learn the language that works.</h1>
+      <p>Real dialogue, cultural tips, and an AI practice partner for each scenario. Czech and Spanish — start wherever you are.</p>
+    </div>
+
+    <div class="scenarios-container">
+
+      <!-- Language Toggle -->
+      <div class="lang-toggle" id="langToggle">
+        <button class="lang-btn active" data-lang="all">🌍 All Languages</button>
+        <button class="lang-btn" data-lang="czech">🇨🇿 Czech</button>
+        <button class="lang-btn" data-lang="spanish">🇪🇸 Spanish</button>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="Social">Social</button>
+        <button class="filter-btn" data-filter="Work">Work</button>
+        <button class="filter-btn" data-filter="Bureaucracy">Bureaucracy</button>
+        <button class="filter-btn" data-filter="Romantic">Romantic</button>
+      </div>
+
+      <!-- Grid -->
+      <div id="scenariosGrid"></div>
+
+    </div>
+  </div>
+
+  <footer style="margin-top:4rem">
+    <div class="footer-inner">
+      <a href="index.html" class="logo" style="font-size:1.1rem">🇨🇿 Czech<span style="color:var(--red)">Mate</span></a>
+      <div style="color:var(--t3);font-size:.82rem">Real language for real life. Czech & Spanish.</div>
+    </div>
+  </footer>
+
+  <script>
+    const grid = document.getElementById('scenariosGrid');
+    const filterBar = document.getElementById('filterBar');
+    const langToggle = document.getElementById('langToggle');
+
+    let activeLang = 'all';
+    let activeFilter = 'all';
+
+    const LANG_LABELS = {
+      czech: { flag: '🇨🇿', label: 'Czech', color: '#e63946' },
+      spanish: { flag: '🇪🇸', label: 'Spanish', color: '#f4a261' }
+    };
+
+    function renderScenarios() {
+      let filtered = SCENARIOS;
+      if (activeLang !== 'all') filtered = filtered.filter(s => s.language === activeLang);
+      if (activeFilter !== 'all') filtered = filtered.filter(s => s.category === activeFilter);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="text-align:center;padding:4rem 2rem;color:var(--t3)">
+          No scenarios match these filters yet. More coming soon!
+        </div>`;
+        return;
+      }
+
+      // Group by language for "All" view
+      if (activeLang === 'all') {
+        const byLang = {};
+        filtered.forEach(s => { (byLang[s.language] = byLang[s.language] || []).push(s); });
+
+        grid.innerHTML = Object.entries(byLang).map(([lang, scenarios]) => {
+          const meta = LANG_LABELS[lang] || { flag: '🌍', label: lang };
+          return `
+            <div class="lang-divider">${meta.flag} ${meta.label}</div>
+            <div class="scenarios-grid" style="margin-top:0">
+              ${scenarios.map(s => scenarioCardHtml(s)).join('')}
+            </div>
+          `;
+        }).join('');
+      } else {
+        grid.innerHTML = `<div class="scenarios-grid" style="margin-top:0">${filtered.map(scenarioCardHtml).join('')}</div>`;
+      }
+    }
+
+    function scenarioCardHtml(s) {
+      const langMeta = LANG_LABELS[s.language] || { flag: '🌍', label: s.language };
+      return `
+        <a href="scenario.html?id=${s.id}" class="scenario-card">
+          <span class="scenario-icon">${s.icon}</span>
+          <h3>${s.title}</h3>
+          <div class="cz-title">${s.subtitle}</div>
+          <p>${s.shortDesc}</p>
+          <div class="scenario-meta">
+            <span class="difficulty ${s.difficulty}">${s.difficulty}</span>
+            <span style="display:flex;align-items:center;gap:.4rem">
+              <span style="font-size:.72rem;color:var(--t3)">${langMeta.flag}</span>
+              <span class="scenario-arrow">Start →</span>
+            </span>
+          </div>
+        </a>
+      `;
+    }
+
+    langToggle.addEventListener('click', e => {
+      const btn = e.target.closest('.lang-btn');
+      if (!btn) return;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeLang = btn.dataset.lang;
+      renderScenarios();
+    });
+
+    filterBar.addEventListener('click', e => {
+      if (!e.target.matches('.filter-btn')) return;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      activeFilter = e.target.dataset.filter;
+      renderScenarios();
+    });
+
+    renderScenarios();
+  </script>
+</body>
+</html>
