@@ -95,6 +95,7 @@
   </div>
 
   <script>
+  (function () {
     // ── SETUP ─────────────────────────────────────────────
     const params      = new URLSearchParams(window.location.search);
     const scenarioId  = params.get('scenario') || 'pub';
@@ -195,7 +196,7 @@
     `;
 
     // ── START ─────────────────────────────────────────────
-    function startChat() {
+    window.startChat = function startChat() {
       chatStarted = true;
       document.getElementById('welcomeState').remove();
       document.getElementById('chatInputArea').style.display = 'block';
@@ -294,7 +295,7 @@
     }
 
     // ── SUBMIT ─────────────────────────────────────────────
-    function handleSubmit(e) {
+    window.handleSubmit = function handleSubmit(e) {
       e.preventDefault();
       const input = document.getElementById('chatInput');
       const text  = input.value.trim();
@@ -333,8 +334,9 @@
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !chatStarted && hasChat) startChat();
+      if (e.key === 'Enter' && !chatStarted && hasChat) window.startChat();
     });
+  })();
   </script>
 
 </body>
