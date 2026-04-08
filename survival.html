@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Survival Phrases · CzechMate</title>
+  <meta name="description" content="Instant Czech phrases for real moments. Directions, food, transport, emergencies and more — with phonetics and English & Spanish translations." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Global design system -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ── Page-level layout ── */
+    .survival-hero {
+      padding-top: 6rem;
+      padding-bottom: 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .survival-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse at center top, rgba(230,57,70,0.14) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .survival-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--s2);
+      border: 1px solid var(--border-l);
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      color: var(--red);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .survival-hero h1 {
+      font-family: var(--font-h);
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .survival-sub {
+      color: var(--t2);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin: 0 auto 1.25rem;
+      line-height: 1.75;
+    }
+
+    .lang-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.83rem;
+      color: var(--t3);
+      background: var(--s2);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.9rem;
+      border-radius: 100px;
+    }
+
+    /* ── Category tabs ── */
+    .tabs-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 2rem;
+    }
+
+    .tabs-scroll {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .tabs-scroll::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      background: var(--s2);
+      color: var(--t2);
+      font-family: var(--font-b);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .tab-btn:hover {
+      border-color: var(--border-l);
+      color: var(--t1);
+    }
+    .tab-btn.active {
+      border-color: var(--red);
+      color: var(--red);
+      background: rgba(230,57,70,0.08);
+    }
+
+    /* ── Category sections ── */
+    .category-section {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+    .category-section.active { display: block; }
+
+    .category-header {
+      margin-bottom: 2rem;
+    }
+    .category-header h2 {
+      font-family: var(--font-h);
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+    .category-count {
+      font-size: 0.83rem;
+      color: var(--t3);
+    }
+
+    /* ── Phrase grid ── */
+    .phrase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 680px) {
+      .phrase-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Phrase card ── */
+    .phrase-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.25rem 1.4rem;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+    }
+    .phrase-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-l);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    }
+
+    .phrase-czech {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--t1);
+      margin-bottom: 0.55rem;
+      line-height: 1.35;
+    }
+
+    .phrase-en {
+      font-size: 0.9rem;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .phrase-es {
+      font-size: 0.88rem;
+      color: var(--t2);
+      margin-bottom: 0.5rem;
+    }
+
+    .phrase-phonetic {
+      font-size: 0.8rem;
+      color: var(--t3);
+      font-style: italic;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .phrase-note {
+      font-size: 0.77rem;
+      color: var(--t3);
+      margin-top: 0.4rem;
+    }
+    .phrase-note::before {
+      content: '— ';
+    }
+
+    /* ── Practice CTA ── */
+    .practice-cta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1.25rem 1.5rem;
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      margin-top: 0.5rem;
+    }
+    .practice-cta-text {
+      flex: 1;
+      min-width: 200px;
+    }
+    .practice-cta-text strong {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--t1);
+      margin-bottom: 0.2rem;
+    }
+    .practice-cta-text span {
+      font-size: 0.83rem;
+      color: var(--t3);
+    }
+
+    /* ── Bottom section ── */
+    .bottom-section {
+      border-top: 1px solid var(--border);
+      background: var(--s1);
+    }
+    .bottom-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .bottom-inner p {
+      font-size: 0.95rem;
+      color: var(--t3);
+      margin-bottom: 1.25rem;
+    }
+    .coming-langs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .coming-lang-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--s2);
+      font-size: 0.83rem;
+      color: var(--t2);
+    }
+
+    /* ── Responsive nav tweaks ── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <a href="index.html" class="logo">Czech<span class="accent">Mate</span></a>
+    <ul class="nav-links">
+      <li><a href="survival.html" style="color:var(--t1)">⚡ Survival</a></li>
+      <li><a href="scenarios.html">Scenarios</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="scenarios.html" class="btn btn-primary">Full Scenarios →</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <header class="survival-hero">
+    <div class="survival-badge">⚡ Survival Mode</div>
+    <h1>Instant phrases for real moments</h1>
+    <p class="survival-sub">No context needed. No lesson required. Just the phrase, the pronunciation, and when to use it.</p>
+    <div class="lang-note">🇨🇿 Czech · translations in English &amp; Spanish</div>
+  </header>
+
+  <!-- ── TABS ── -->
+  <div class="tabs-wrapper">
+    <div class="tabs-scroll" role="tablist" aria-label="Phrase categories">
+      <button class="tab-btn active" role="tab" aria-selected="true"  data-cat="directions">🗺️ Directions</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-cat="food">🍽️ Ordering Food</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-cat="transport">🚌 Transport</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-cat="bathroom">🚻 Bathroom</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-cat="emergency">🚨 Emergency</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-cat="apartment">🏠 Apartment Hunting</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CATEGORY: DIRECTIONS
+  ════════════════════════════════════════════════ -->
+  <section class="category-section active" id="cat-directions" role="tabpanel">
+    <div class="category-header">
+      <h2>🗺️ Directions</h2>
+      <p class="category-count">8 essential phrases</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kde je...?</p>
+        <p class="phrase-en">Where is...?</p>
+        <p class="phrase-es">¿Dónde está...?</p>
+        <p class="phrase-phonetic">gdeh yeh</p>
+        <p class="phrase-note">Fill in the blank: metro, záchod, nemocnice...</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jak se dostanu na...?</p>
+        <p class="phrase-en">How do I get to...?</p>
+        <p class="phrase-es">¿Cómo llego a...?</p>
+        <p class="phrase-phonetic">yak seh DOS-ta-nu na</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je to daleko?</p>
+        <p class="phrase-en">Is it far?</p>
+        <p class="phrase-es">¿Está lejos?</p>
+        <p class="phrase-phonetic">yeh to DA-leh-ko</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Doleva / Doprava / Rovně</p>
+        <p class="phrase-en">Left / Right / Straight ahead</p>
+        <p class="phrase-es">Izquierda / Derecha / Todo recto</p>
+        <p class="phrase-phonetic">DO-leh-va / DO-pra-va / ROV-nyeh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Promiňte, jsem ztracený/á.</p>
+        <p class="phrase-en">Excuse me, I'm lost.</p>
+        <p class="phrase-es">Perdone, estoy perdido/a.</p>
+        <p class="phrase-phonetic">PRO-min-tyeh, ysem STRA-tse-nee</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Můžete mi ukázat na mapě?</p>
+        <p class="phrase-en">Can you show me on the map?</p>
+        <p class="phrase-es">¿Puede mostrarme en el mapa?</p>
+        <p class="phrase-phonetic">MOO-zheh-teh mi OO-kah-zat na MA-pyeh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jdu správně?</p>
+        <p class="phrase-en">Am I going the right way?</p>
+        <p class="phrase-es">¿Voy bien?</p>
+        <p class="phrase-phonetic">ydoo SPRAV-nyeh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Na druhé straně ulice.</p>
+        <p class="phrase-en">On the other side of the street.</p>
+        <p class="phrase-es">Al otro lado de la calle.</p>
+        <p class="phrase-phonetic">na DROO-heh STRA-nyeh OO-li-tse</p>
+      </div>
+
+    </div>
+
+    <div class="practice-cta">
+      <div class="practice-cta-text">
+        <strong>Practice navigating in Czech</strong>
+        <span>Try a full conversation scenario with feedback</span>
+      </div>
+      <a href="practice.html?scenario=police" class="btn btn-primary">Practice Now →</a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CATEGORY: ORDERING FOOD
+  ════════════════════════════════════════════════ -->
+  <section class="category-section" id="cat-food" role="tabpanel">
+    <div class="category-header">
+      <h2>🍽️ Ordering Food</h2>
+      <p class="category-count">8 essential phrases</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Dám si...</p>
+        <p class="phrase-en">I'll have...</p>
+        <p class="phrase-es">Ponme... / Quiero...</p>
+        <p class="phrase-phonetic">dahm si</p>
+        <p class="phrase-note">More natural than 'chci' (I want)</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jídelní lístek, prosím.</p>
+        <p class="phrase-en">Menu, please.</p>
+        <p class="phrase-es">La carta, por favor.</p>
+        <p class="phrase-phonetic">YEE-del-nee LEES-tek, PRO-seem</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Zaplatím, prosím.</p>
+        <p class="phrase-en">I'd like to pay.</p>
+        <p class="phrase-es">Me cobra, por favor.</p>
+        <p class="phrase-phonetic">ZA-pla-teem, PRO-seem</p>
+        <p class="phrase-note">Don't wait — they won't bring it uninvited.</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Bez masa, prosím.</p>
+        <p class="phrase-en">Without meat, please.</p>
+        <p class="phrase-es">Sin carne, por favor.</p>
+        <p class="phrase-phonetic">bez MA-sa, PRO-seem</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je to výborné!</p>
+        <p class="phrase-en">This is excellent!</p>
+        <p class="phrase-es">¡Está buenísimo!</p>
+        <p class="phrase-phonetic">yeh to VEE-bor-neh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Ještě jedno, prosím.</p>
+        <p class="phrase-en">Another one, please.</p>
+        <p class="phrase-es">Otra, por favor.</p>
+        <p class="phrase-phonetic">YESH-tyeh YED-no, PRO-seem</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Na zdraví!</p>
+        <p class="phrase-en">Cheers!</p>
+        <p class="phrase-es">¡Salud!</p>
+        <p class="phrase-phonetic">NA ZDRA-vee</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kartou nebo hotově?</p>
+        <p class="phrase-en">Card or cash?</p>
+        <p class="phrase-es">¿Tarjeta o efectivo?</p>
+        <p class="phrase-phonetic">KAR-tow NEH-bo HO-to-vyeh</p>
+      </div>
+
+    </div>
+
+    <div class="practice-cta">
+      <div class="practice-cta-text">
+        <strong>Practice ordering at a Czech pub</strong>
+        <span>Full conversation scenario with real vocabulary</span>
+      </div>
+      <a href="practice.html?scenario=pub" class="btn btn-primary">Practice Now →</a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CATEGORY: TRANSPORT
+  ════════════════════════════════════════════════ -->
+  <section class="category-section" id="cat-transport" role="tabpanel">
+    <div class="category-header">
+      <h2>🚌 Transport</h2>
+      <p class="category-count">7 essential phrases</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jeden lístek do... prosím.</p>
+        <p class="phrase-en">One ticket to... please.</p>
+        <p class="phrase-es">Un billete a... por favor.</p>
+        <p class="phrase-phonetic">YED-en LEES-tek do... PRO-seem</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je tohle správný vlak na...?</p>
+        <p class="phrase-en">Is this the right train to...?</p>
+        <p class="phrase-es">¿Es este el tren para...?</p>
+        <p class="phrase-phonetic">yeh TO-hleh SPRAV-nee vlak na</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">V kolik hodin odjíždí?</p>
+        <p class="phrase-en">What time does it leave?</p>
+        <p class="phrase-es">¿A qué hora sale?</p>
+        <p class="phrase-phonetic">fko-lik HO-din od-YEEZH-dee</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kde je zastávka?</p>
+        <p class="phrase-en">Where is the stop?</p>
+        <p class="phrase-es">¿Dónde está la parada?</p>
+        <p class="phrase-phonetic">gdeh yeh ZAS-tav-ka</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Musím přestoupit?</p>
+        <p class="phrase-en">Do I need to change?</p>
+        <p class="phrase-es">¿Tengo que hacer transbordo?</p>
+        <p class="phrase-phonetic">MOO-seem PZHEH-stow-pit</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Zastavte tady, prosím.</p>
+        <p class="phrase-en">Stop here, please. (taxi)</p>
+        <p class="phrase-es">Para aquí, por favor.</p>
+        <p class="phrase-phonetic">ZAS-tav-teh TA-dy, PRO-seem</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jak dlouho to jede?</p>
+        <p class="phrase-en">How long does it take?</p>
+        <p class="phrase-es">¿Cuánto tarda?</p>
+        <p class="phrase-phonetic">yak DLOW-ho to YEH-deh</p>
+      </div>
+
+    </div>
+
+    <div class="practice-cta">
+      <div class="practice-cta-text">
+        <strong>Practice getting around Prague</strong>
+        <span>Full conversation scenario with real vocabulary</span>
+      </div>
+      <a href="practice.html?scenario=police" class="btn btn-primary">Practice Now →</a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CATEGORY: BATHROOM
+  ════════════════════════════════════════════════ -->
+  <section class="category-section" id="cat-bathroom" role="tabpanel">
+    <div class="category-header">
+      <h2>🚻 Bathroom</h2>
+      <p class="category-count">5 essential phrases</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kde jsou toalety?</p>
+        <p class="phrase-en">Where are the toilets?</p>
+        <p class="phrase-es">¿Dónde están los baños?</p>
+        <p class="phrase-phonetic">gdeh ysow TO-a-leh-ty</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Mohu použít toaletu?</p>
+        <p class="phrase-en">May I use the toilet?</p>
+        <p class="phrase-es">¿Puedo usar el baño?</p>
+        <p class="phrase-phonetic">MO-hoo POO-zhit TO-a-leh-tu</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je záchod zadarmo?</p>
+        <p class="phrase-en">Is the toilet free?</p>
+        <p class="phrase-es">¿El baño es gratis?</p>
+        <p class="phrase-phonetic">yeh ZAH-khod ZA-dar-mo</p>
+        <p class="phrase-note">Public toilets in Czech often charge 5–10 Kč.</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Nemáte toaletní papír?</p>
+        <p class="phrase-en">Is there no toilet paper?</p>
+        <p class="phrase-es">¿No hay papel higiénico?</p>
+        <p class="phrase-phonetic">neh-MAH-teh TO-a-let-nee PA-peer</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Toaleta je obsazená.</p>
+        <p class="phrase-en">The toilet is occupied.</p>
+        <p class="phrase-es">El baño está ocupado.</p>
+        <p class="phrase-phonetic">TO-a-leh-ta yeh OB-sa-zeh-nah</p>
+      </div>
+
+    </div>
+
+    <div class="practice-cta">
+      <div class="practice-cta-text">
+        <strong>Explore more Czech scenarios</strong>
+        <span>Browse all full conversation practice sets</span>
+      </div>
+      <a href="scenarios.html" class="btn btn-ghost">Browse Scenarios →</a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CATEGORY: EMERGENCY
+  ════════════════════════════════════════════════ -->
+  <section class="category-section" id="cat-emergency" role="tabpanel">
+    <div class="category-header">
+      <h2>🚨 Emergency</h2>
+      <p class="category-count">7 essential phrases</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Pomozte!</p>
+        <p class="phrase-en">Help!</p>
+        <p class="phrase-es">¡Auxilio! / ¡Socorro!</p>
+        <p class="phrase-phonetic">PO-moz-teh</p>
+        <p class="phrase-note">Shout this clearly.</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Zavolejte záchranku!</p>
+        <p class="phrase-en">Call an ambulance!</p>
+        <p class="phrase-es">¡Llame a una ambulancia!</p>
+        <p class="phrase-phonetic">ZA-vo-ley-teh ZAH-khran-ku</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Zavolejte policii!</p>
+        <p class="phrase-en">Call the police!</p>
+        <p class="phrase-es">¡Llame a la policía!</p>
+        <p class="phrase-phonetic">ZA-vo-ley-teh po-LI-tsii</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Byl/a jsem okraden/a.</p>
+        <p class="phrase-en">I've been robbed.</p>
+        <p class="phrase-es">Me han robado.</p>
+        <p class="phrase-phonetic">bil/a ysem ok-RA-den/a</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je mi špatně.</p>
+        <p class="phrase-en">I feel sick/unwell.</p>
+        <p class="phrase-es">Me encuentro mal.</p>
+        <p class="phrase-phonetic">yeh mi SHPAT-nyeh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Potřebuji lékaře.</p>
+        <p class="phrase-en">I need a doctor.</p>
+        <p class="phrase-es">Necesito un médico.</p>
+        <p class="phrase-phonetic">po-TZHEH-bu-yi LEH-kah-zheh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kde je nejbližší nemocnice?</p>
+        <p class="phrase-en">Where is the nearest hospital?</p>
+        <p class="phrase-es">¿Dónde está el hospital más cercano?</p>
+        <p class="phrase-phonetic">gdeh yeh ney-BLIZH-shee neh-MOT-sni-tse</p>
+      </div>
+
+    </div>
+
+    <div class="practice-cta">
+      <div class="practice-cta-text">
+        <strong>Practice handling emergencies in Czech</strong>
+        <span>Full conversation scenario with real vocabulary</span>
+      </div>
+      <a href="practice.html?scenario=police" class="btn btn-primary">Practice Now →</a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CATEGORY: APARTMENT HUNTING
+  ════════════════════════════════════════════════ -->
+  <section class="category-section" id="cat-apartment" role="tabpanel">
+    <div class="category-header">
+      <h2>🏠 Apartment Hunting</h2>
+      <p class="category-count">8 essential phrases</p>
+    </div>
+
+    <div class="phrase-grid">
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Chtěl/a bych prohlédnout byt.</p>
+        <p class="phrase-en">I'd like to view the apartment.</p>
+        <p class="phrase-es">Quisiera ver el apartamento.</p>
+        <p class="phrase-phonetic">KHTYEL/a bikh PRO-hlehd-nowt bit</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kolik je měsíční nájem?</p>
+        <p class="phrase-en">How much is the monthly rent?</p>
+        <p class="phrase-es">¿Cuánto es el alquiler mensual?</p>
+        <p class="phrase-phonetic">KO-lik yeh myeh-SEECH-nee NAH-yem</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jsou účty v ceně?</p>
+        <p class="phrase-en">Are bills included?</p>
+        <p class="phrase-es">¿Los gastos están incluidos?</p>
+        <p class="phrase-phonetic">ysow OOTCH-ty fts-EH-nyeh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kdy je byt volný?</p>
+        <p class="phrase-en">When is the apartment available?</p>
+        <p class="phrase-es">¿Cuándo está disponible el piso?</p>
+        <p class="phrase-phonetic">gdy yeh bit VOL-nee</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Jaká je kauce?</p>
+        <p class="phrase-en">How much is the deposit?</p>
+        <p class="phrase-es">¿Cuánto es la fianza?</p>
+        <p class="phrase-phonetic">YA-kah yeh KAW-tse</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je povoleno mít domácí zvíře?</p>
+        <p class="phrase-en">Are pets allowed?</p>
+        <p class="phrase-es">¿Se permiten mascotas?</p>
+        <p class="phrase-phonetic">yeh po-VO-leh-no meet DO-mah-tsee ZVEE-zheh</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Kde jsou nejbližší obchody?</p>
+        <p class="phrase-en">Where are the nearest shops?</p>
+        <p class="phrase-es">¿Dónde están las tiendas más cercanas?</p>
+        <p class="phrase-phonetic">gdeh ysow ney-BLIZH-shee OB-kho-dy</p>
+      </div>
+
+      <div class="phrase-card">
+        <p class="phrase-czech">Je v bytě internet?</p>
+        <p class="phrase-en">Is there internet in the apartment?</p>
+        <p class="phrase-es">¿Hay internet en el apartamento?</p>
+        <p class="phrase-phonetic">yeh vbi-TYEH IN-ter-net</p>
+      </div>
+
+    </div>
+
+    <div class="practice-cta">
+      <div class="practice-cta-text">
+        <strong>Practice finding a flat in Czech</strong>
+        <span>Full conversation scenario with real vocabulary</span>
+      </div>
+      <a href="practice.html?scenario=flat" class="btn btn-primary">Practice Now →</a>
+    </div>
+  </section>
+
+  <!-- ── BOTTOM NOTE ── -->
+  <div class="bottom-section">
+    <div class="bottom-inner">
+      <p>More survival categories coming. Czech is just the beginning.</p>
+      <div class="coming-langs">
+        <span class="coming-lang-pill">🇪🇸 Spanish</span>
+        <span class="coming-lang-pill">🇩🇪 German</span>
+        <span class="coming-lang-pill">🇫🇷 French</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var tabs = document.querySelectorAll('.tab-btn');
+      var sections = document.querySelectorAll('.category-section');
+
+      var catMap = {
+        directions: 'cat-directions',
+        food:       'cat-food',
+        transport:  'cat-transport',
+        bathroom:   'cat-bathroom',
+        emergency:  'cat-emergency',
+        apartment:  'cat-apartment'
+      };
+
+      function showCategory(cat) {
+        // Update tab buttons
+        tabs.forEach(function (btn) {
+          var isActive = btn.dataset.cat === cat;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        // Update visible section
+        sections.forEach(function (sec) {
+          var isTarget = sec.id === catMap[cat];
+          sec.classList.toggle('active', isTarget);
+        });
+      }
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          showCategory(btn.dataset.cat);
+          // Scroll the active tab into view on mobile
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        });
+      });
+
+      // Honor URL hash on load (e.g. survival.html#food)
+      var hash = window.location.hash.replace('#', '');
+      if (hash && catMap[hash]) {
+        showCategory(hash);
+      }
+    })();
+  </script>
+</body>
+</html>

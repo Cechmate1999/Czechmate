@@ -450,6 +450,157 @@ const ChatEngine = (() => {
           fallback: { text: 'Bylo to moc fajn. Uvidíme se znovu? ❤️', translation: 'It was really nice. Will we see each other again? (Czech date scenario complete! 🎉)' }
         }
       }
+    },
+
+    flat: {
+      language: 'czech',
+      persona: {
+        name: 'Paní Horáčková',
+        role: 'Majitelka bytu — Landlady',
+        avatar: '🏠',
+        description: 'She\'s rented to expats before — some were great, some weren\'t. She\'s polite but assessing you. Ask the right questions and she\'ll trust you. Don\'t ask and she\'ll assume you don\'t care.'
+      },
+      vocabulary: [
+        { cz: 'nájem', en: 'rent' },
+        { cz: 'kauce', en: 'deposit' },
+        { cz: 'účty v ceně', en: 'bills included' },
+        { cz: 'volný od...', en: 'available from...' },
+        { cz: 'nájemní smlouva', en: 'rental contract' },
+        { cz: 'domácí zvíře', en: 'pet' },
+        { cz: 'internet', en: 'internet' },
+        { cz: 'parkování', en: 'parking' }
+      ],
+      context: 'You\'re viewing a Prague apartment. Paní Horáčková is the landlady. Ask about rent, bills, deposit, and availability. Don\'t sign anything today.',
+      tip: 'Start with "Dobry den" then ask: "Je byt jeste volny?" (Is the apartment still available?)',
+      opening: { text: 'Dobrý den! Pojďte dál, ukáži vám byt. 🏠', translation: 'Hello! Come in, I\'ll show you the apartment.' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['dobry den', 'ahoj', 'hello', 'hi', 'good'], text: 'Dobrý den! Vítejte. Byt je volný od prvního. Pojďte, ukáži vám.', translation: 'Hello! Welcome. The apartment is available from the first. Come, I\'ll show you.', next: 'overview', positive: true }
+          ],
+          fallback: { text: 'Haló? Pozdravte mě, prosím! (Try: "Dobry den")', translation: 'Hello? Please greet me! (Try: "Dobry den")' }
+        },
+        overview: {
+          responses: [
+            { triggers: ['najem', 'rent', 'kolik', 'how much', 'price', 'cena', 'mesicni', 'monthly'], text: 'Nájem je 18 000 korun měsíčně. Účty jsou zvlášť — asi 3 000.', translation: 'Rent is 18,000 crowns monthly. Bills are separate — about 3,000.', next: 'bills', positive: true },
+            { triggers: ['pekny', 'nice', 'krasny', 'beautiful', 'dobry', 'good', 'velky', 'big', 'spacious'], text: 'Děkuji! 55 metrů, druhé patro. A kolik byste chtěl/a platit?', translation: 'Thank you! 55 square meters, second floor. And how much were you looking to pay?', next: 'bills' },
+            { triggers: ['ucty', 'bills', 'utilities', 'v cene', 'included', 'plyn', 'gas', 'elektrina', 'electricity'], text: 'Účty jsou zvlášť. Plyn, elektřina, voda — asi 3 000 měsíčně. Je v ceně jen internet.', translation: 'Bills are separate. Gas, electricity, water — about 3,000 monthly. Only internet is included.', next: 'bills', positive: true }
+          ],
+          fallback: { text: 'Máte otázky? Zeptejte se! (Try: "Kolik je najem?" or "Jsou ucty v cene?")', translation: 'Any questions? Ask away! (Try: "Kolik je najem?" = how much is rent?)' }
+        },
+        bills: {
+          responses: [
+            { triggers: ['kauce', 'deposit', 'kauci', 'kolik kauce', 'how much deposit', 'zaruci', 'security'], text: 'Kauce jsou dva měsíční nájmy — 36 000 korun. Vrátím je po skončení nájmu v pořádku.', translation: 'Deposit is two months\' rent — 36,000 crowns. I return it at the end of the tenancy if everything is fine.', next: 'deposit', positive: true },
+            { triggers: ['zvire', 'pet', 'pes', 'dog', 'kocka', 'cat', 'povoleno', 'allowed'], text: 'Malá zvířata jsou v pořádku. Pes do 15 kilo bez problému.', translation: 'Small animals are fine. A dog up to 15 kilos, no problem.', next: 'deposit', positive: true },
+            { triggers: ['internet', 'wifi', 'rychlost', 'speed', 'optic', 'fiber'], text: 'Internet je zde, optika, 500 Mb. Platíte si sami poskytovatele — ale zapojení je hotové.', translation: 'Internet is here, fiber optic, 500 Mb. You pay the provider yourself — but the connection is ready.', next: 'deposit', positive: true },
+            { triggers: ['parkovani', 'parking', 'auto', 'car', 'garaze', 'garage'], text: 'Parkování je na ulici — zdarma do 22:00. Garáž není k dispozici.', translation: 'Parking is on the street — free until 10pm. No garage available.', next: 'deposit', positive: true }
+          ],
+          fallback: { text: 'Ještě otázky? Kauce, zvířata, parkování, internet? 🏠', translation: 'More questions? Deposit, pets, parking, internet? (Ask anything!)' }
+        },
+        deposit: {
+          responses: [
+            { triggers: ['smlouva', 'contract', 'podepsat', 'sign', 'kdy', 'when', 'nastup', 'start', 'od kdy', 'from when'], text: 'Smlouvu bych chtěla podepsat do konce týdne. Nastoupení od prvního.', translation: 'I\'d like to sign the contract by end of the week. Moving in from the first.', next: 'decision', positive: true },
+            { triggers: ['rozmyslet', 'think', 'cas', 'time', 'zitra', 'tomorrow', 'promyslet', 'consider', 'uvazovat'], text: 'Samozřejmě, rozmyslete si to. Mám zájem od dalšího zájemce ve čtvrtek.', translation: 'Of course, take time to think. I have another interested party on Thursday.', next: 'decision', positive: true },
+            { triggers: ['ok', 'dobre', 'souhlasim', 'agree', 'ano', 'yes', 'mam zajem', 'interested', 'vezmu', 'i\'ll take'], text: 'Výborně! Připravím smlouvu. Potřebuji váš pas a potvrzení o příjmu.', translation: 'Excellent! I\'ll prepare the contract. I need your passport and proof of income.', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Máte zájem? Nebo chcete čas na rozmyšlenou? (Try: "Mohu si vzit cas do zittra?")', translation: 'Are you interested? Or do you need time to think? (Try: "Mohu si vzit cas do zittra?" = Can I have until tomorrow?)' }
+        },
+        decision: {
+          responses: [
+            { triggers: ['dekuji', 'thank', 'diky', 'nashledanou', 'goodbye', 'bye', 'zavolam', 'call', 'ozvu', 'ozvu se', 'touch'], text: 'Nashledanou! Těším se na váš telefon. 🏠', translation: 'Goodbye! Looking forward to your call. (Flat viewing complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['vezmu', 'i\'ll take', 'mam zajem', 'interested', 'ano', 'yes', 'souhlasim', 'agree'], text: 'Skvělé! Zašlu vám smlouvu e-mailem dnes večer. Vítejte v bytě! 🏠', translation: 'Great! I\'ll send you the contract by email this evening. Welcome to the apartment! 🎉', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Takže — zájem? Nebo zavolám zítra? (Say "dekuji, ozvu se" or "mam zajem")', translation: 'So — interested? Or I\'ll call tomorrow? (Try "dekuji" or "mam zajem")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Nashledanou! Těšíme se na vás. 🏠', translation: 'Goodbye! We look forward to having you. (Flat viewing scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    interview: {
+      language: 'czech',
+      persona: {
+        name: 'Pan Novák',
+        role: 'Personalista — HR Manager',
+        avatar: '💼',
+        description: 'Polished, thorough, and not impressed by enthusiasm alone. He\'s seen 200 expat candidates. What gets his attention: concrete results, long-term plans, and the fact that you\'re learning Czech.'
+      },
+      vocabulary: [
+        { cz: 'pracovní zkušenosti', en: 'work experience' },
+        { cz: 'silné stránky', en: 'strengths' },
+        { cz: 'dlouhodobě', en: 'long-term' },
+        { cz: 'spolehlivý', en: 'reliable' },
+        { cz: 'nástupní termín', en: 'start date' },
+        { cz: 'platové očekávání', en: 'salary expectation' },
+        { cz: 'tým', en: 'team' },
+        { cz: 'jsem motivovaný', en: 'I\'m motivated' }
+      ],
+      context: 'You\'re in a job interview at a Prague company. Pan Novák is the HR manager. Be direct, concrete, and signal you\'re serious about staying in Czech Republic. Accents optional.',
+      tip: 'Start with "Dobry den" and "Dekuji za pozvani." — it immediately makes a good impression.',
+      opening: { text: 'Dobrý den. Jsem rád, že jste přišel. Sedněte si, prosím. 💼', translation: 'Hello. I\'m glad you came. Please have a seat.' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['dobry den', 'hello', 'ahoj', 'good morning', 'good day', 'dekuji za pozvani', 'thank you for', 'tesi me'], text: 'Děkuji, že jste přišel. Řekněte mi — proč Česká republika?', translation: 'Thank you for coming. Tell me — why Czech Republic?', next: 'why_cz', positive: true }
+          ],
+          fallback: { text: 'Pozdravte mě! (Try: "Dobry den. Dekuji za pozvani. Tesi me.")', translation: 'Greet me! (Try: "Dobry den. Dekuji za pozvani." = Thank you for the invitation.)' }
+        },
+        why_cz: {
+          responses: [
+            { triggers: ['zustat', 'stay', 'dlouhodoby', 'long term', 'zivot', 'life', 'prilis', 'praze', 'prague', 'republika', 'republic', 'miluju', 'love', 'kariera', 'career'], text: 'Dobře. Dlouhodobé plány jsou důležité. Co je vaše odbornost?', translation: 'Good. Long-term plans are important. What is your area of expertise?', next: 'expertise', positive: true },
+            { triggers: ['nevim', 'dont know', 'mozna', 'maybe', 'uvidime', 'we\'ll see', 'zkusit', 'try'], text: 'Hmm. Chceme lidi, kteří plánují zůstat. Zkuste to znovu — proč právě zde?', translation: 'Hmm. We want people planning to stay. Try again — why specifically here?', next: 'why_cz' }
+          ],
+          fallback: { text: 'Proč Česká republika? (Try: "Chci zustat dlouhodobye" = I want to stay long-term)', translation: 'Why Czech Republic? Tell me your honest reason.' }
+        },
+        expertise: {
+          responses: [
+            { triggers: ['it', 'tech', 'software', 'engineering', 'marketing', 'finance', 'management', 'design', 'sales', 'data', 'hr', 'operations', 'let', 'years', 'rok', 'zkusenosti', 'experience', 'pracuji', 'work in'], text: 'Zajímavé. A jaké jsou vaše silné stránky?', translation: 'Interesting. And what are your strengths?', next: 'strengths', positive: true }
+          ],
+          fallback: { text: 'V jakém oboru pracujete? Kolik let zkušeností máte? (Describe your field and years of experience)', translation: 'What field do you work in? How many years of experience do you have?' }
+        },
+        strengths: {
+          responses: [
+            { triggers: ['spolehlivy', 'reliable', 'systematicky', 'systematic', 'tym', 'team', 'komunikace', 'communication', 'analyticky', 'analytical', 'kreativni', 'creative', 'vysledky', 'results', 'organizovany', 'organized'], text: 'Dobré. Učíte se česky? Je to pro nás důležité.', translation: 'Good. Are you learning Czech? That\'s important to us.', next: 'czech_lang', positive: true },
+            { triggers: ['workaholic', 'perfectionist', 'too much', 'prilis'], text: 'To je klišé. Řekněte mi skutečnou silnou stránku.', translation: 'That\'s a cliché. Tell me a genuine strength.', next: 'strengths' }
+          ],
+          fallback: { text: 'Jaké jsou vaše silné stránky? (Try: "Jsem spolehlivy a pracuji systematicky")', translation: 'What are your strengths? (Try: "Jsem spolehlivy" = I\'m reliable)' }
+        },
+        czech_lang: {
+          responses: [
+            { triggers: ['ucim se', 'learning', 'studuji', 'studying', 'ano', 'yes', 'trochu', 'a little', 'priorita', 'priority', 'chci mluvit', 'want to speak', 'kurz', 'course'], text: 'Výborně. To je pro nás velký plus. Jaké jsou vaše platové očekávání?', translation: 'Excellent. That\'s a big plus for us. What are your salary expectations?', next: 'salary', positive: true },
+            { triggers: ['ne', 'no', 'nemam cas', 'no time', 'anglicky staci', 'english enough', 'later', 'pozdeji'], text: 'Rozumím — ale u nás je čeština důležitá. Bylo by to pro vás reálné?', translation: 'I understand — but Czech is important here. Would that be feasible for you?', next: 'czech_lang' }
+          ],
+          fallback: { text: 'Učíte se česky? (Try: "Ano, ucim se. Je to moje priorita.")', translation: 'Are you learning Czech? (Try: "Ano, ucim se" = Yes, I\'m learning)' }
+        },
+        salary: {
+          responses: [
+            { triggers: ['ocekavam', 'expect', 'korun', 'kc', 'tisic', 'thousand', 'mesicne', 'monthly', 'rocne', 'annual', 'brutto', 'gross', 'netto', 'net', 'number', 'cislo'], text: 'Rozumím. Jsme v rozsahu — to je dobré. Kdy byste mohl/a nastoupit?', translation: 'I understand. We\'re in range — that\'s good. When could you start?', next: 'start', positive: true },
+            { triggers: ['flexibilni', 'flexible', 'otevren', 'open', 'dohodnem', 'negotiate', 'trh', 'market'], text: 'Flexibilita je fajn, ale řekněte mi vaši spodní hranici.', translation: 'Flexibility is fine, but tell me your lower limit.', next: 'salary' }
+          ],
+          fallback: { text: 'Jaká jsou vaše platová očekávání? Řekněte číslo. (Give a number — e.g. "Ocekavam 60 000 korun mesicne")', translation: 'What are your salary expectations? Give a number.' }
+        },
+        start: {
+          responses: [
+            { triggers: ['ihned', 'immediately', 'hned', 'now', 'mesic', 'month', 'dva mesice', 'two months', 'tri tydny', 'three weeks', 'pristi', 'next', 'dohodnem', 'negotiate', 'flexibilni', 'flexible'], text: 'Výborně. Budeme vás kontaktovat do konce týdne. Máte ještě otázky na nás?', translation: 'Excellent. We\'ll contact you by end of the week. Do you have any questions for us?', next: 'questions', positive: true }
+          ],
+          fallback: { text: 'Kdy byste mohl nastoupit? (Try: "Ihned" = immediately, "Za mesic" = in a month)', translation: 'When could you start? (Try: "Ihned" or "Za mesic")' }
+        },
+        questions: {
+          responses: [
+            { triggers: ['tym', 'team', 'kultura', 'culture', 'rust', 'growth', 'rozvoj', 'development', 'projekt', 'project', 'co delate', 'what do you do', 'proc', 'why'], text: 'Dobrá otázka. Těší mě zájem. Odpovím e-mailem spolu s výsledkem. Nashledanou!', translation: 'Good question. I\'m pleased you\'re interested. I\'ll answer by email with the result. Goodbye! (Interview complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['ne', 'no', 'nemam', 'no questions', 'vse jasne', 'all clear', 'dekuji', 'thank you', 'nashledanou', 'goodbye'], text: 'Dobře. Budeme vás kontaktovat. Nashledanou a přeji hezký den!', translation: 'Fine. We\'ll be in touch. Goodbye and have a nice day! (Interview complete! 🎉)', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Máte otázky na nás? (Try: "Jak velky je tym?" or "Dekuji, nemam otazky.")', translation: 'Any questions for us? (Try: "Jak velky je tym?" = how big is the team?)' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Nashledanou! Hodně štěstí. 💼', translation: 'Goodbye! Good luck. (Job interview scenario complete! 🎉)' }
+        }
+      }
     }
   };
 

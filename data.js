@@ -416,6 +416,177 @@ const SCENARIOS = [
       { textbook: '"Me gustas mucho." (I like you a lot.) — works but can feel heavy on a first date', real: '"Me caes genial." (I think you\'re great.) — lighter, funnier, more natural for early dates.' },
       { textbook: '"¿Podríamos quedar otra vez?" (Could we meet again?)', real: '"¿Quedamos otro día?" — direct, casual, confident. Exactly right.' }
     ]
+  },
+
+  // ══════════════════════════════════════
+  //  🇨🇿  NEW CZECH SCENARIOS
+  // ══════════════════════════════════════
+
+  {
+    id: 'flat',
+    language: 'czech',
+    icon: '🏠',
+    title: 'Flat Viewing',
+    subtitle: 'Prohlídka bytu',
+    difficulty: 'intermediate',
+    category: 'Practical',
+    shortDesc: 'The landlord says it\'s "cozy." You need to know if that means 28m². Ask the right questions before you sign anything.',
+    context: 'Prague rental market moves fast. Landlords know expats often don\'t push back. Knowing how to ask about rent, deposit, bills, and availability in Czech immediately earns you respect — and might save you thousands. Never sign without understanding what\'s included.',
+    dialogue: [
+      { speaker: 'Majitelka', role: 'ai', czech: 'Dobrý den! Pojďte dál, ukáži vám byt.', english: 'Hello! Come in, I\'ll show you the apartment.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Děkuji. Je byt ještě volný?', english: 'Hello. Thank you. Is the apartment still available?', isKey: true },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Ano, volný od prvního příštího měsíce.', english: 'Yes, available from the first of next month.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Kolik je měsíční nájem? A jsou účty v ceně?', english: 'How much is the monthly rent? And are bills included?', isKey: true, note: 'Always ask "jsou účty v ceně?" Bills often aren\'t included. It can add 3,000–5,000 Kč/month.' },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Nájem je 18 000 korun. Účty jsou zvlášť — asi 3 000 měsíčně.', english: 'Rent is 18,000 crowns. Bills are separate — about 3,000 monthly.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Jaká je kauce? A je povoleno mít domácí zvíře?', english: 'How much is the deposit? And are pets allowed?', isKey: true },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Kauce jsou dva měsíční nájmy. Zvířata jsou v pořádku, jen menší.', english: 'Deposit is two months\' rent. Pets are fine, just smaller ones.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Je v bytě internet? A jak je to s parkováním?', english: 'Is there internet in the apartment? And what about parking?', isKey: true },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Internet je připravený, stačí si vybrat poskytovatele. Parkování je na ulici, zdarma.', english: 'Internet is ready, you just choose a provider. Parking is on the street, free.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Mohu si vzít čas na rozmyšlenou do zítřka?', english: 'Can I have until tomorrow to think about it?', isKey: true, note: 'Never sign on the spot. A reputable landlord will give you 24 hours. If they won\'t, that\'s a red flag.' }
+    ],
+    keyPhrases: [
+      { czech: 'Kolik je měsíční nájem?', english: 'How much is the monthly rent?', phonetic: 'KO-lik yeh myeh-SEECH-nee NAH-yem' },
+      { czech: 'Jsou účty v ceně?', english: 'Are bills included?', phonetic: 'ysow OOTCH-ty fts-EH-nyeh' },
+      { czech: 'Jaká je kauce?', english: 'How much is the deposit?', phonetic: 'YA-kah yeh KAW-tse' },
+      { czech: 'Je povoleno mít domácí zvíře?', english: 'Are pets allowed?', phonetic: 'yeh po-VO-leh-no meet DO-mah-tsee ZVEE-zheh' },
+      { czech: 'Kdy je byt volný?', english: 'When is the apartment available?', phonetic: 'gdy yeh bit VOL-nee' },
+      { czech: 'Mohu si vzít čas na rozmyšlenou?', english: 'Can I have time to think about it?', phonetic: 'MO-hoo si vzyeet chas na roz-MISH-leh-now' }
+    ],
+    culturalTips: [
+      { title: 'Bills almost never included', body: '"Účty v ceně" (bills included) is rare. Always ask explicitly. Gas, electricity, water, and building maintenance fees add up. Get the estimate in writing.' },
+      { title: 'Deposit is usually 2–3 months', body: 'Standard Czech practice is a deposit (kauce) of 1–3 months\' rent. Anything above 3 months is unusual — push back or walk away.' },
+      { title: 'Get everything in writing', body: 'A nájemní smlouva (rental contract) should specify: rent amount, deposit, notice period, what happens to bills, and pet policy. Never rely on verbal agreements.' },
+      { title: 'The market moves fast', body: 'Good Prague flats go within hours. Come prepared: have your proof of income, Czech bank account details, and ID ready. Landlords favor expats with stable jobs.' },
+      { title: 'Inspect carefully before signing', body: 'Do a walk-through and photograph everything — scratches, stains, broken fixtures. Czech landlords can deduct from your deposit for pre-existing damage if you didn\'t document it.' }
+    ],
+    realVsTextbook: [
+      { textbook: '"Chtěl bych si pronajmout tento byt." (I would like to rent this apartment.) — formal, stiff', real: '"Mám zájem o byt." — "I\'m interested in the apartment." Natural, direct, gets straight to it.' },
+      { textbook: '"Je možné dostat nějaký čas na přemýšlení?" (Is it possible to have some time to think?)', real: '"Mohu si vzít čas do zítřka?" — Can I have until tomorrow? Direct and perfectly polite.' }
+    ]
+  },
+
+  {
+    id: 'interview',
+    language: 'czech',
+    icon: '💼',
+    title: 'Job Interview',
+    subtitle: 'Pracovní pohovor',
+    difficulty: 'advanced',
+    category: 'Work',
+    shortDesc: 'Czech companies value stability and substance over presentation. Don\'t oversell. Show you\'re serious about staying.',
+    context: 'Czech HR culture is reserved and direct. They\'re not looking for American-style enthusiasm — they\'re assessing whether you\'re reliable, competent, and actually planning to stay in the country. Speaking even basic Czech signals serious commitment. It\'s noticed immediately.',
+    dialogue: [
+      { speaker: 'Personalista', role: 'ai', czech: 'Dobrý den. Jsem rád/a, že jste přišel/la. Sedněte si, prosím.', english: 'Hello. I\'m glad you came. Please have a seat.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Děkuji za pozvání. Těší mě.', english: 'Hello. Thank you for the invitation. Pleased to meet you.', isKey: true },
+      { speaker: 'Personalista', role: 'ai', czech: 'Řekněte mi o sobě. Co vás přivedlo do České republiky?', english: 'Tell me about yourself. What brought you to the Czech Republic?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Pracuji v oboru IT pět let. Do Prahy jsem přišel pro příležitosti a zůstat chci dlouhodobě.', english: 'I\'ve worked in IT for five years. I came to Prague for the opportunities and plan to stay long-term.', isKey: true, note: 'Czech employers are cautious about expats leaving after 6 months. Emphasize long-term intention clearly.' },
+      { speaker: 'Personalista', role: 'ai', czech: 'Mluvíte česky? Jak důležité to pro vás je?', english: 'Do you speak Czech? How important is that to you?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ještě se učím, ale je to pro mě priorita. Chci pracovat v česky mluvícím prostředí.', english: 'I\'m still learning, but it\'s a priority for me. I want to work in a Czech-speaking environment.', isKey: true, note: 'This answer is almost always the right one. They respect the intention even more than the current level.' },
+      { speaker: 'Personalista', role: 'ai', czech: 'Jaké jsou vaše silné stránky?', english: 'What are your strengths?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Jsem spolehlivý, pracuji systematicky a umím pracovat v týmu. Konkrétní výsledky mohu doložit.', english: 'I\'m reliable, I work systematically, and I work well in a team. I can demonstrate specific results.', isKey: true }
+    ],
+    keyPhrases: [
+      { czech: 'Děkuji za pozvání.', english: 'Thank you for the invitation.', phonetic: 'DYEH-ku-yi za poz-VAH-nee' },
+      { czech: 'Pracuji v oboru... X let.', english: 'I\'ve worked in the field of... for X years.', phonetic: 'PRA-tsu-yi vob-ORU... X let' },
+      { czech: 'Chci zůstat dlouhodobě.', english: 'I plan to stay long-term.', phonetic: 'khtsee ZOO-stat DLOW-ho-doh-byeh' },
+      { czech: 'Ještě se učím česky.', english: 'I\'m still learning Czech.', phonetic: 'YESH-tyeh seh OO-cheem CHES-key' },
+      { czech: 'Jsem spolehlivý/á.', english: 'I\'m reliable.', phonetic: 'ysem SPA-leh-li-vee' },
+      { czech: 'Jaký je nástupní termín?', english: 'What is the start date?', phonetic: 'YA-kee yeh NAHS-tup-nee TER-meen' }
+    ],
+    culturalTips: [
+      { title: 'Undersell — then deliver', body: 'Czech culture values modesty. Overclaiming or excessive self-promotion raises eyebrows. Say what you\'ve done concretely. Let your results do the talking.' },
+      { title: 'Speaking any Czech is a power move', body: 'Even a few sentences in Czech changes the dynamic completely. It signals you\'re not just passing through. Czech HR managers mention this consistently.' },
+      { title: 'Dress smartly, but not flashily', body: 'Business casual is the Czech standard. A well-ironed shirt goes a long way. Expensive or flashy clothes can read as arrogance rather than professionalism.' },
+      { title: 'Salary negotiation: be direct', body: 'Czechs respect directness about salary. If they ask your expectation, give a number. "I\'m flexible" is not considered humble — it\'s seen as unprepared.' },
+      { title: 'Long-term signals matter more than enthusiasm', body: '"I\'m so excited!" means little to Czech HR. Concrete plans, a stable CV, and evidence you\'re integrating (language, apartment, etc.) matter far more.' }
+    ],
+    realVsTextbook: [
+      { textbook: '"Jsem velmi motivovaný pracovat pro vaši společnost." (I\'m very motivated to work for your company.) — generic', real: '"Líbí se mi, jak vaše firma přistupuje k [specific thing]." — Show you did your homework. Generic enthusiasm = red flag.' },
+      { textbook: '"Moje slabá stránka je, že jsem workaholic." (My weakness is that I\'m a workaholic.) — cliché', real: 'Name an actual, minor weakness and how you\'re working on it. Czech interviewers will respect the honesty immediately.' }
+    ]
+  },
+
+  {
+    id: 'doctor',
+    language: 'czech',
+    icon: '🏥',
+    title: 'Doctor Visit',
+    subtitle: 'U lékaře',
+    difficulty: 'intermediate',
+    category: 'Practical',
+    shortDesc: 'The doctor will see you now. You have exactly 10 minutes. Say what hurts, understand the prescription, and don\'t panic.',
+    context: 'Czech healthcare is solid and affordable with EU health insurance or Czech pojišťovna (health insurance). Finding an English-speaking doctor is possible in Prague, harder elsewhere. GPs (praktický lékař) require registration — you can\'t just walk in. For emergencies: nemocnice or pohotovost (emergency clinic).',
+    dialogue: [
+      { speaker: 'Doktor', role: 'ai', czech: 'Dobrý den. Co vás trápí?', english: 'Hello. What\'s bothering you?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Bolí mě hlava a mám horečku.', english: 'Hello. I have a headache and a fever.', isKey: true },
+      { speaker: 'Doktor', role: 'ai', czech: 'Jak dlouho to máte? A jak silná je ta bolest?', english: 'How long have you had this? And how strong is the pain?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Od včera. Bolest je silná — asi sedm z deseti.', english: 'Since yesterday. The pain is strong — about seven out of ten.', isKey: true, note: 'The 1–10 pain scale is universal. Use it — it\'s faster and clearer than describing it in words.' },
+      { speaker: 'Doktor', role: 'ai', czech: 'Máte alergii na nějaké léky?', english: 'Are you allergic to any medications?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ano, jsem alergický/á na penicilin.', english: 'Yes, I\'m allergic to penicillin.', isKey: true, note: 'This is critical. Write it down in Czech and carry it with you if you have any allergies.' },
+      { speaker: 'Doktor', role: 'ai', czech: 'Dobře. Předepíšu vám antibiotika. Berte třikrát denně po jídle.', english: 'Fine. I\'ll prescribe antibiotics. Take them three times a day after meals.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Promiňte — mohl/a byste to prosím napsat? Nechci špatně pochopit dávkování.', english: 'Excuse me — could you please write that down? I don\'t want to misunderstand the dosage.', isKey: true, note: '"Můžete to napsat?" is your most powerful phrase in any Czech official context.' }
+    ],
+    keyPhrases: [
+      { czech: 'Bolí mě...', english: 'My ... hurts / I have pain in...', phonetic: 'BO-lee myeh' },
+      { czech: 'Mám horečku.', english: 'I have a fever.', phonetic: 'mahm HO-rech-ku' },
+      { czech: 'Jsem alergický/á na...', english: 'I\'m allergic to...', phonetic: 'ysem a-LER-gits-kee na' },
+      { czech: 'Jak mám brát léky?', english: 'How should I take the medicine?', phonetic: 'yak mahm braht LEH-kee' },
+      { czech: 'Můžete to napsat?', english: 'Can you write that down?', phonetic: 'MOO-zheh-teh to NAP-sat' },
+      { czech: 'Potřebuji recept.', english: 'I need a prescription.', phonetic: 'po-TZHEH-bu-yi RE-tsept' }
+    ],
+    culturalTips: [
+      { title: 'Register with a GP before you\'re sick', body: 'Czech system requires registering with a praktický lékař (GP) before you get ill. You can\'t just walk in when you need them. Find one in your district, register when you\'re healthy.' },
+      { title: 'Health insurance is mandatory', body: 'All Czech residents must have health insurance — either EU card (short stays), Czech public insurance (VZP etc.) for long-term, or private. Without it, you pay full price.' },
+      { title: 'The 10-minute appointment is real', body: 'Czech GPs are efficient and appointments are short. Come with your symptoms listed clearly. Don\'t wait to be asked — lead with the most important thing.' },
+      { title: 'Pharmacies (lékárna) are widely trusted', body: 'Czech pharmacists are highly trained and often the first line of advice for minor ailments. Describe your symptoms and they will recommend over-the-counter options.' },
+      { title: 'Emergency: pohotovost or 155', body: 'For urgent but non-life-threatening issues: pohotovost (walk-in emergency clinic). For life-threatening: 155 (ambulance) or 112 (European emergency number).' }
+    ],
+    realVsTextbook: [
+      { textbook: '"Trpím silnými bolestmi hlavy." (I suffer from severe headaches.) — overly formal', real: '"Bolí mě hlava, dost silně." — Much more natural. Czech doctors appreciate directness.' },
+      { textbook: '"Mohl byste mi předepsat nějaké léky?" (Could you prescribe some medication?)', real: '"Co mi doporučujete?" — "What do you recommend?" — Lets the doctor lead while showing you trust their expertise.' }
+    ]
+  },
+
+  {
+    id: 'grocery',
+    language: 'czech',
+    icon: '🛒',
+    title: 'Grocery Store',
+    subtitle: 'V obchodě',
+    difficulty: 'beginner',
+    category: 'Daily Life',
+    shortDesc: 'Finding things, asking prices, paying. The daily run that reveals how much Czech you actually know.',
+    context: 'Czech supermarkets (Albert, Billa, Lidl, Kaufland, Tesco) all work the same way. The tricky moments: when the cashier asks if you have a loyalty card, asks you to enter your PIN, or when something doesn\'t scan. These three situations trip up expats daily.',
+    dialogue: [
+      { speaker: 'Prodavačka', role: 'ai', czech: 'Dobrý den! Potřebujete pomoct?', english: 'Hello! Do you need help?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Kde najdu chléb?', english: 'Hello. Where can I find bread?', isKey: true },
+      { speaker: 'Prodavačka', role: 'ai', czech: 'Chléb je v pravém rohu, vedle pekařských výrobků.', english: 'Bread is in the right corner, next to the bakery section.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Děkuji. A kde jsou mléčné výrobky?', english: 'Thank you. And where are the dairy products?', isKey: true },
+      { speaker: 'Pokladní', role: 'ai', czech: 'Máte věrnostní kartu?', english: 'Do you have a loyalty card?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Nemám, bohužel.', english: 'I don\'t, unfortunately.', isKey: true, note: '"Nemám, bohužel" is the perfect polite answer to anything you don\'t have. Short, correct, no stress.' },
+      { speaker: 'Pokladní', role: 'ai', czech: 'Dobře. Celkem 347 korun. Platíte kartou nebo hotově?', english: 'Fine. Total is 347 crowns. Card or cash?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Kartou, prosím.', english: 'By card, please.', isKey: true },
+      { speaker: 'Pokladní', role: 'ai', czech: 'Zadejte PIN, prosím.', english: 'Please enter your PIN.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Potřebuji tašku, prosím.', english: 'I need a bag, please.', isKey: true, note: 'Bags aren\'t free and aren\'t offered automatically in Czech shops. You have to ask.' }
+    ],
+    keyPhrases: [
+      { czech: 'Kde najdu...?', english: 'Where can I find...?', phonetic: 'gdeh NAY-du' },
+      { czech: 'Kolik to stojí?', english: 'How much does this cost?', phonetic: 'KO-lik to STO-yee' },
+      { czech: 'Kartou, prosím.', english: 'By card, please.', phonetic: 'KAR-tow, PRO-seem' },
+      { czech: 'Nemám věrnostní kartu.', english: 'I don\'t have a loyalty card.', phonetic: 'NEH-mahm VYER-nost-nee KAR-tu' },
+      { czech: 'Potřebuji tašku.', english: 'I need a bag.', phonetic: 'po-TZHEH-bu-yi TASH-ku' },
+      { czech: 'Je to správně?', english: 'Is that correct?', phonetic: 'yeh to SPRAV-nyeh' }
+    ],
+    culturalTips: [
+      { title: 'Bags cost money and aren\'t offered', body: 'Czech supermarkets charge for bags and cashiers don\'t ask. If you want one, say "Potřebuji tašku" before they start scanning. After, it\'s awkward.' },
+      { title: 'The loyalty card question', body: 'Every chain has one — Albert, Billa, Tesco, etc. The question "Máte věrnostní kartu?" will come at every checkout. "Nemám, bohužel" handles it perfectly.' },
+      { title: 'Self-checkout in Czech', body: 'Czech self-checkouts speak Czech. Learn "potvrdit" (confirm), "zaplatit" (pay), and "zrušit" (cancel). The machine will ask about your loyalty card too.' },
+      { title: 'Markets (tržiště) for fresh produce', body: 'Prague has excellent outdoor markets (Jiřák, Náplavka) for fresh fruit, vegetables and cheese. Vendors often have a little English. Prices are displayed in Kč per kilo.' }
+    ],
+    realVsTextbook: [
+      { textbook: '"Promiňte, mohli byste mi říct, kde se nachází chléb?" (Excuse me, could you tell me where the bread is located?)', real: '"Kde je chléb?" — Two words. Points at what you want. Works perfectly.' },
+      { textbook: '"Rád bych zaplatil kartou." (I would like to pay by card.)', real: '"Kartou." — One word. Hold up your card. Done.' }
+    ]
   }
 
 ];
