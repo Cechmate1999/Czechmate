@@ -37,6 +37,22 @@
     </div>
   </footer>
 
+  <style>
+    .translation-toggle {
+      display: inline-flex; align-items: center; gap: .3rem;
+      background: var(--s2); border: 1px solid var(--border);
+      border-radius: 100px; padding: .25rem .35rem;
+      margin-left: .75rem; vertical-align: middle;
+    }
+    .tt-btn {
+      padding: .3rem .75rem; border-radius: 100px; border: none;
+      font-family: var(--font-b); font-size: .75rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; background: transparent; color: var(--t2);
+    }
+    .tt-btn.active { background: var(--s3); color: var(--t1); box-shadow: 0 1px 6px rgba(0,0,0,.25); }
+    .tt-btn:hover:not(.active) { color: var(--t1); }
+  </style>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id') || 'pub';
@@ -45,16 +61,22 @@
     const LANG_FLAGS = { czech: '🇨🇿', spanish: '🇪🇸' };
     const LANG_LABELS = { czech: 'Czech', spanish: 'Spanish' };
 
-    // The dialogue column header changes per language
-    const COL_LABELS = {
-      czech: { phraseCol: 'Czech', notePrefix: '💡' },
-      spanish: { phraseCol: 'Spanish', notePrefix: '💡' }
-    };
     const lang = scenario.language || 'czech';
-    const cols = COL_LABELS[lang] || COL_LABELS.czech;
+
+    // Check if this scenario has Spanish translations in dialogue
+    const hasSpanish = lang === 'czech' && scenario.dialogue.some(l => l.spanish);
+
+    // Translation display language: 'english' or 'spanish'
+    let displayLang = localStorage.getItem('cm_display_lang') || 'english';
+    if (!hasSpanish) displayLang = 'english';
 
     document.getElementById('navPracticeBtn').href = `practice.html?scenario=${scenario.id}`;
     document.title = `${scenario.title} — CzechMate`;
+
+    function getTranslation(line) {
+      if (displayLang === 'spanish' && line.spanish) return line.spanish;
+      return line.english;
+    }
 
     // ── HEADER ──
     document.getElementById('scenarioHeader').innerHTML = `
@@ -70,24 +92,54 @@
       </div>
     `;
 
-    // ── DIALOGUE ──
-    const dialogueHtml = `
-      <div class="content-block">
-        <div class="content-block-title">💬 The Dialogue</div>
-        <div class="dialogue-box">
-          ${scenario.dialogue.map(line => `
-            <div class="dialogue-line ${line.role === 'you' ? 'you-line' : ''}">
-              <div class="dl-speaker">${line.role === 'you' ? 'You' : line.speaker}</div>
-              <div>
-                <div class="dl-czech">${line.czech}</div>
-                <div class="dl-english">${line.english}</div>
-                ${line.note ? `<div class="dl-note">${cols.notePrefix} ${line.note}</div>` : ''}
+    function renderDialogue() {
+      return `
+        <div class="content-block">
+          <div class="content-block-title">
+            💬 The Dialogue
+            ${hasSpanish ? `
+              <span class="translation-toggle" id="translationToggle">
+                <button class="tt-btn ${displayLang === 'english' ? 'active' : ''}" data-lang="english">🇬🇧 EN</button>
+                <button class="tt-btn ${displayLang === 'spanish' ? 'active' : ''}" data-lang="spanish">🇪🇸 ES</button>
+              </span>
+            ` : ''}
+          </div>
+          <div class="dialogue-box" id="dialogueBox">
+            ${scenario.dialogue.map(line => `
+              <div class="dialogue-line ${line.role === 'you' ? 'you-line' : ''}">
+                <div class="dl-speaker">${line.role === 'you' ? 'You' : line.speaker}</div>
+                <div>
+                  <div class="dl-czech">${line.czech}</div>
+                  <div class="dl-english">${getTranslation(line)}</div>
+                  ${line.note ? `<div class="dl-note">💡 ${line.note}</div>` : ''}
+                </div>
               </div>
-            </div>
-          `).join('')}
+            `).join('')}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
+
+    function attachToggleListener() {
+      const toggle = document.getElementById('translationToggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', e => {
+        const btn = e.target.closest('.tt-btn');
+        if (!btn) return;
+        displayLang = btn.dataset.lang;
+        localStorage.setItem('cm_display_lang', displayLang);
+        // Re-render just the dialogue section
+        document.querySelector('.content-block').outerHTML = renderDialogue();
+        // Re-attach listener on new element
+        attachToggleListener();
+        // Sync toggle button states
+        document.querySelectorAll('.tt-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.lang === displayLang);
+        });
+      });
+    }
+
+    const dialogueHtml = renderDialogue();
 
     // ── KEY PHRASES ──
     // Czech scenarios use .czech / .english / .phonetic
@@ -165,6 +217,8 @@
 
     document.getElementById('scenarioContent').innerHTML =
       dialogueHtml + phrasesHtml + tipsHtml + rvtHtml + ctaHtml + nextHtml;
+
+    attachToggleListener();
   </script>
 </body>
 </html>

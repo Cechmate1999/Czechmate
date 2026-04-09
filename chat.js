@@ -168,71 +168,85 @@ const ChatEngine = (() => {
     parents: {
       language: 'czech',
       persona: {
-        name: 'Paní Nováková',
-        role: 'Partnerova matka — Your partner\'s mother',
-        avatar: '👩‍🍳',
-        description: 'Warm, welcoming, and quietly evaluating everything. She spent the morning cooking. Compliment everything. Finish your plate. You\'ll be fine.'
+        name: 'Rodina Nováků',
+        role: 'Celá rodina — The whole family',
+        avatar: '👨‍👩‍👧‍👦',
+        description: 'You know this family now. Maminka still checks if you\'ve eaten. Babička talks at you in rapid Czech regardless. Tatínek pours wine without asking. Sestra watches and judges. You\'re ready for this.'
       },
       vocabulary: [
-        { cz: 'těší mě', en: 'nice to meet you' },
-        { cz: 'výborné', en: 'excellent / delicious' },
-        { cz: 'voní', en: 'smells nice' },
-        { cz: 'děkuji za pozvání', en: 'thank you for the invitation' },
-        { cz: 'smím si vzít víc?', en: 'may I take more?' },
-        { cz: 'byl to skvělý oběd', en: 'that was a great lunch' }
+        { cz: 'maminko', en: 'Mum (vocative — how you address her directly)' },
+        { cz: 'babičko', en: 'Grandma (vocative)' },
+        { cz: 'tatínku', en: 'Dad (vocative)' },
+        { cz: 'nerozumím dobře', en: 'I don\'t understand well' },
+        { cz: 'mluvte pomaleji', en: 'please speak more slowly (formal)' },
+        { cz: 'snažím se sám', en: 'I\'m trying on my own' },
+        { cz: 'ta vůně je úžasná', en: 'that smell is amazing' },
+        { cz: 'já stavím první rundu', en: 'I\'ll get the first round' }
       ],
-      context: 'You\'re at your partner\'s parents\' home for Sunday lunch. Her mother (paní Nováková) opens the door. Make a good impression! Accents are optional.',
-      tip: 'Start with: "Dobry den, pani Novakova. Tesi me." — no special keyboard needed!',
-      opening: { text: 'Vítejte, vítejte! Konečně vás vidím. Pojďte dál! 😊', translation: 'Welcome, welcome! I finally get to meet you. Come in!' },
+      context: 'You\'re back at the family home — not as a guest meeting them for the first time, but as someone they know. Navigate all four: warm Maminka, rapid-fire Babička, wine-pouring Tatínek, and watchful Sestra.',
+      tip: 'Use vocatives — "Maminko," "Babičko," "Tatínku" instead of their full names. It shows you\'ve integrated.',
+      opening: { text: 'Ty jseš tady! Pojď dál, pojď dál. Jedl jsi dnes? 😊', translation: 'You\'re here! Come in, come in. Have you eaten today?' },
       corrections: CZ_CORRECTIONS,
       states: {
         start: {
           responses: [
-            { triggers: ['dobry den', 'dobry', 'hello', 'ahoj', 'hi', 'good'], text: 'Dobrý den! Těší mě. Slyšela jsem o vás tolik! Jak se máte?', translation: 'Hello! Nice to meet you. I\'ve heard so much about you! How are you?', next: 'greeting', positive: true }
+            { triggers: ['dobry den', 'maminko', 'ahoj', 'hello', 'hi', 'prinesl', 'vino', 'wine', 'cervene', 'red'], text: 'Skvělé! Tatínek je v obýváku. A Babička přišla taky — připrav se, mluví hodně. 😄', translation: 'Great! Dad is in the living room. Grandma came too — prepare yourself, she talks a lot. 😄', next: 'family_arrival', positive: true }
           ],
-          fallback: { text: 'Prosím? Zkuste mě pozdravit! (Try: "Dobry den, pani Novakova")', translation: 'Pardon? Try greeting her! (No special characters needed)' }
+          fallback: { text: 'Pozdrav mě! "Dobry den, Maminko" nebo "Ahoj, prinesl jsem vino." 😊', translation: 'Greet me! Try: "Dobry den, Maminko" or mention you brought wine.' }
         },
-        greeting: {
+        family_arrival: {
           responses: [
-            { triggers: ['tesi me', 'nice to meet', 'pleased', 'tesi'], text: 'I mě! Přinesl jste něco s sebou?', translation: 'Me too! Did you bring something?', next: 'gift', positive: true },
-            { triggers: ['vino', 'wine', 'flowers', 'kytky', 'cokolada', 'chocolate', 'prinesl', 'brought', 'darky', 'gift'], text: 'Ach, to je milé! Pojďte dál, ukáži vám dům.', translation: 'Oh, how nice! Come in, I\'ll show you the house.', next: 'house', positive: true },
-            { triggers: ['mam se', 'dobre', 'fine', 'good', 'dobry'], text: 'Ráda slyším! Přinesl jste nám něco? Haha — no, jsem jen zvědavá.', translation: 'Glad to hear it! Did you bring something? Haha — just curious.', next: 'gift' }
+            { triggers: ['babicko', 'babicka', 'nerozumim', 'pomaleji', 'slowly', 'muzete', 'repeat', 'prosim', 'please'], text: 'Babička: "Pomaleji? Ale já mluvím pomalu!" 😄 Tatínek nalévá víno. Dáš si sklenku?', translation: 'Grandma: "Slower? But I speak slowly!" 😄 Dad is pouring wine. Will you have a glass?', next: 'tatinek_wine', positive: true },
+            { triggers: ['tatinku', 'tatinek', 'dad', 'vino', 'wine', 'zdravi', 'cheers', 'nazdravi', 'sklenku', 'glass'], text: 'Tatínek: "Na zdraví!" Víno z Moravy. Babička vám teď něco říká — rozumíte?', translation: 'Dad: "Cheers!" Moravian wine. Grandma is now saying something to you — do you understand?', next: 'babicka_chat', positive: true },
+            { triggers: ['sestra', 'sister', 'hezky', 'dobry', 'nice', 'fine', 'super', 'ok'], text: 'Sestra právě přišla. Dívá se na vás. Co jí řeknete?', translation: 'Sister just arrived. She\'s looking at you. What do you say to her?', next: 'sestra_arrives', positive: true }
           ],
-          fallback: { text: 'Jak se máte? A přinesl jste nám něco? 😊', translation: 'How are you? And did you bring anything? (Try: "tesi me" or mention you brought wine/flowers)' }
+          fallback: { text: 'Babička vás pozdravuje! Zkuste: "Dobry den, Babicko. Nerozumim dobre. Muzete mluvit pomaleji?"', translation: 'Grandma is greeting you! Try: "Dobry den, Babicko. Nerozumim dobre." (I don\'t understand well)' }
         },
-        gift: {
+        tatinek_wine: {
           responses: [
-            { triggers: ['vino', 'wine', 'prinesl', 'tady', 'here', 'pro vas', 'flowers', 'cokolada', 'gift', 'small'], text: 'Výborně! Manžel bude rád. Pojďte ke stolu — polévka je hotová!', translation: 'Excellent! My husband will be pleased. Come to the table — soup is ready!', next: 'soup', positive: true },
-            { triggers: ['malickost', 'nothing much', 'malicko', 'small thing'], text: 'Neberte to tak! Jsme rádi, že jste přišel. Pojďte ke stolu.', translation: 'Don\'t say that! We\'re happy you came. Come to the table.', next: 'soup', positive: true }
+            { triggers: ['rad', 'ano', 'yes', 'prosim', 'please', 'sklenku', 'glass', 'vino', 'wine', 'samozrejme', 'dekuji', 'zdravi', 'nazdravi', 'urcite'], text: 'Tatínek: "Dobře!" (nalévá velkou sklenku). Sestra přichází. Kouká na vás.', translation: 'Dad: "Good!" (pours a generous glass). Sister arrives. She\'s looking at you.', next: 'sestra_arrives', positive: true },
+            { triggers: ['ne', 'no', 'diky', 'nepiju', 'nepiji', 'dont drink', 'ridim', 'driving', 'voda', 'water'], text: 'Tatínek: "Voda? Džus? Nemáme džus." 😄 Sestra přišla. Kouká na vás.', translation: 'Dad: "Water? Juice? We don\'t have juice." 😄 Sister arrived. She\'s looking at you.', next: 'sestra_arrives', positive: true }
           ],
-          fallback: { text: 'Sedněte si. Dám vám polévku — máte hlad?', translation: 'Have a seat. I\'ll get you soup — are you hungry? (Mention you brought something, or just say "ano")' }
+          fallback: { text: 'Tatínek nabízí víno. Přijmete? (Try: "Rad, dekuji, Tatinku!" or "Ne, dekuji")', translation: 'Dad is offering wine. Accept? (Try: "Rad, dekuji, Tatinku!" or "Ne, dekuji")' }
+        },
+        babicka_chat: {
+          responses: [
+            { triggers: ['nerozumim', 'dont understand', 'pomaleji', 'slower', 'prosim', 'please', 'zopakovat', 'repeat', 'napsat', 'write', 'babicko'], text: 'Babička: "Pomaleji! Pom-a-le-ji!" 😄 Tatínek: "Nech ho být, maminko." Sestra přichází.', translation: 'Grandma: "Slower! Slo-wer!" 😄 Dad: "Leave him alone, mum." Sister arrives.', next: 'sestra_arrives', positive: true },
+            { triggers: ['rozumim', 'understand', 'dobre', 'good', 'trochu', 'a little', 'ano', 'yes', 'snazim', 'trying', 'ucim'], text: 'Babička je nadšená! "Vidíš? Rozumí!" Tatínek se usmívá. Sestra přichází.', translation: 'Grandma is delighted! "See? He understands!" Dad smiles. Sister arrives.', next: 'sestra_arrives', positive: true }
+          ],
+          fallback: { text: 'Babička vám řekla něco. Co odpovíte? (Try: "Nerozumim dobre. Muzete mluvit pomaleji?")', translation: 'Grandma said something. What do you reply? (Try: "Nerozumim dobre. Pomaleji, prosim.")' }
+        },
+        sestra_arrives: {
+          responses: [
+            { triggers: ['snazim', 'snazím se', 'trying', 'ucim se', 'learning', 'kurz', 'course', 'sam', 'alone', 'myself', 'skola', 'class', 'sam se ucim'], text: 'Sestra: "Hm. Tak vida." (přijímá odpověď). Maminka volá: "Ke stolu! Polévka je hotová!"', translation: 'Sister: "Hm. I see." (accepts this). Maminka calls: "To the table! Soup is ready!"', next: 'soup', positive: true },
+            { triggers: ['ona', 'she', 'partner', 'taught', 'naucila', 'pomaha', 'helps', 'together', 'partnerkа'], text: 'Sestra: "Romantické. Ale česky se mluví tady." 😄 Maminka: "Ke stolu! Polévka!"', translation: 'Sister: "Romantic. But Czech is spoken here." 😄 Maminka: "To the table! Soup!"', next: 'soup', positive: true }
+          ],
+          fallback: { text: 'Sestra se ptá, jak se učíte česky. (Try: "Snazim se sam. Chodim na kurz.")', translation: 'Sister asks how you\'re learning Czech. (Try: "Snazim se sam. Chodim na kurz." = I try myself. I go to a class.)' }
         },
         soup: {
           responses: [
-            { triggers: ['vyborne', 'dobre', 'skvele', 'delicious', 'good', 'great', 'chutne', 'voni', 'vune', 'smells', 'bajechne'], text: 'Děkuji! Dělám ji vždy podle receptu od maminky. Vezmete si víc?', translation: 'Thank you! I always make it with my mother\'s recipe. Will you take more?', next: 'main', positive: true },
-            { triggers: ['recept', 'recipe', 'jak', 'how', 'co je', 'what is', 'co to'], text: 'Hovězí vývar se zeleninou. Tajemství je dlouhé vaření. Recept vám pošlu! Teď hlavní chod.', translation: 'Beef broth with vegetables. The secret is long cooking. I\'ll send you the recipe! Now the main course.', next: 'main', positive: true }
+            { triggers: ['vyborne', 'vyborna', 'delicious', 'skvele', 'dobre', 'good', 'uzasna', 'amazing', 'vune', 'smells', 'voni', 'co je', 'what is', 'recept', 'recipe', 'varite'], text: 'Maminka září! "Hovězí vývar. Vařím ji tři hodiny." Babička přikyvuje. "Jezte, jezte!"', translation: 'Maminka beams! "Beef broth. I cook it for three hours." Grandma nods. "Eat, eat!"', next: 'main', positive: true }
           ],
-          fallback: { text: 'Tak jak je ta polévka? Chutná vám? 🍲', translation: 'How is the soup? Do you like it? (Try: "Je to vyborne!")' }
+          fallback: { text: 'Pochvalte polévku! (Try: "Maminko, ta vune je uzasna! Co varite?")', translation: 'Compliment the soup! (Try: "Maminko, ta vune je uzasna!" = Maminka, that smell is amazing!)' }
         },
         main: {
           responses: [
-            { triggers: ['vyborne', 'skvele', 'bajechne', 'fantastic', 'amazing', 'delicious', 'fantasticke', 'dobre', 'vytecne', 'nejlepsi'], text: 'To mě těší! Svíčková se dělá tři hodiny. Víc? Musíte sníst víc!', translation: 'That makes me happy! The svíčková takes three hours. More? You must eat more!', next: 'main', positive: true },
-            { triggers: ['recept', 'recipe', 'naucit', 'learn', 'jak', 'how to'], text: 'Ha! První cizinec, co žádá o recept. Musíte přijít znovu a já vám ukážu!', translation: 'Ha! First foreigner to ask for the recipe. You must come again and I\'ll show you!', next: 'dessert', positive: true },
-            { triggers: ['vic', 'more', 'jeste', 'another', 'druhy', 'second'], text: 'Samozřejmě! Tady — jezte, jezte! Jste příliš hubený!', translation: 'Of course! Here — eat, eat! You\'re too thin!', next: 'dessert', positive: true },
-            { triggers: ['dost', 'enough', 'plny', 'full', 'syt'], text: 'Ale, ale! Ještě malý kousek? Mám koláč!', translation: 'Oh come on! Just a small piece more? I have cake!', next: 'dessert' }
+            { triggers: ['vyborne', 'skvele', 'delicious', 'bajechne', 'fantastic', 'amazing', 'nejlepsi', 'best', 'fantasticke', 'dobre', 'vytecne'], text: 'Maminka: "Jezte, jezte! Ještě trochu?" Tatínek dolévá víno. Sestra: "Vidíš? Umí se chovat."', translation: 'Maminka: "Eat, eat! A little more?" Dad tops up the wine. Sister: "See? He knows how to behave."', next: 'main', positive: true },
+            { triggers: ['recept', 'recipe', 'jak', 'how', 'naucit', 'learn', 'ukazat', 'show', 'co', 'what'], text: 'Maminka hned vstává: "Ukážu vám! Ale musíte přijít ve čtvrtek — to vařím svíčkovou."', translation: 'Maminka jumps up: "I\'ll show you! But you must come Thursday — I\'m making svíčková."', next: 'dessert', positive: true },
+            { triggers: ['vic', 'more', 'ano', 'yes', 'jeste', 'another', 'rad', 'gladly', 'samozrejme'], text: 'Tatínek: "To rád vidím." Maminka nakládá. "Jíst víc musíte!"', translation: 'Dad: "Good to see." Maminka serves more. "You must eat more!"', next: 'dessert', positive: true }
           ],
-          fallback: { text: 'Jak vám chutná svíčková? A vezmete si víc? 😊', translation: 'How do you like the svíčková? Take more? (Say "vyborne" to compliment it!)' }
+          fallback: { text: 'Jak chutná hlavní chod? (Try: "Je to vyborne, Maminko!" or ask for the recipe)', translation: 'How is the main course? (Say: "Je to vyborne!" = It\'s excellent!)' }
         },
         dessert: {
           responses: [
-            { triggers: ['dekuji', 'thank you', 'diky', 'skvele', 'vyborne', 'obed', 'lunch', 'pozvani', 'invitation', 'byl', 'bylo'], text: 'Rádi! Musíte přijít znovu — příště vepřo knedlo zelo. A přiveďte tu svoji slečnu! 😊', translation: 'Our pleasure! Come again — next time roast pork! And bring your lady! 😊 (You passed! 🎉)', next: 'done', positive: true },
-            { triggers: ['kolac', 'cake', 'dessert', 'dezert', 'ano', 'yes'], text: 'Výborně! Tvarohový koláč. Sedněte si ještě chvíli.', translation: 'Excellent! Cheesecake. Sit a while longer.', next: 'dessert', positive: true }
+            { triggers: ['dekuji', 'thank', 'diky', 'za pozvani', 'invitation', 'bylo', 'was', 'skvely', 'excellent', 'obed', 'lunch', 'vsechno', 'everything', 'bylo to'], text: 'Maminka: "Rádi!" Babička: "Přijď zase." Tatínek: "Na zdraví." Sestra: "...možná příště." (Rodina vás přijala! 🎉)', translation: 'Maminka: "Our pleasure!" Grandma: "Come again." Dad: "Cheers." Sister: "...maybe next time." (Family accepted you! 🎉)', next: 'done', positive: true },
+            { triggers: ['kolac', 'cake', 'dezert', 'dessert', 'ano', 'yes', 'prosim', 'please', 'rad', 'tvaroh'], text: 'Maminka: "Tvarohový koláč! Seďte." Celá rodina se usadí. Jste přijat/a.', translation: 'Maminka: "Cheesecake! Stay seated." The whole family settles in. You\'re accepted.', next: 'dessert', positive: true }
           ],
-          fallback: { text: 'Tak jak vám bylo? Přijdete znovu? 😊', translation: 'How was everything? Will you come again? (Try: "Dekuji za pozvani. Bylo to vyborne.")' }
+          fallback: { text: 'Poděkujte za oběd! (Try: "Dekuji za pozvani. Bylo to vyborne.")', translation: 'Thank them for lunch! (Try: "Dekuji za pozvani. Bylo to vyborne.")' }
         },
         done: {
           responses: [],
-          fallback: { text: 'Nashledanou! Přijďte brzy znovu! 👋', translation: 'Goodbye! Come back soon! (Excellent — you survived Sunday lunch! 🎉)' }
+          fallback: { text: 'Nashledanou! Tatínek vám balí víno na cestu. Celá rodina vás miluje. 🎉', translation: 'Goodbye! Dad is packing wine for your journey. The whole family loves you. (Scenario complete! 🎉)' }
         }
       }
     },
@@ -516,6 +530,72 @@ const ChatEngine = (() => {
         done: {
           responses: [],
           fallback: { text: 'Nashledanou! Těšíme se na vás. 🏠', translation: 'Goodbye! We look forward to having you. (Flat viewing scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    padel: {
+      language: 'czech',
+      persona: {
+        name: 'Tomáš',
+        role: 'Padelový parťák — Padel Partner',
+        avatar: '🎾',
+        description: 'Tomáš plays padel every week. He\'s energetic, competitive, and genuinely happy you joined. Short punchy responses — just like real sports communication. No frills, just play.'
+      },
+      vocabulary: [
+        { cz: 'nováček', en: 'newbie / newcomer' },
+        { cz: 'špatná rána', en: 'bad shot' },
+        { cz: 'skóre', en: 'score' },
+        { cz: 'promiň', en: 'sorry (informal)' },
+        { cz: 'eso!', en: 'great shot! / that\'s it!' },
+        { cz: 'první runda', en: 'first round (of drinks)' },
+        { cz: 'příště líp', en: 'better next time' },
+        { cz: 'dobrý zápas', en: 'good match' }
+      ],
+      context: 'You\'ve just arrived at the padel court. Tomáš and two other Czech friends are waiting. Navigate the warmup, the game, and the mandatory post-match beer. Short, fast, sporty Czech.',
+      tip: 'Start by greeting Tomáš. Admit you\'re a nováček upfront — "Jsem novacek, ale zkusim to!" — it\'s the right opening move.',
+      opening: { text: 'Nazdar! Přišels! Máš raketu nebo půjčíš? 🎾', translation: 'Hey! You made it! Got a racket or borrowing one?' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['ahoj', 'nazdar', 'cau', 'hello', 'hi', 'tu jsem', 'jsem tady', 'prisel', 'here i am'], text: 'Nazdar! Půjčíme ti raketu. Hrajeme čtyři — ty a já vs. Honza a Petr. Jasný?', translation: 'Hey! We\'ll lend you a racket. Four of us — you and me vs. Honza and Petr. Clear?', next: 'teams', positive: true }
+          ],
+          fallback: { text: 'Haló? Pozdrav mě! Kurty nečekají. 😄 (Try: "Ahoj Tomas!")', translation: 'Hey? Greet me! The courts won\'t wait. 😄 (Try: "Ahoj!")' }
+        },
+        teams: {
+          responses: [
+            { triggers: ['ok', 'jasny', 'super', 'dobre', 'yes', 'ano', 'pohoda', 'cool', 'fajn', 'ready', 'pripraven', 'v poradku', 'alright'], text: 'Dobře. Rozcvičíme se pět minut. Hráls padel dřív?', translation: 'Good. Five minute warmup. Have you played padel before?', next: 'warmup', positive: true },
+            { triggers: ['skore', 'score', 'jak se hraje', 'rules', 'pravidla', 'tenis', 'tennis', 'system', 'bodovani', 'jak to funguje'], text: 'Jako tenis — 15, 30, 40, hra. Stěny se počítají. Rychle to pochopíš. Jdeme!', translation: 'Like tennis — 15, 30, 40, game. Walls count. You\'ll get it fast. Let\'s go!', next: 'warmup', positive: true }
+          ],
+          fallback: { text: 'Jasný? Jdeme na kurty! (Say "ok" or ask "jak se hraje?" = how do you play?)', translation: 'Ready? Let\'s hit the courts!' }
+        },
+        warmup: {
+          responses: [
+            { triggers: ['novacek', 'newbie', 'new', 'prvni krat', 'first time', 'zacinatec', 'beginner', 'poprve', 'jsem novacek', 'nikdy', 'never'], text: 'Nováček! Výborně že jsi přišel. Padel se chytí rychle — je intuitivní. Připraven?', translation: 'Newbie! Great you came. Padel clicks fast — it\'s intuitive. Ready?', next: 'game', positive: true },
+            { triggers: ['trochu', 'a little', 'hral jsem', 'played before', 'ano', 'yes', 'umim', 'zkusenost', 'experience', 'nekdy', 'sometimes'], text: 'Dobrý! Pak rovnou. Servuju já. Tak!', translation: 'Great! Straight in then. I\'ll serve. Let\'s go!', next: 'game', positive: true }
+          ],
+          fallback: { text: 'Hráls padel dřív? (Try: "Jsem novacek" or "Trochu hraju")', translation: 'Have you played padel before? (Try: "Jsem novacek" or "Trochu hraju")' }
+        },
+        game: {
+          responses: [
+            { triggers: ['prominy', 'promiň', 'sorry', 'spatna rana', 'bad shot', 'chyba', 'mistake', 'priste lip', 'better next', 'jejda', 'sakra'], text: 'Nevadí! Příště líp. Eso přijde. 🎾', translation: 'No worries! Better next time. A winner is coming. 🎾', next: 'game', positive: true },
+            { triggers: ['eso', 'vyborna', 'great shot', 'super', 'wow', 'tak', 'jde to', 'works', 'dobra rana', 'good shot'], text: 'Jde to! Padel je lehký — skóre je dvě jedna pro nás!', translation: 'Getting it! Padel is easy — score is two-one to us!', next: 'game', positive: true },
+            { triggers: ['kolik', 'skore', 'score', 'stav', 'koliki', 'how much', 'jak jsme na tom'], text: 'Tři dva pro nás. Ještě jeden gem a vyhrajeme set!', translation: 'Three-two to us. One more game and we win the set!', next: 'game', positive: true },
+            { triggers: ['pivo', 'beer', 'hotovo', 'done', 'finish', 'konec', 'po zapase', 'after'], text: 'Po zápase! Teď se soustřeď! 😄', translation: 'After the match! Focus now! 😄', next: 'after' }
+          ],
+          fallback: { text: 'Hrajeme! Řekni: "promiň, špatná rána" nebo "eso!" 🎾', translation: 'We\'re playing! Say: "prominy, spatna rana" (bad shot) or "eso!" (great shot)' }
+        },
+        after: {
+          responses: [
+            { triggers: ['pivo', 'beer', 'jdeme', 'let\'s go', 'ano', 'yes', 'urcite', 'definitely', 'stavim', 'i\'ll buy', 'prvni rundu', 'round', 'samozrejme', 'of course'], text: 'Jdem! Dobrý zápas — rychle se učíš! 🎾🍺', translation: 'Let\'s go! Good match — you learn fast! (Padel scenario complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['dekuji', 'thanks', 'diky', 'bylo to skvele', 'great', 'fajn', 'enjoyed', 'skvely zapas'], text: 'Příště hraješ lépe. Jdeme na pivo — zasloužili jsme to!', translation: 'Next time you\'ll play even better. Let\'s get a beer — we deserve it!', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Dobrý zápas! Jdeme na pivo? 🍺 (Say "ano, urcite" or "ja stavim prvni rundu" = I\'ll get the first round)', translation: 'Good match! Going for a beer? 🍺' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Na zdraví! Příště hraješ ještě lépe. 🎾🍺', translation: 'Cheers! Next time you\'ll play even better. (Padel scenario complete! 🎉)' }
         }
       }
     },

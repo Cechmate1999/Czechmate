@@ -19,16 +19,16 @@ const SCENARIOS = [
     shortDesc: 'Order beer without looking like a tourist. Survive the silent stare of a Czech waiter.',
     context: 'Czech pubs (hospody) are not just drinking establishments — they\'re the living room of Czech society. Debates about football, politics, and the existential question of Pilsner vs. Kozel happen here daily. The waiter will come when they\'re ready. Waving is an offense.',
     dialogue: [
-      { speaker: 'Číšník', role: 'ai', czech: 'Dobrý den! Co si dáte?', english: 'Hello! What will you have?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Jedno pivo, prosím.', english: 'Hello. One beer, please.', isKey: true, note: 'Use "jedno" — pivo is neuter gender. "Jeden pivo" is a classic expat mistake.' },
-      { speaker: 'Číšník', role: 'ai', czech: 'Velké nebo malé?', english: 'Large or small?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Velké, prosím. A máte jídelní lístek?', english: 'Large, please. And do you have a menu?', isKey: true },
-      { speaker: 'Číšník', role: 'ai', czech: 'Samozřejmě. Tady to máte.', english: 'Of course. Here you go.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dám si svíčkovou, prosím.', english: 'I\'ll have the svíčková, please.', isKey: true, note: '"Dám si" = I\'ll have. More natural than "Chci" (I want), which sounds blunt.' },
-      { speaker: 'Číšník', role: 'ai', czech: 'Výborně. Ještě jedno pivo?', english: 'Excellent. Another beer?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Ještě jedno, prosím. Děkuji.', english: 'Another one, please. Thank you.', isKey: true },
-      { speaker: 'Číšník', role: 'ai', czech: 'Dobrou chuť!', english: 'Enjoy your meal!', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Zaplatím, prosím.', english: 'I\'d like to pay, please.', isKey: true, note: 'Don\'t wait for the bill — they won\'t bring it. You have to ask.' }
+      { speaker: 'Číšník', role: 'ai', czech: 'Dobrý den! Co si dáte?', english: 'Hello! What will you have?', spanish: '¡Hola! ¿Qué va a tomar?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Jedno pivo, prosím.', english: 'Hello. One beer, please.', spanish: 'Hola. Una cerveza, por favor.', isKey: true, note: 'Use "jedno" — pivo is neuter gender. "Jeden pivo" is a classic expat mistake.' },
+      { speaker: 'Číšník', role: 'ai', czech: 'Velké nebo malé?', english: 'Large or small?', spanish: '¿Grande o pequeña?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Velké, prosím. A máte jídelní lístek?', english: 'Large, please. And do you have a menu?', spanish: 'Grande, por favor. ¿Y tienen carta?', isKey: true },
+      { speaker: 'Číšník', role: 'ai', czech: 'Samozřejmě. Tady to máte.', english: 'Of course. Here you go.', spanish: 'Por supuesto. Aquí tiene.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dám si svíčkovou, prosím.', english: 'I\'ll have the svíčková, please.', spanish: 'Tomaré la svíčková, por favor.', isKey: true, note: '"Dám si" = I\'ll have. More natural than "Chci" (I want), which sounds blunt.' },
+      { speaker: 'Číšník', role: 'ai', czech: 'Výborně. Ještě jedno pivo?', english: 'Excellent. Another beer?', spanish: 'Excelente. ¿Otra cerveza?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ještě jedno, prosím. Děkuji.', english: 'Another one, please. Thank you.', spanish: 'Otra más, por favor. Gracias.', isKey: true },
+      { speaker: 'Číšník', role: 'ai', czech: 'Dobrou chuť!', english: 'Enjoy your meal!', spanish: '¡Buen provecho!', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Zaplatím, prosím.', english: 'I\'d like to pay, please.', spanish: 'La cuenta, por favor.', isKey: true, note: 'Don\'t wait for the bill — they won\'t bring it. You have to ask.' }
     ],
     keyPhrases: [
       { czech: 'Jedno pivo, prosím.', english: 'One beer, please.', phonetic: 'YED-no PI-vo, PRO-seem' },
@@ -55,43 +55,45 @@ const SCENARIOS = [
   {
     id: 'parents',
     language: 'czech',
-    icon: '👨‍👩‍👧',
-    title: 'Meeting the Parents',
-    subtitle: 'U rodičů',
+    icon: '👨‍👩‍👧‍👦',
+    title: 'Back at the In-Laws',
+    subtitle: 'Zase u příbuzných',
     difficulty: 'intermediate',
     category: 'Social',
-    shortDesc: 'Sunday lunch. Her parents. Silence. You. Your mission: survive with dignity and a second helping.',
-    context: 'Sunday lunch at a Czech family home is a rite of passage. Her mother has been cooking since 8am — soup first, always. Her father will assess you quietly. Bring wine, take your shoes off, finish every bite, and compliment the food. Those are the rules.',
+    shortDesc: 'You know the family now. Babička still doesn\'t speak English. Tatínek has wine. Sestra has opinions. Good luck.',
+    context: 'You\'ve been with your Czech partner long enough that the family knows you. Maminka still checks if you\'ve eaten. Babička talks at you regardless of the language barrier — just smile and ask her to slow down. Tatínek pours wine without asking. Sestra watches and judges (but she\'s warming up). This is Sunday lunch on hard mode.',
     dialogue: [
-      { speaker: 'Matka', role: 'ai', czech: 'Vítejte! Vstupte, vstupte. Konečně vás vidím.', english: 'Welcome! Come in, come in. Finally I see you.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den, paní Nováková. Těší mě. Přinesl jsem víno.', english: 'Hello, Mrs. Nováková. Nice to meet you. I brought wine.', isKey: true, note: 'Use their surname until invited to use first names. Always.' },
-      { speaker: 'Matka', role: 'ai', czech: 'Ach, to jste nemuseli! Moc hezké. Pojďte dál.', english: 'Oh, you didn\'t have to! Very nice. Come in.', isKey: false },
-      { speaker: 'Otec', role: 'ai', czech: 'Dobrý den. Posaďte se. Odkud jste?', english: 'Hello. Have a seat. Where are you from?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Jsem z Anglie, ale žiju v Praze už dva roky. Češtinu se stále učím.', english: 'I\'m from England, but I\'ve been living in Prague for two years. I\'m still learning Czech.', isKey: true },
-      { speaker: 'Matka', role: 'ai', czech: 'Polévka je hotová! Přijďte ke stolu.', english: 'Soup is ready! Come to the table.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'To voní skvěle! Děkuji za pozvání.', english: 'This smells wonderful! Thank you for the invitation.', isKey: true, note: '"Voní" = smells nice. "Smrdí" = stinks. Do NOT mix these up. Ever.' },
-      { speaker: 'Matka', role: 'ai', czech: 'Tak jezte, jezte! Nezlobte se, vezměte si víc.', english: 'Come on, eat, eat! Please, take more.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Je to výborné! Může dostat recept?', english: 'It\'s excellent! Can I get the recipe?', isKey: true, note: 'Asking for the recipe is the highest compliment you can give a Czech mother.' }
+      { speaker: 'Maminka', role: 'ai', czech: 'Ty jseš tady! Pojď dál, pojď dál. Jedl jsi dnes?', english: 'You\'re here! Come in, come in. Have you eaten today?', spanish: '¡Estás aquí! Pasa, pasa. ¿Has comido hoy?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den, Maminko. Jedl jsem, děkuji. Přinesl jsem červené víno.', english: 'Hello, Maminka. I\'ve eaten, thank you. I brought some red wine.', spanish: 'Hola, Maminka. Sí he comido, gracias. He traído vino tinto.', isKey: true, note: 'Using "Maminko" (vocative form of Maminka) instead of "paní Nováková" shows you\'ve been accepted into the family. Subtle but very noticed.' },
+      { speaker: 'Babička', role: 'ai', czech: 'Ježišmarjá! Jak jsi vyrost! Sedni si, sedni si!', english: 'Oh my goodness! How you\'ve grown! Sit down, sit down!', spanish: '¡Madre mía! ¡Cómo has crecido! ¡Siéntate, siéntate!', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Promiňte, Babičko — nerozumím dobře. Můžete mluvit pomaleji?', english: 'Sorry, Grandma — I don\'t understand well. Can you speak more slowly?', spanish: 'Perdone, Babička — no entiendo bien. ¿Puede hablar más despacio?', isKey: true, note: '"Babičko" is the vocative of "Babička" — addressing her directly. Using it correctly earns quiet approval from the whole room.' },
+      { speaker: 'Babička', role: 'ai', czech: 'Pomaleji! Pom-a-le-ji! Tak! Rozumíš?', english: 'More slowly! Slo-wer! Like that! Do you understand?', spanish: '¡Más despacio! ¡Des-pa-cio! ¡Así! ¿Entiendes?', isKey: false },
+      { speaker: 'Tatínek', role: 'ai', czech: 'Dáš si sklenku? Máme burgundy z Moravy.', english: 'Will you have a glass? We have burgundy from Moravia.', spanish: '¿Te apetece una copa? Tenemos un tinto de Moravia.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Rád. Na zdraví, Tatínku!', english: 'Gladly. Cheers, Dad!', spanish: 'Con mucho gusto. ¡Salud, Tatínek!', isKey: true, note: 'Using "Tatínku" (vocative) instead of his first name signals real family integration. He will pour you a bigger glass.' },
+      { speaker: 'Sestra', role: 'ai', czech: 'Takže — česky tě naučila, nebo se učíš sám?', english: 'So — did she teach you Czech, or are you learning yourself?', spanish: '¿Y bien — te enseñó ella el checo, o lo estudias tú solo?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Snažím se sám. Chodím na kurz, ale moc toho ještě neumím.', english: 'I\'m trying on my own. I go to a class, but I still don\'t know much.', spanish: 'Lo intento solo. Voy a clases, pero todavía no sé mucho.', isKey: true, note: 'Honesty about your level lands better than overconfidence. Sestra is testing you. Modesty passes.' },
+      { speaker: 'Maminka', role: 'ai', czech: 'Polévka je hotová! Všichni ke stolu. Hned!', english: 'Soup is ready! Everyone to the table. Now!', spanish: '¡La sopa está lista! Todo el mundo a la mesa. ¡Ahora!', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Maminko, ta vůně je úžasná. Co vaříte?', english: 'Maminka, that smell is amazing. What are you cooking?', spanish: 'Maminka, ese olor es increíble. ¿Qué estás cocinando?', isKey: true, note: 'Asking what she\'s cooking is the golden key. She will explain every ingredient. This buys you fifteen minutes of excellent listening practice.' }
     ],
     keyPhrases: [
-      { czech: 'Těší mě.', english: 'Nice to meet you.', phonetic: 'TYEH-shee myeh' },
+      { czech: 'Maminko / Babičko / Tatínku', english: 'Maminka / Grandma / Dad (vocative forms — how you address them directly)', phonetic: 'MA-min-ko / BA-bich-ko / ta-TEEN-ku' },
+      { czech: 'Nerozumím dobře. Pomaleji, prosím.', english: 'I don\'t understand well. Slower, please.', phonetic: 'neh-ROH-zu-meem DOH-bzheh. po-ma-LEY-ee PRO-seem' },
       { czech: 'Je to výborné!', english: 'This is excellent/delicious!', phonetic: 'yeh to VEE-bor-neh' },
-      { czech: 'Děkuji za pozvání.', english: 'Thank you for the invitation.', phonetic: 'DYEH-ku-yi za poz-VAH-nee' },
-      { czech: 'Voní to báječně.', english: 'It smells wonderful.', phonetic: 'VOH-nee to BAH-yech-nyeh' },
-      { czech: 'Smím si vzít víc?', english: 'May I take more?', phonetic: 'smeem si vzyeet veetz' },
-      { czech: 'Byl to skvělý oběd.', english: 'That was a great lunch.', phonetic: 'bil to SKVYE-lee OH-byed' }
+      { czech: 'Ta vůně je úžasná.', english: 'That smell is amazing.', phonetic: 'ta VOO-nyeh yeh OO-zhas-nah' },
+      { czech: 'Rád. Na zdraví!', english: 'Gladly. Cheers!', phonetic: 'rahd. NA ZDRA-vee' },
+      { czech: 'Snažím se sám.', english: 'I\'m trying on my own.', phonetic: 'SNA-zheem seh sahm' }
     ],
     culturalTips: [
-      { title: 'Always bring something', body: 'Wine, flowers (odd number — not 13), or chocolates. Never arrive empty-handed. You\'ll be forgiven once. The second time, it becomes a personality trait.' },
-      { title: 'Shoes come off at the door', body: 'Czech homes are shoe-free zones. Guest slippers will be provided. Pro tip: bring clean socks or your own slippers if you\'re fussy. This matters.' },
-      { title: 'Finish your plate', body: 'Leaving food on your plate signals you didn\'t like it. That\'s a direct hit to the cook\'s pride. Pace yourself during soup so you can eat the full main course.' },
-      { title: 'The father will warm up slowly', body: 'Czech men of that generation aren\'t rude — they\'re evaluating. Ask him about Czech football, history, or his profession. Hockey opinions are always welcome. Avoid politics.' },
-      { title: 'Sunday lunch has a structure', body: 'Soup → Main course → Dessert. This is sacred. Don\'t ask about salad. Don\'t suggest skipping the soup. Just follow the flow.' }
+      { title: 'Vocatives are the secret handshake', body: '"Babičko," "Maminko," "Tatínku" — these are the vocative forms used when directly addressing family. Using them correctly signals you\'ve integrated beyond tourist-level Czech. Every family member notices.' },
+      { title: 'Babička will speak at full speed, forever', body: 'Don\'t panic. "Promiňte, nerozumím. Pomaleji, prosím?" is your shield. She will slow down for exactly one sentence, then resume full speed. Smile and nod. She loves you anyway.' },
+      { title: 'Tatínek pours, you accept', body: 'Refusing Tatínek\'s wine offer on the first round is a minor social stumble unless you have a real reason. Accept, say "Na zdraví," and you\'ve secured your position.' },
+      { title: 'Sestra is the toughest judge — and the most honest ally', body: 'Sister has seen everyone who\'s come through. She\'s testing your authenticity, not your Czech level. Admit what you don\'t know. Avoid pretending. She respects realness.' },
+      { title: 'The smell question is relationship gold', body: 'Asking "Co vaříte?" (What are you cooking?) the moment you smell the food gives Maminka 15 minutes of talking time and makes her feel seen. It\'s the highest-ROI question in Czech family diplomacy.' }
     ],
     realVsTextbook: [
-      { textbook: '"Toto jídlo je chutné." (This food is tasty.)', real: '"Je to výborné!" or "To je fantastické!" — "Chutné" is too weak. Load up on superlatives. This is the time.' },
-      { textbook: '"Rád bych ještě trochu." (I would like a little more.)', real: '"Ještě trochu? Ano, prosím!" — Match her energy. She\'s offering enthusiastically; accept enthusiastically.' },
-      { textbook: '"Jak se jmenujete?" (What is your name?) — too casual for elders', real: '"Promiňte, jak vás mám oslovovat?" (How should I address you?) — polite and respectful.' }
+      { textbook: '"Paní Nováková, vaše jídlo je velmi chutné." (Mrs. Nováková, your food is very tasty.)', real: '"Maminko, ta vůně je úžasná!" — First-name vocative + emotional reaction. This is what accepted family members say.' },
+      { textbook: '"Nerozumím vám, mluvíte příliš rychle." (I don\'t understand you, you speak too fast.)', real: '"Promiňte, Babičko — pomaleji?" — Shorter, warmer, uses the vocative. She\'ll love you for it.' },
+      { textbook: '"Rád bych se naučil více česky." (I would like to learn more Czech.)', real: '"Snažím se sám. Chodím na kurz." — Concrete action beats polite aspiration every time. Sestra approves.' }
     ]
   },
 
@@ -106,14 +108,14 @@ const SCENARIOS = [
     shortDesc: 'Welcome to Czech bureaucracy. Bring your documents. All of them. Then come back on Tuesday.',
     context: 'The Czech Foreign Police (Cizinecká policie) is where expat dreams get lovingly tested. The office opens at 8am. The queue started at 5:30am. Your documents are almost certainly incomplete. This is a rite of passage. You\'ll survive. Probably.',
     dialogue: [
-      { speaker: 'Úřednice', role: 'ai', czech: 'Další! Co potřebujete?', english: 'Next! What do you need?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Přišel jsem požádat o prodloužení povolení k pobytu.', english: 'Hello. I came to apply for an extension of my residence permit.', isKey: true },
-      { speaker: 'Úřednice', role: 'ai', czech: 'Máte pas, fotografii, formulář žádosti a potvrzení o ubytování?', english: 'Do you have passport, photo, application form and proof of accommodation?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Ano, mám. Tady jsou všechny dokumenty.', english: 'Yes, I do. Here are all the documents.', isKey: true },
-      { speaker: 'Úřednice', role: 'ai', czech: 'Hmm. Chybí vám potvrzení o příjmu a kopie pracovní smlouvy.', english: 'Hmm. You\'re missing income confirmation and a copy of your work contract.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Moment, prosím. To mám od zaměstnavatele. Tady.', english: 'One moment, please. I have that from my employer. Here.', isKey: true, note: 'Always keep everything in a labeled folder. They will find something missing.' },
-      { speaker: 'Vy', role: 'you', czech: 'Promiňte — nerozumím tomuto výrazu. Můžete vysvětlit, prosím?', english: 'Excuse me — I don\'t understand this term. Can you explain, please?', isKey: true },
-      { speaker: 'Vy', role: 'you', czech: 'Aha, rozumím. Kdy přijde rozhodnutí?', english: 'Ah, I understand. When will the decision come?', isKey: true }
+      { speaker: 'Úřednice', role: 'ai', czech: 'Další! Co potřebujete?', english: 'Next! What do you need?', spanish: '¡El siguiente! ¿Qué necesita?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Přišel jsem požádat o prodloužení povolení k pobytu.', english: 'Hello. I came to apply for an extension of my residence permit.', spanish: 'Buenos días. Vengo a solicitar la prórroga del permiso de residencia.', isKey: true },
+      { speaker: 'Úřednice', role: 'ai', czech: 'Máte pas, fotografii, formulář žádosti a potvrzení o ubytování?', english: 'Do you have passport, photo, application form and proof of accommodation?', spanish: '¿Tiene pasaporte, foto, formulario de solicitud y justificante de alojamiento?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ano, mám. Tady jsou všechny dokumenty.', english: 'Yes, I do. Here are all the documents.', spanish: 'Sí, los tengo. Aquí están todos los documentos.', isKey: true },
+      { speaker: 'Úřednice', role: 'ai', czech: 'Hmm. Chybí vám potvrzení o příjmu a kopie pracovní smlouvy.', english: 'Hmm. You\'re missing income confirmation and a copy of your work contract.', spanish: 'Hmm. Le falta el justificante de ingresos y la copia del contrato de trabajo.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Moment, prosím. To mám od zaměstnavatele. Tady.', english: 'One moment, please. I have that from my employer. Here.', spanish: 'Un momento, por favor. Lo tengo del empleador. Aquí.', isKey: true, note: 'Always keep everything in a labeled folder. They will find something missing.' },
+      { speaker: 'Vy', role: 'you', czech: 'Promiňte — nerozumím tomuto výrazu. Můžete vysvětlit, prosím?', english: 'Excuse me — I don\'t understand this term. Can you explain, please?', spanish: 'Perdone — no entiendo este término. ¿Puede explicarlo, por favor?', isKey: true },
+      { speaker: 'Vy', role: 'you', czech: 'Aha, rozumím. Kdy přijde rozhodnutí?', english: 'Ah, I understand. When will the decision come?', spanish: 'Ah, entiendo. ¿Cuándo llegará la resolución?', isKey: true }
     ],
     keyPhrases: [
       { czech: 'Přišel jsem kvůli...', english: 'I came because of... / I\'m here for...', phonetic: 'PZHEE-shel ysem KVOO-lee' },
@@ -147,12 +149,12 @@ const SCENARIOS = [
     shortDesc: 'Your Czech colleagues aren\'t unfriendly. They\'re just loading. Give it 6 months.',
     context: 'Czech work culture is professional and reserved by default. Don\'t expect questions on day one. Czech colleagues don\'t do fake warmth — but once you\'re in, you\'re genuinely in. The ice breaks over lunch and coffee, not at your desk.',
     dialogue: [
-      { speaker: 'Kolega Pavel', role: 'ai', czech: 'Dobrý den. Vy jste ten nový, co?', english: 'Hello. You\'re the new one, right?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Ano, jsem Tom. Nastoupil jsem minulý týden. Těší mě.', english: 'Yes, I\'m Tom. I started last week. Nice to meet you.', isKey: true },
-      { speaker: 'Kolega Pavel', role: 'ai', czech: 'Já jsem Pavel. Jak se vám tu líbí?', english: 'I\'m Pavel. How do you like it here?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Zatím dobrý. Všichni jsou moc milí.', english: 'So far so good. Everyone is very kind.', isKey: true, note: '"Zatím dobrý" is casual and natural. Pure enthusiasm can seem fake to Czechs.' },
-      { speaker: 'Kolega Pavel', role: 'ai', czech: 'Jdeme na oběd. Chcete jít s námi?', english: 'We\'re going for lunch. Do you want to come with us?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Jo, rád! Kde tu dobře vaří?', english: 'Yeah, I\'d love to! Where\'s good food around here?', isKey: true, note: 'ALWAYS accept the first lunch invitation. This is how Czech colleagues bond.' }
+      { speaker: 'Kolega Pavel', role: 'ai', czech: 'Dobrý den. Vy jste ten nový, co?', english: 'Hello. You\'re the new one, right?', spanish: 'Hola. Tú eres el nuevo, ¿verdad?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ano, jsem Tom. Nastoupil jsem minulý týden. Těší mě.', english: 'Yes, I\'m Tom. I started last week. Nice to meet you.', spanish: 'Sí, soy Tom. Empecé la semana pasada. Encantado.', isKey: true },
+      { speaker: 'Kolega Pavel', role: 'ai', czech: 'Já jsem Pavel. Jak se vám tu líbí?', english: 'I\'m Pavel. How do you like it here?', spanish: 'Soy Pavel. ¿Qué tal te parece aquí?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Zatím dobrý. Všichni jsou moc milí.', english: 'So far so good. Everyone is very kind.', spanish: 'Bien hasta ahora. Todos son muy amables.', isKey: true, note: '"Zatím dobrý" is casual and natural. Pure enthusiasm can seem fake to Czechs.' },
+      { speaker: 'Kolega Pavel', role: 'ai', czech: 'Jdeme na oběd. Chcete jít s námi?', english: 'We\'re going for lunch. Do you want to come with us?', spanish: 'Vamos a comer. ¿Quieres venir con nosotros?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Jo, rád! Kde tu dobře vaří?', english: 'Yeah, I\'d love to! Where\'s good food around here?', spanish: '¡Sí, con gusto! ¿Dónde se come bien por aquí?', isKey: true, note: 'ALWAYS accept the first lunch invitation. This is how Czech colleagues bond.' }
     ],
     keyPhrases: [
       { czech: 'Nastoupil jsem minulý týden.', english: 'I started last week.', phonetic: 'nas-TOO-pil ysem MI-noo-lee TEE-den' },
@@ -184,12 +186,12 @@ const SCENARIOS = [
     shortDesc: 'She\'ll test if you have a plan. He\'ll pretend to be calm. Both of you are absolutely not calm.',
     context: 'Czech dating culture moves at its own pace — authenticity over performance. "Whatever you want" is the wrong answer. Have a plan. Show up on time. Say what you mean. Using Czech phrases, even imperfectly, is surprisingly charming.',
     dialogue: [
-      { speaker: 'Rande', role: 'ai', czech: 'Čekal jsi dlouho?', english: 'Were you waiting long?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Ne, přišel jsem teď. Vypadáš skvěle.', english: 'No, I just got here. You look great.', isKey: true, note: 'Simple and genuine. Avoid over-complimenting in the first minute.' },
-      { speaker: 'Rande', role: 'ai', czech: 'Díky! Ty taky. Kam jdeme?', english: 'Thanks! You too. Where are we going?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Zarezervoval jsem stůl v jedné restauraci na Vinohradech. Máš ráda italskou kuchyni?', english: 'I reserved a table at a restaurant in Vinohrady. Do you like Italian food?', isKey: true, note: 'Having a specific plan — not "wherever you want" — is genuinely attractive in Czech culture.' },
-      { speaker: 'Rande', role: 'ai', czech: 'Ach, to je milé! Ano, mám. Mluvíš česky?', english: 'Oh, that\'s nice! Yes, I do. You speak Czech?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Snažím se. Ještě se učím, ale líbí se mi tady.', english: 'I try. I\'m still learning, but I like it here.', isKey: true, note: 'Self-deprecation about your Czech is charming. Czechs love the effort more than the result.' }
+      { speaker: 'Rande', role: 'ai', czech: 'Čekal jsi dlouho?', english: 'Were you waiting long?', spanish: '¿Llevabas mucho esperando?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ne, přišel jsem teď. Vypadáš skvěle.', english: 'No, I just got here. You look great.', spanish: 'No, acabo de llegar. Estás preciosa.', isKey: true, note: 'Simple and genuine. Avoid over-complimenting in the first minute.' },
+      { speaker: 'Rande', role: 'ai', czech: 'Díky! Ty taky. Kam jdeme?', english: 'Thanks! You too. Where are we going?', spanish: '¡Gracias! Tú también. ¿Adónde vamos?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Zarezervoval jsem stůl v jedné restauraci na Vinohradech. Máš ráda italskou kuchyni?', english: 'I reserved a table at a restaurant in Vinohrady. Do you like Italian food?', spanish: 'He reservado mesa en un restaurante en Vinohrady. ¿Te gusta la cocina italiana?', isKey: true, note: 'Having a specific plan — not "wherever you want" — is genuinely attractive in Czech culture.' },
+      { speaker: 'Rande', role: 'ai', czech: 'Ach, to je milé! Ano, mám. Mluvíš česky?', english: 'Oh, that\'s nice! Yes, I do. You speak Czech?', spanish: '¡Oh, qué detalle! Sí, me encanta. ¿Hablas checo?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Snažím se. Ještě se učím, ale líbí se mi tady.', english: 'I try. I\'m still learning, but I like it here.', spanish: 'Lo intento. Todavía aprendo, pero me gusta estar aquí.', isKey: true, note: 'Self-deprecation about your Czech is charming. Czechs love the effort more than the result.' }
     ],
     keyPhrases: [
       { czech: 'Vypadáš skvěle.', english: 'You look great.', phonetic: 'VI-pa-dahsh SKVYE-leh' },
@@ -433,16 +435,16 @@ const SCENARIOS = [
     shortDesc: 'The landlord says it\'s "cozy." You need to know if that means 28m². Ask the right questions before you sign anything.',
     context: 'Prague rental market moves fast. Landlords know expats often don\'t push back. Knowing how to ask about rent, deposit, bills, and availability in Czech immediately earns you respect — and might save you thousands. Never sign without understanding what\'s included.',
     dialogue: [
-      { speaker: 'Majitelka', role: 'ai', czech: 'Dobrý den! Pojďte dál, ukáži vám byt.', english: 'Hello! Come in, I\'ll show you the apartment.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Děkuji. Je byt ještě volný?', english: 'Hello. Thank you. Is the apartment still available?', isKey: true },
-      { speaker: 'Majitelka', role: 'ai', czech: 'Ano, volný od prvního příštího měsíce.', english: 'Yes, available from the first of next month.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Kolik je měsíční nájem? A jsou účty v ceně?', english: 'How much is the monthly rent? And are bills included?', isKey: true, note: 'Always ask "jsou účty v ceně?" Bills often aren\'t included. It can add 3,000–5,000 Kč/month.' },
-      { speaker: 'Majitelka', role: 'ai', czech: 'Nájem je 18 000 korun. Účty jsou zvlášť — asi 3 000 měsíčně.', english: 'Rent is 18,000 crowns. Bills are separate — about 3,000 monthly.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Jaká je kauce? A je povoleno mít domácí zvíře?', english: 'How much is the deposit? And are pets allowed?', isKey: true },
-      { speaker: 'Majitelka', role: 'ai', czech: 'Kauce jsou dva měsíční nájmy. Zvířata jsou v pořádku, jen menší.', english: 'Deposit is two months\' rent. Pets are fine, just smaller ones.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Je v bytě internet? A jak je to s parkováním?', english: 'Is there internet in the apartment? And what about parking?', isKey: true },
-      { speaker: 'Majitelka', role: 'ai', czech: 'Internet je připravený, stačí si vybrat poskytovatele. Parkování je na ulici, zdarma.', english: 'Internet is ready, you just choose a provider. Parking is on the street, free.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Mohu si vzít čas na rozmyšlenou do zítřka?', english: 'Can I have until tomorrow to think about it?', isKey: true, note: 'Never sign on the spot. A reputable landlord will give you 24 hours. If they won\'t, that\'s a red flag.' }
+      { speaker: 'Majitelka', role: 'ai', czech: 'Dobrý den! Pojďte dál, ukáži vám byt.', english: 'Hello! Come in, I\'ll show you the apartment.', spanish: '¡Hola! Pase, le enseño el piso.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Děkuji. Je byt ještě volný?', english: 'Hello. Thank you. Is the apartment still available?', spanish: 'Hola. Gracias. ¿Sigue libre el piso?', isKey: true },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Ano, volný od prvního příštího měsíce.', english: 'Yes, available from the first of next month.', spanish: 'Sí, libre desde el primero del mes que viene.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Kolik je měsíční nájem? A jsou účty v ceně?', english: 'How much is the monthly rent? And are bills included?', spanish: '¿Cuánto es el alquiler mensual? ¿Están incluidos los suministros?', isKey: true, note: 'Always ask "jsou účty v ceně?" Bills often aren\'t included. It can add 3,000–5,000 Kč/month.' },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Nájem je 18 000 korun. Účty jsou zvlášť — asi 3 000 měsíčně.', english: 'Rent is 18,000 crowns. Bills are separate — about 3,000 monthly.', spanish: 'El alquiler son 18.000 coronas. Los suministros son aparte — unos 3.000 al mes.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Jaká je kauce? A je povoleno mít domácí zvíře?', english: 'How much is the deposit? And are pets allowed?', spanish: '¿Cuánto es la fianza? ¿Se permiten mascotas?', isKey: true },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Kauce jsou dva měsíční nájmy. Zvířata jsou v pořádku, jen menší.', english: 'Deposit is two months\' rent. Pets are fine, just smaller ones.', spanish: 'La fianza son dos meses de alquiler. Las mascotas están bien, solo pequeñas.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Je v bytě internet? A jak je to s parkováním?', english: 'Is there internet in the apartment? And what about parking?', spanish: '¿Hay internet en el piso? ¿Y qué hay con el aparcamiento?', isKey: true },
+      { speaker: 'Majitelka', role: 'ai', czech: 'Internet je připravený, stačí si vybrat poskytovatele. Parkování je na ulici, zdarma.', english: 'Internet is ready, you just choose a provider. Parking is on the street, free.', spanish: 'El internet está listo, solo elige proveedor. Aparcamiento en la calle, gratis.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Mohu si vzít čas na rozmyšlenou do zítřka?', english: 'Can I have until tomorrow to think about it?', spanish: '¿Puedo pensármelo hasta mañana?', isKey: true, note: 'Never sign on the spot. A reputable landlord will give you 24 hours. If they won\'t, that\'s a red flag.' }
     ],
     keyPhrases: [
       { czech: 'Kolik je měsíční nájem?', english: 'How much is the monthly rent?', phonetic: 'KO-lik yeh myeh-SEECH-nee NAH-yem' },
@@ -476,14 +478,14 @@ const SCENARIOS = [
     shortDesc: 'Czech companies value stability and substance over presentation. Don\'t oversell. Show you\'re serious about staying.',
     context: 'Czech HR culture is reserved and direct. They\'re not looking for American-style enthusiasm — they\'re assessing whether you\'re reliable, competent, and actually planning to stay in the country. Speaking even basic Czech signals serious commitment. It\'s noticed immediately.',
     dialogue: [
-      { speaker: 'Personalista', role: 'ai', czech: 'Dobrý den. Jsem rád/a, že jste přišel/la. Sedněte si, prosím.', english: 'Hello. I\'m glad you came. Please have a seat.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Děkuji za pozvání. Těší mě.', english: 'Hello. Thank you for the invitation. Pleased to meet you.', isKey: true },
-      { speaker: 'Personalista', role: 'ai', czech: 'Řekněte mi o sobě. Co vás přivedlo do České republiky?', english: 'Tell me about yourself. What brought you to the Czech Republic?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Pracuji v oboru IT pět let. Do Prahy jsem přišel pro příležitosti a zůstat chci dlouhodobě.', english: 'I\'ve worked in IT for five years. I came to Prague for the opportunities and plan to stay long-term.', isKey: true, note: 'Czech employers are cautious about expats leaving after 6 months. Emphasize long-term intention clearly.' },
-      { speaker: 'Personalista', role: 'ai', czech: 'Mluvíte česky? Jak důležité to pro vás je?', english: 'Do you speak Czech? How important is that to you?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Ještě se učím, ale je to pro mě priorita. Chci pracovat v česky mluvícím prostředí.', english: 'I\'m still learning, but it\'s a priority for me. I want to work in a Czech-speaking environment.', isKey: true, note: 'This answer is almost always the right one. They respect the intention even more than the current level.' },
-      { speaker: 'Personalista', role: 'ai', czech: 'Jaké jsou vaše silné stránky?', english: 'What are your strengths?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Jsem spolehlivý, pracuji systematicky a umím pracovat v týmu. Konkrétní výsledky mohu doložit.', english: 'I\'m reliable, I work systematically, and I work well in a team. I can demonstrate specific results.', isKey: true }
+      { speaker: 'Personalista', role: 'ai', czech: 'Dobrý den. Jsem rád/a, že jste přišel/la. Sedněte si, prosím.', english: 'Hello. I\'m glad you came. Please have a seat.', spanish: 'Buenos días. Me alegra que haya venido. Siéntese, por favor.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Děkuji za pozvání. Těší mě.', english: 'Hello. Thank you for the invitation. Pleased to meet you.', spanish: 'Buenos días. Gracias por la invitación. Es un placer.', isKey: true },
+      { speaker: 'Personalista', role: 'ai', czech: 'Řekněte mi o sobě. Co vás přivedlo do České republiky?', english: 'Tell me about yourself. What brought you to the Czech Republic?', spanish: 'Hábleme de usted. ¿Qué le trajo a la República Checa?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Pracuji v oboru IT pět let. Do Prahy jsem přišel pro příležitosti a zůstat chci dlouhodobě.', english: 'I\'ve worked in IT for five years. I came to Prague for the opportunities and plan to stay long-term.', spanish: 'Llevo cinco años en el sector IT. Vine a Praga por las oportunidades y quiero quedarme a largo plazo.', isKey: true, note: 'Czech employers are cautious about expats leaving after 6 months. Emphasize long-term intention clearly.' },
+      { speaker: 'Personalista', role: 'ai', czech: 'Mluvíte česky? Jak důležité to pro vás je?', english: 'Do you speak Czech? How important is that to you?', spanish: '¿Habla checo? ¿Qué importancia tiene para usted?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ještě se učím, ale je to pro mě priorita. Chci pracovat v česky mluvícím prostředí.', english: 'I\'m still learning, but it\'s a priority for me. I want to work in a Czech-speaking environment.', spanish: 'Todavía aprendo, pero es una prioridad. Quiero trabajar en un entorno de habla checa.', isKey: true, note: 'This answer is almost always the right one. They respect the intention even more than the current level.' },
+      { speaker: 'Personalista', role: 'ai', czech: 'Jaké jsou vaše silné stránky?', english: 'What are your strengths?', spanish: '¿Cuáles son sus puntos fuertes?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Jsem spolehlivý, pracuji systematicky a umím pracovat v týmu. Konkrétní výsledky mohu doložit.', english: 'I\'m reliable, I work systematically, and I work well in a team. I can demonstrate specific results.', spanish: 'Soy fiable, trabajo de forma sistemática y sé trabajar en equipo. Puedo demostrar resultados concretos.', isKey: true }
     ],
     keyPhrases: [
       { czech: 'Děkuji za pozvání.', english: 'Thank you for the invitation.', phonetic: 'DYEH-ku-yi za poz-VAH-nee' },
@@ -517,14 +519,14 @@ const SCENARIOS = [
     shortDesc: 'The doctor will see you now. You have exactly 10 minutes. Say what hurts, understand the prescription, and don\'t panic.',
     context: 'Czech healthcare is solid and affordable with EU health insurance or Czech pojišťovna (health insurance). Finding an English-speaking doctor is possible in Prague, harder elsewhere. GPs (praktický lékař) require registration — you can\'t just walk in. For emergencies: nemocnice or pohotovost (emergency clinic).',
     dialogue: [
-      { speaker: 'Doktor', role: 'ai', czech: 'Dobrý den. Co vás trápí?', english: 'Hello. What\'s bothering you?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Bolí mě hlava a mám horečku.', english: 'Hello. I have a headache and a fever.', isKey: true },
-      { speaker: 'Doktor', role: 'ai', czech: 'Jak dlouho to máte? A jak silná je ta bolest?', english: 'How long have you had this? And how strong is the pain?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Od včera. Bolest je silná — asi sedm z deseti.', english: 'Since yesterday. The pain is strong — about seven out of ten.', isKey: true, note: 'The 1–10 pain scale is universal. Use it — it\'s faster and clearer than describing it in words.' },
-      { speaker: 'Doktor', role: 'ai', czech: 'Máte alergii na nějaké léky?', english: 'Are you allergic to any medications?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Ano, jsem alergický/á na penicilin.', english: 'Yes, I\'m allergic to penicillin.', isKey: true, note: 'This is critical. Write it down in Czech and carry it with you if you have any allergies.' },
-      { speaker: 'Doktor', role: 'ai', czech: 'Dobře. Předepíšu vám antibiotika. Berte třikrát denně po jídle.', english: 'Fine. I\'ll prescribe antibiotics. Take them three times a day after meals.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Promiňte — mohl/a byste to prosím napsat? Nechci špatně pochopit dávkování.', english: 'Excuse me — could you please write that down? I don\'t want to misunderstand the dosage.', isKey: true, note: '"Můžete to napsat?" is your most powerful phrase in any Czech official context.' }
+      { speaker: 'Doktor', role: 'ai', czech: 'Dobrý den. Co vás trápí?', english: 'Hello. What\'s bothering you?', spanish: 'Buenos días. ¿Qué le ocurre?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Bolí mě hlava a mám horečku.', english: 'Hello. I have a headache and a fever.', spanish: 'Buenos días. Me duele la cabeza y tengo fiebre.', isKey: true },
+      { speaker: 'Doktor', role: 'ai', czech: 'Jak dlouho to máte? A jak silná je ta bolest?', english: 'How long have you had this? And how strong is the pain?', spanish: '¿Desde cuándo le pasa? ¿Y cómo de fuerte es el dolor?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Od včera. Bolest je silná — asi sedm z deseti.', english: 'Since yesterday. The pain is strong — about seven out of ten.', spanish: 'Desde ayer. El dolor es fuerte — como un siete sobre diez.', isKey: true, note: 'The 1–10 pain scale is universal. Use it — it\'s faster and clearer than describing it in words.' },
+      { speaker: 'Doktor', role: 'ai', czech: 'Máte alergii na nějaké léky?', english: 'Are you allergic to any medications?', spanish: '¿Es alérgico/a a algún medicamento?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ano, jsem alergický/á na penicilin.', english: 'Yes, I\'m allergic to penicillin.', spanish: 'Sí, soy alérgico/a a la penicilina.', isKey: true, note: 'This is critical. Write it down in Czech and carry it with you if you have any allergies.' },
+      { speaker: 'Doktor', role: 'ai', czech: 'Dobře. Předepíšu vám antibiotika. Berte třikrát denně po jídle.', english: 'Fine. I\'ll prescribe antibiotics. Take them three times a day after meals.', spanish: 'Bien. Le recetaré antibióticos. Tómelos tres veces al día después de comer.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Promiňte — mohl/a byste to prosím napsat? Nechci špatně pochopit dávkování.', english: 'Excuse me — could you please write that down? I don\'t want to misunderstand the dosage.', spanish: 'Perdone — ¿podría anotarlo, por favor? No quiero malentender la dosis.', isKey: true, note: '"Můžete to napsat?" is your most powerful phrase in any Czech official context.' }
     ],
     keyPhrases: [
       { czech: 'Bolí mě...', english: 'My ... hurts / I have pain in...', phonetic: 'BO-lee myeh' },
@@ -558,16 +560,16 @@ const SCENARIOS = [
     shortDesc: 'Finding things, asking prices, paying. The daily run that reveals how much Czech you actually know.',
     context: 'Czech supermarkets (Albert, Billa, Lidl, Kaufland, Tesco) all work the same way. The tricky moments: when the cashier asks if you have a loyalty card, asks you to enter your PIN, or when something doesn\'t scan. These three situations trip up expats daily.',
     dialogue: [
-      { speaker: 'Prodavačka', role: 'ai', czech: 'Dobrý den! Potřebujete pomoct?', english: 'Hello! Do you need help?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Kde najdu chléb?', english: 'Hello. Where can I find bread?', isKey: true },
-      { speaker: 'Prodavačka', role: 'ai', czech: 'Chléb je v pravém rohu, vedle pekařských výrobků.', english: 'Bread is in the right corner, next to the bakery section.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Děkuji. A kde jsou mléčné výrobky?', english: 'Thank you. And where are the dairy products?', isKey: true },
-      { speaker: 'Pokladní', role: 'ai', czech: 'Máte věrnostní kartu?', english: 'Do you have a loyalty card?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Nemám, bohužel.', english: 'I don\'t, unfortunately.', isKey: true, note: '"Nemám, bohužel" is the perfect polite answer to anything you don\'t have. Short, correct, no stress.' },
-      { speaker: 'Pokladní', role: 'ai', czech: 'Dobře. Celkem 347 korun. Platíte kartou nebo hotově?', english: 'Fine. Total is 347 crowns. Card or cash?', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Kartou, prosím.', english: 'By card, please.', isKey: true },
-      { speaker: 'Pokladní', role: 'ai', czech: 'Zadejte PIN, prosím.', english: 'Please enter your PIN.', isKey: false },
-      { speaker: 'Vy', role: 'you', czech: 'Potřebuji tašku, prosím.', english: 'I need a bag, please.', isKey: true, note: 'Bags aren\'t free and aren\'t offered automatically in Czech shops. You have to ask.' }
+      { speaker: 'Prodavačka', role: 'ai', czech: 'Dobrý den! Potřebujete pomoct?', english: 'Hello! Do you need help?', spanish: '¡Hola! ¿Necesita ayuda?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Dobrý den. Kde najdu chléb?', english: 'Hello. Where can I find bread?', spanish: 'Hola. ¿Dónde encuentro el pan?', isKey: true },
+      { speaker: 'Prodavačka', role: 'ai', czech: 'Chléb je v pravém rohu, vedle pekařských výrobků.', english: 'Bread is in the right corner, next to the bakery section.', spanish: 'El pan está en el rincón de la derecha, junto a la panadería.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Děkuji. A kde jsou mléčné výrobky?', english: 'Thank you. And where are the dairy products?', spanish: 'Gracias. ¿Y dónde están los lácteos?', isKey: true },
+      { speaker: 'Pokladní', role: 'ai', czech: 'Máte věrnostní kartu?', english: 'Do you have a loyalty card?', spanish: '¿Tiene tarjeta de fidelidad?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Nemám, bohužel.', english: 'I don\'t, unfortunately.', spanish: 'No tengo, por desgracia.', isKey: true, note: '"Nemám, bohužel" is the perfect polite answer to anything you don\'t have. Short, correct, no stress.' },
+      { speaker: 'Pokladní', role: 'ai', czech: 'Dobře. Celkem 347 korun. Platíte kartou nebo hotově?', english: 'Fine. Total is 347 crowns. Card or cash?', spanish: 'Bien. En total 347 coronas. ¿Paga con tarjeta o en efectivo?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Kartou, prosím.', english: 'By card, please.', spanish: 'Con tarjeta, por favor.', isKey: true },
+      { speaker: 'Pokladní', role: 'ai', czech: 'Zadejte PIN, prosím.', english: 'Please enter your PIN.', spanish: 'Introduzca el PIN, por favor.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Potřebuji tašku, prosím.', english: 'I need a bag, please.', spanish: 'Necesito una bolsa, por favor.', isKey: true, note: 'Bags aren\'t free and aren\'t offered automatically in Czech shops. You have to ask.' }
     ],
     keyPhrases: [
       { czech: 'Kde najdu...?', english: 'Where can I find...?', phonetic: 'gdeh NAY-du' },
@@ -586,6 +588,49 @@ const SCENARIOS = [
     realVsTextbook: [
       { textbook: '"Promiňte, mohli byste mi říct, kde se nachází chléb?" (Excuse me, could you tell me where the bread is located?)', real: '"Kde je chléb?" — Two words. Points at what you want. Works perfectly.' },
       { textbook: '"Rád bych zaplatil kartou." (I would like to pay by card.)', real: '"Kartou." — One word. Hold up your card. Done.' }
+    ]
+  },
+
+  {
+    id: 'padel',
+    language: 'czech',
+    icon: '🎾',
+    title: 'Playing Padel',
+    subtitle: 'Hrajeme padel',
+    difficulty: 'intermediate',
+    category: 'Social',
+    shortDesc: 'Your Czech friends invited you to padel. Survive the warmup, the game, and the mandatory post-match beer.',
+    context: 'Padel is exploding in the Czech Republic. Your Czech friends play every week and finally invited you. Court talk is fast, energetic, and full of slang. Three phases: before the game (arrivals, teams, warmup), during (calling the score, cheering, owning your mistakes), and after (the beer debrief is not optional).',
+    dialogue: [
+      { speaker: 'Tomáš', role: 'ai', czech: 'Nazdar! Přišels! Máš raketu, nebo půjčíš?', english: 'Hey! You made it! Do you have a racket, or are you borrowing one?', spanish: '¡Hola! ¡Has venido! ¿Tienes raqueta o vas a alquilar una?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Ahoj! Raději půjčím, ještě jsem padelový nováček.', english: 'Hi! I\'ll borrow one, I\'m still a padel newbie.', spanish: '¡Hola! Mejor alquilo, todavía soy un novato en pádel.', isKey: true, note: '"Nováček" = newbie. Admitting you\'re new sets realistic expectations and earns goodwill from the whole group.' },
+      { speaker: 'Tomáš', role: 'ai', czech: 'Nevadí. Hrajeme čtyři — ty a já proti Honzovi a Petrovi. Jasný?', english: 'No problem. Four of us — you and me against Honza and Petr. Clear?', spanish: 'No pasa nada. Cuatro jugadores — tú y yo contra Honza y Petr. ¿De acuerdo?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Super! Jaký je bodovací systém? Jako tenis?', english: 'Great! What\'s the scoring system? Like tennis?', spanish: '¡Genial! ¿Cuál es el sistema de puntuación? ¿Como el tenis?', isKey: true, note: 'Asking upfront saves confusion mid-game. Czech players respect preparation over bravado.' },
+      { speaker: 'Tomáš', role: 'ai', czech: 'Výborně! Eso! Tak takhle to chci vidět!', english: 'Excellent! That\'s it! That\'s what I want to see!', spanish: '¡Excelente! ¡Eso! ¡Así quiero verlo!', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Promiň, špatná rána. Příště líp.', english: 'Sorry, bad shot. Better next time.', spanish: 'Perdona, mal golpe. La próxima mejor.', isKey: true, note: '"Příště líp" = better next time. Short, self-aware. Czech sports culture values owning mistakes without drama.' },
+      { speaker: 'Honza', role: 'ai', czech: 'Kolik je skóre? Jsme tři dvě, ne?', english: 'What\'s the score? We\'re three-two, right?', spanish: '¿Cómo vamos? Tres-dos nosotros, ¿no?', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Myslím, že tři tři. Ale nejsem si jist.', english: 'I think three-three. But I\'m not sure.', spanish: 'Creo que tres iguales. Pero no estoy seguro.', isKey: true },
+      { speaker: 'Tomáš', role: 'ai', czech: 'Dobrý zápas! Jdeme na pivo? Zasloužili jsme to.', english: 'Good match! Going for a beer? We deserve it.', spanish: '¡Buen partido! ¿Nos vamos a tomar una cerveza? Nos lo merecemos.', isKey: false },
+      { speaker: 'Vy', role: 'you', czech: 'Určitě! Já stavím první rundu.', english: 'Definitely! I\'ll get the first round.', spanish: '¡Desde luego! Yo pago la primera ronda.', isKey: true, note: 'Offering the first round after sports is a strong move in Czech culture. It will be remembered next week.' }
+    ],
+    keyPhrases: [
+      { czech: 'Jsem padelový nováček.', english: 'I\'m a padel newbie.', phonetic: 'ysem PA-deh-lo-vee NO-vah-chek' },
+      { czech: 'Promiň, špatná rána.', english: 'Sorry, bad shot.', phonetic: 'PRO-min, SHPAT-nah RAH-nah' },
+      { czech: 'Kolik je skóre?', english: 'What\'s the score?', phonetic: 'KO-lik yeh SKOH-reh' },
+      { czech: 'Výborně! Eso!', english: 'Excellent! That\'s it!', phonetic: 'VEE-bor-nyeh! EH-so!' },
+      { czech: 'Já stavím první rundu.', english: 'I\'ll get the first round.', phonetic: 'yah STA-veem PRVH-nee ROON-du' },
+      { czech: 'Příště líp.', english: 'Better next time.', phonetic: 'PZHEE-shtye leep' }
+    ],
+    culturalTips: [
+      { title: 'Padel is booming in Czech Republic', body: 'Padel courts have opened all over Prague and major cities. It\'s become the sport of choice for 30-something professionals. Getting invited is a genuine social signal that you\'re in.' },
+      { title: 'Admit you\'re a nováček', body: '"Jsem padelový nováček" (I\'m a padel newbie) is the correct opening move. Czech sports culture respects honesty. Overconfidence when you\'re clearly learning looks worse than admitting you\'re new.' },
+      { title: 'Own your mistakes quickly and move on', body: '"Promiň, špatná rána" said quickly and without drama is perfectly Czech. Don\'t over-apologize. Don\'t rage. Acknowledge and play on.' },
+      { title: 'Post-game beer is not optional', body: 'After any Czech sports session, beer follows. "Jdeme na pivo?" is rhetorical. The answer is yes. Not going requires a very good reason — and an explanation.' },
+      { title: 'Offering the first round earns lasting goodwill', body: '"Já stavím první rundu" (I\'ll get the first round) after sports is a strong move. They\'ll remember it. Rounds rotate naturally after that — no one keeps exact count.' }
+    ],
+    realVsTextbook: [
+      { textbook: '"Omlouvám se za špatný úder." (I apologize for the poor stroke.)', real: '"Promiň, špatná rána." — Half the words. Same meaning. This is how Czech players talk on court.' },
+      { textbook: '"Bylo to velmi příjemné sportovní utkání." (That was a very pleasant sporting match.)', real: '"Dobrý zápas!" — Two words. Enthusiastic nod. The beer says the rest.' }
     ]
   }
 
