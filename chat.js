@@ -1499,6 +1499,8 @@ const ChatEngine = (() => {
   let correctionsGiven = 0;
   let currentScenario = null;
   let currentScenarioId = null;
+  let recentAIResponses = [];   // prevent exact-repeat responses
+  let playAlongMode = false;    // cooperative / help-user-succeed mode
 
   // ── PUBLIC API ─────────────────────────────────────────
 
@@ -1518,6 +1520,8 @@ const ChatEngine = (() => {
     currentState = 'start';
     messageCount = 0;
     correctionsGiven = 0;
+    recentAIResponses = [];
+    playAlongMode = false;
 
     return {
       persona: currentScenario.persona,
@@ -1653,8 +1657,39 @@ const ChatEngine = (() => {
     return words.some(w => n.includes(norm(w)));
   }
 
+  // Varied swear responses — rotate so it never feels robotic
+  const SWEAR_RESPONSES = {
+    czech: [
+      { text: 'Hele! 😄 Mluv slušně, nebo budu taky hrubý. Zkus to znovu!', translation: 'Hey! Speak nicely or I\'ll be rude too. Try again!' },
+      { text: 'Au! 😅 To jsem nečekal. Zkus to bez nadávek?', translation: 'Ouch! Didn\'t expect that. Try without the swearing?' },
+      { text: 'Ehm... 😄 Takže umíš česky. Ale zkus to slušněji!', translation: 'Hmm... So you know some Czech. But try it more politely!' }
+    ],
+    spanish: [
+      { text: '¡Ey! 😄 Habla bien o te respondo igual. ¡Inténtalo de nuevo!', translation: 'Hey! Speak nicely or I\'ll do the same. Try again!' },
+      { text: '¡Ay, ay! 😅 Eso no esperaba. ¿Sin palabrotas esta vez?', translation: 'Oh my! Didn\'t expect that. Without swearing this time?' },
+      { text: 'Hmm... 😄 Sabes algunas palabras en español. ¡Pero prueba con más educación!', translation: 'Hmm... You know some Spanish. But try with more manners!' }
+    ]
+  };
+  let lastSwearIdx = { czech: -1, spanish: -1 };
+
+  function getSwearResponse(lang) {
+    const pool = SWEAR_RESPONSES[lang] || SWEAR_RESPONSES.czech;
+    let idx = (lastSwearIdx[lang] + 1) % pool.length;
+    lastSwearIdx[lang] = idx;
+    return pool[idx];
+  }
+
+  // ── PLAY ALONG MODE ───────────────────────────────────
+  const PLAY_ALONG_TRIGGERS = ['play along', 'help me impress', 'be nice', 'cooperative', 'easy mode',
+                               'juega conmigo', 'ayudame a impresionar', 'se amable'];
+
+  function checkPlayAlong(input) {
+    return PLAY_ALONG_TRIGGERS.some(t => norm(input).includes(norm(t)));
+  }
+
   // ── IMPRESS MODE ─────────────────────────────────────
-  const IMPRESS_TRIGGERS = ['impress', 'help me impress', 'impress mode', 'sound good', 'sound native',
+  // Note: 'help me impress' also activates play along — both run
+  const IMPRESS_TRIGGERS = ['impress', 'impress mode', 'sound good', 'sound native',
                             'impresionar', 'quedar bien', 'ayudame', 'como digo', 'que digo'];
 
   function checkImpress(input) {
@@ -1704,9 +1739,16 @@ const ChatEngine = (() => {
 
     // ── Swear word check ──────────────────────────────
     if (checkSwear(userInput, lang)) {
+      const resp = getSwearResponse(lang);
+      return { response: resp, correction: null, encouragement: null, state: currentState };
+    }
+
+    // ── Play Along mode activation ─────────────────────
+    if (checkPlayAlong(userInput)) {
+      playAlongMode = true;
       const resp = lang === 'spanish'
-        ? { text: '¡Ey! 😄 Habla bien o te respondo igual. ¡Inténtalo de nuevo!', translation: 'Hey! Speak nicely or I\'ll do the same. Try again!' }
-        : { text: 'Hele! 😄 Mluv slušně, nebo budu taky hrubý. Zkus to znovu!', translation: 'Hey! Speak nicely or I\'ll be rude too. Try again!' };
+        ? { text: '¡De acuerdo! Estoy de tu lado 😄 — te ayudaré. ¡Inténtalo!', translation: 'Alright! I\'m on your side — I\'ll help you. Give it a try!' }
+        : { text: 'Jasně! Jsem na tvé straně 😄 — pomůžu ti. Zkus to!', translation: 'Sure! I\'m on your side — I\'ll help you. Give it a try!' };
       return { response: resp, correction: null, encouragement: null, state: currentState };
     }
 
@@ -1726,7 +1768,8 @@ const ChatEngine = (() => {
       // Reset repeat counter on successful match
       fallbackRepeatCount = 0;
       lastFallbackState = null;
-      response = { text: addFlavor(match.text, currentScenarioId), translation: match.translation, positive: match.positive || false };
+      const flavor = addFlavor(match.text, currentScenarioId);
+      response = { text: flavor, translation: match.translation, positive: match.positive || false };
       nextState = match.next || currentState;
     } else {
       // Track repeats to add variety when user is stuck
@@ -1739,33 +1782,63 @@ const ChatEngine = (() => {
 
       const fallback = currentScenario.states[currentState]?.fallback;
 
-      // Add a friendly nudge prefix on second+ repeat to avoid robotic loops
-      let prefix = '';
+      // Extract the "(Try: ...)" or "(e.g. ...)" example from fallback text
+      const tryMatch = fallback?.text.match(/\(Try:\s*"([^"]+)"/i)
+                    || fallback?.text.match(/\(e\.g\.\s*"([^"]+)"/i)
+                    || fallback?.text.match(/\(Say[^:]*:\s*"([^"]+)"/i);
+      const examplePhrase = tryMatch ? tryMatch[1] : null;
+
+      let fallbackText;
+      let fallbackTranslation = fallback?.translation || 'Try again!';
+
       if (fallbackRepeatCount >= 2) {
-        const nudges = lang === 'spanish'
-          ? ['¡Casi! ', '¡No te rindas! ', '¡Prueba de nuevo! ']
-          : ['Skoro! ', 'Zkus to jinak. ', 'Žádný strach — '];
-        prefix = nudges[Math.floor(Math.random() * nudges.length)];
+        // After 2+ misses: show a direct example in a friendly way
+        if (playAlongMode && examplePhrase) {
+          fallbackText = lang === 'spanish'
+            ? `¡Psst! 😄 Solo escribe: "${examplePhrase}" — ¡yo acepto eso!`
+            : `Psst! 😄 Zkus napsat: "${examplePhrase}" — to stačí!`;
+        } else if (examplePhrase) {
+          fallbackText = lang === 'spanish'
+            ? `Hmm 😄 prueba decir algo como "${examplePhrase}"`
+            : `Hmm 😄 zkus říct něco jako "${examplePhrase}"`;
+          fallbackTranslation = fallback?.translation || 'Try again!';
+        } else {
+          const nudges = lang === 'spanish'
+            ? ['¡Casi! ', '¡No te rindas! ', '¡Prueba de nuevo! ']
+            : ['Skoro! ', 'Zkus to jinak. ', 'Žádný strach — '];
+          fallbackText = nudges[Math.floor(Math.random() * nudges.length)] + (fallback?.text || '');
+        }
       } else if (fallbackRepeatCount === 1) {
-        prefix = lang === 'spanish' ? '¿Seguro? ' : 'Hmm? ';
+        const prefix = lang === 'spanish' ? '¿Seguro? ' : 'Hmm? ';
+        fallbackText = prefix + (fallback?.text || '');
+      } else {
+        fallbackText = fallback?.text || (lang === 'spanish'
+          ? '¿Puedes repetirlo de otra forma? 😄'
+          : 'Nerozuměl jsem — zkus to trochu jinak. 😄');
       }
 
-      response = fallback
-        ? { text: prefix + fallback.text, translation: fallback.translation, positive: false }
-        : {
-            text: lang === 'spanish'
-              ? '¿Puedes repetirlo de otra forma? 😄'
-              : 'Nerozuměl jsem — zkus to trochu jinak. 😄',
-            translation: 'Could you put that a different way?',
-            positive: false
-          };
+      response = {
+        text: fallbackText,
+        translation: fallbackTranslation,
+        positive: false
+      };
     }
+
+    // ── No-repeat guard ───────────────────────────────
+    // If this exact text was the last AI response, add a small variation marker
+    if (recentAIResponses.length > 0 && recentAIResponses[recentAIResponses.length - 1] === response.text) {
+      response = { ...response, text: response.text + ' 😊' };
+    }
+    recentAIResponses.push(response.text);
+    if (recentAIResponses.length > 6) recentAIResponses.shift();
 
     currentState = nextState;
 
     let encouragement = null;
     if (messageCount === 3 && correctionsGiven === 0) {
       encouragement = 'Great start — your ' + (lang === 'spanish' ? 'Spanish' : 'Czech') + ' is looking solid!';
+    } else if (messageCount === 5 && response.positive) {
+      encouragement = "You're doing better than you think 😄";
     } else if (currentState === 'done') {
       encouragement = 'Scenario complete! You nailed it. 🎉';
     }
@@ -1807,6 +1880,9 @@ const ChatEngine = (() => {
     correctionsGiven  = snapshot.correctionsGiven  || 0;
   }
 
-  return { init, process, processQuickButton, speak, getLanguage, getAvailableScenarios, hasChatSupport, getState, restoreState };
+  function setPlayAlong(val) { playAlongMode = !!val; }
+  function isPlayAlong() { return playAlongMode; }
+
+  return { init, process, processQuickButton, speak, getLanguage, getAvailableScenarios, hasChatSupport, getState, restoreState, setPlayAlong, isPlayAlong };
 
 })();
