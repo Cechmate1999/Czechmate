@@ -10,6 +10,14 @@
   <link rel="stylesheet" href="styles.css">
   <script src="data.js"></script>
   <script src="chat.js"></script>
+  <style>
+    .quick-btns { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.65rem; }
+    .quick-btn { padding:.38rem .8rem; border-radius:var(--r); border:1px solid var(--border); background:var(--s2); color:var(--t2); font-size:.78rem; font-weight:500; cursor:pointer; transition:all .15s; }
+    .quick-btn:hover { border-color:var(--border-l); color:var(--t1); }
+    .voice-quick-btn { border-color:rgba(230,57,70,.4); color:var(--red); }
+    .voice-quick-btn:hover { border-color:var(--red); background:rgba(230,57,70,.08); }
+    .voice-quick-btn.listening { background:rgba(230,57,70,.12); color:var(--red); animation: pulse 1s infinite; }
+  </style>
 </head>
 <body>
 
@@ -77,6 +85,12 @@
       </div>
 
       <div class="chat-input-area" id="chatInputArea" style="display:none">
+        <div class="quick-btns" id="quickBtns">
+          <button class="quick-btn" onclick="handleQuickHint('dont_understand')">🤷 I don't understand</button>
+          <button class="quick-btn" onclick="handleQuickHint('repeat')">🔁 Repeat please</button>
+          <button class="quick-btn" onclick="handleQuickHint('slower')">🐢 Speak slower</button>
+          <button class="quick-btn voice-quick-btn" id="voiceBtn" onclick="startVoice()">🎤 Try speaking</button>
+        </div>
         <form class="chat-form" id="chatForm" onsubmit="handleSubmit(event)">
           <input
             type="text"
@@ -98,61 +112,86 @@
   (function () {
     // ── SETUP ─────────────────────────────────────────────
     const params      = new URLSearchParams(window.location.search);
-    const scenarioId  = params.get('scenario') || 'pub';
-    const scenarioMeta = SCENARIOS.find(s => s.id === scenarioId) || SCENARIOS[0];
-    const lang        = scenarioMeta.language || 'czech';
-    const hasChat     = ChatEngine.hasChatSupport(scenarioId);
+    let scenarioId    = params.get('scenario') || 'pub';
+    const userLang    = LangUtils.get() || 'czech';
+
+    // V2→Chat mapping: unified V2 IDs map to language-specific chat IDs
+    const V2_CHAT_MAP = {
+      pub:       { czech: 'pub',       spanish: 'es_tapas' },
+      inlaws:    { czech: 'parents',   spanish: 'es_family' },
+      padel:     { czech: 'padel',     spanish: 'es_padel' },
+      flat:      { czech: 'flat',      spanish: 'es_flat' },
+      doctor:    { czech: 'doctor',    spanish: 'es_doctor' },
+      interview: { czech: 'interview', spanish: 'es_interview' },
+      office:    { czech: 'office',    spanish: 'es_office' },
+      police:    { czech: 'police',    spanish: 'es_nie' },
+      date:      { czech: 'date',      spanish: 'es_date' },
+      grocery:   { czech: 'grocery',   spanish: 'es_grocery' }
+    };
+
+    // Resolve V2 scenario to chat engine ID based on user's language
+    const v2Scenario  = (typeof getScenarioV2 === 'function') ? getScenarioV2(scenarioId) : null;
+    const chatId      = V2_CHAT_MAP[scenarioId]?.[userLang] || scenarioId;
+    const scenarioMeta = SCENARIOS.find(s => s.id === chatId) || SCENARIOS.find(s => s.id === scenarioId) || SCENARIOS[0];
+    const lang        = scenarioMeta.language || userLang;
+    const hasChat     = ChatEngine.hasChatSupport(chatId);
+
+    // Use resolved chatId for the engine
+    scenarioId = chatId;
 
     const LANG_INFO = {
       czech:   { flag: '🇨🇿', label: 'Czech',         placeholder: 'Type in Czech… accents optional 😊',   hint: 'Accents optional — "jedno pivo" and "jedno pivo" both work. Focus on the words.' },
       spanish: { flag: '🇪🇸', label: 'Spain Spanish',  placeholder: 'Type in Spanish… ¡sin presión! 😄',   hint: 'Spain Spanish dialect — phrases like "ponme" and "caña" are Spain-specific. Accents optional.' }
     };
-    const li = LANG_INFO[lang] || LANG_INFO.czech;
+    const li = LANG_INFO[lang] || LANG_INFO[userLang] || LANG_INFO.czech;
+
+    // Derive display info from V2 scenario if available, fallback to old SCENARIOS
+    const displayTitle = v2Scenario ? (v2Scenario.title[userLang] || v2Scenario.title.english) : scenarioMeta.title;
+    const displayIcon  = v2Scenario ? v2Scenario.icon : scenarioMeta.icon;
+    const origId       = params.get('scenario') || 'pub';
 
     // Nav
     document.getElementById('navScenarioLink').innerHTML =
-      `<a href="scenario.html?id=${scenarioId}" style="color:var(--gold)">${scenarioMeta.icon} ${scenarioMeta.title}</a>`;
-    document.title = `Practice: ${scenarioMeta.title} — CzechMate`;
+      `<a href="scenario.html?id=${origId}" style="color:var(--gold)">${displayIcon} ${displayTitle}</a>`;
+    document.title = `Practice: ${displayTitle} — CzechMate`;
 
     // Language badge
     document.getElementById('langBadge').textContent = `${li.flag} ${li.label}`;
 
-    // Scenario switcher — show all chat-supported scenarios
-    const allChats = ChatEngine.getAvailableScenarios();
-    document.getElementById('scenarioSwitcher').innerHTML = Object.entries(allChats).map(([id, s]) => {
-      const meta = SCENARIOS.find(sc => sc.id === id);
-      const icon = meta ? meta.icon : '💬';
-      const name = meta ? meta.title : id;
-      const active = id === scenarioId;
-      return `<a href="practice.html?scenario=${id}" class="btn btn-ghost"
+    // Scenario switcher — show V2 scenarios (unified, both languages)
+    const switcherScenarios = (typeof SCENARIOS_V2 !== 'undefined') ? SCENARIOS_V2 : [];
+    document.getElementById('scenarioSwitcher').innerHTML = switcherScenarios.map(s => {
+      const sTitle = s.title[userLang] || s.title.english;
+      const active = s.id === origId;
+      return `<a href="practice.html?scenario=${s.id}" class="btn btn-ghost"
                  style="font-size:.8rem;padding:.45rem .9rem;margin-bottom:.3rem;
                         ${active ? 'border-color:var(--red);color:var(--red)' : ''}">
-                ${icon} ${name}${active ? ' ✓' : ''}
+                ${s.icon} ${sTitle}${active ? ' ✓' : ''}
               </a>`;
     }).join('');
 
     // ── NO CHAT SUPPORT — show "coming soon" state ────────
     if (!hasChat) {
-      const fallbackId = lang === 'spanish' ? 'es_tapas' : 'pub';
-      const fallbackMeta = SCENARIOS.find(s => s.id === fallbackId);
+      const fallbackId = userLang === 'spanish' ? 'pub' : 'pub'; // V2 id
+      const fallbackV2 = (typeof getScenarioV2 === 'function') ? getScenarioV2(fallbackId) : null;
+      const fallbackTitle = fallbackV2 ? (fallbackV2.title[userLang] || fallbackV2.title.english) : 'At the Pub';
+      const fallbackIcon = fallbackV2 ? fallbackV2.icon : '🍺';
 
-      document.getElementById('personaAvatar').textContent = scenarioMeta.icon;
-      document.getElementById('personaName').textContent = scenarioMeta.title;
+      document.getElementById('personaAvatar').textContent = displayIcon;
+      document.getElementById('personaName').textContent = displayTitle;
       document.getElementById('personaRole').textContent = 'Practice coming soon';
-      document.getElementById('sidebarContext').textContent = scenarioMeta.shortDesc;
+      document.getElementById('sidebarContext').textContent = v2Scenario ? (v2Scenario.shortDesc[userLang] || v2Scenario.shortDesc.english) : scenarioMeta.shortDesc;
       document.getElementById('sidebarTip').textContent = 'Review the scenario page for dialogue, key phrases, and cultural tips.';
-      document.getElementById('sidebarVocab').innerHTML = (scenarioMeta.keyPhrases || []).slice(0, 5).map(p => `
-        <div class="vocab-item"><span class="vocab-cz">${p.czech}</span><span class="vocab-en">${p.english}</span></div>
-      `).join('');
+      document.getElementById('sidebarVocab').innerHTML = '';
 
-      document.getElementById('welcomeIcon').textContent = scenarioMeta.icon;
-      document.getElementById('welcomeTitle').textContent = `${scenarioMeta.title} — Practice`;
+      document.getElementById('welcomeIcon').textContent = displayIcon;
+      document.getElementById('welcomeTitle').textContent = `${displayTitle} — Practice`;
       document.getElementById('welcomeSub').textContent = 'Full AI chat for this scenario is coming soon. In the meantime, review the scenario and try the available practice modes below.';
       document.getElementById('welcomeActions').innerHTML = `
         <div style="display:flex;flex-direction:column;gap:.75rem;align-items:center">
-          <a href="scenario.html?id=${scenarioId}" class="btn btn-primary btn-lg">Review Scenario →</a>
+          <a href="scenario.html?id=${origId}" class="btn btn-primary btn-lg">Review Scenario →</a>
           <a href="practice.html?scenario=${fallbackId}" class="btn btn-ghost">
-            Try ${fallbackMeta ? fallbackMeta.icon + ' ' + fallbackMeta.title : 'another scenario'} instead
+            Try ${fallbackIcon} ${fallbackTitle} instead
           </a>
           <div style="font-size:.78rem;color:var(--t3);margin-top:.5rem">Full AI chat coming soon for this scenario</div>
         </div>
@@ -340,7 +379,8 @@
         el.innerHTML = `<div class="typing-bubble"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div>`;
         msgs.appendChild(el);
         scrollBottom();
-        setTimeout(() => { el.remove(); renderAI(text, translation); }, 700 + Math.random() * 500);
+        const delay = 500 + Math.random() * 700;
+        setTimeout(() => { el.remove(); renderAI(text, translation); }, delay);
       } else {
         renderAI(text, translation);
       }
@@ -350,9 +390,11 @@
       const msgs = document.getElementById('chatMsgs');
       const el   = document.createElement('div');
       el.className = 'msg ai';
+      const escapedText = esc(text);
       el.innerHTML = `
-        <div class="msg-bubble">${esc(text)}</div>
+        <div class="msg-bubble">${escapedText}</div>
         ${translation ? `<div class="msg-meta">${esc(translation)}</div>` : ''}
+        <button class="msg-audio-btn" onclick="ChatEngine.speak('${text.replace(/'/g,"\\'")}', ChatEngine.getLanguage())">🔊 Listen</button>
       `;
       msgs.appendChild(el);
       scrollBottom();
@@ -483,6 +525,68 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !chatStarted && hasChat) window.startChat();
     });
+
+    // Quick hint buttons — contextual help, NO conversation reset
+    window.handleQuickHint = function(type) {
+      if (!chatStarted) return;
+      const result = ChatEngine.processQuickButton(type);
+      if (!result) return;
+
+      // Show what the user "said" (the hint phrase)
+      sessionMessages.push({ role: 'user', text: result.userHint.text });
+      addUserMessage(result.userHint.text);
+
+      // Show the translation as a small note
+      const msgs = document.getElementById('chatMsgs');
+      const noteEl = document.createElement('div');
+      noteEl.innerHTML = `<div style="text-align:right;font-size:.75rem;color:var(--t3);padding:0 .35rem;margin-top:-.4rem">🇬🇧 ${esc(result.userHint.translation)}</div>`;
+      msgs.appendChild(noteEl);
+
+      // Bot responds with encouragement + hint (with typing delay)
+      sessionMessages.push({ role: 'ai', text: result.botResponse.text, translation: result.botResponse.translation });
+      addAIMessage(result.botResponse.text, result.botResponse.translation, true);
+      saveSession();
+    };
+
+    // Voice feature
+    window.startVoice = function() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Voice recognition is not supported in this browser. Try Chrome.');
+        return;
+      }
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SR();
+      recognition.lang = lang === 'spanish' ? 'es-ES' : 'cs-CZ';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      const btn = document.getElementById('voiceBtn');
+      btn.textContent = '🔴 Listening...';
+      btn.classList.add('listening');
+      btn.disabled = true;
+
+      recognition.onresult = function(e) {
+        const spoken = e.results[0][0].transcript;
+        document.getElementById('chatInput').value = spoken;
+        document.getElementById('chatInput').focus();
+        btn.textContent = '🎤 Try speaking';
+        btn.classList.remove('listening');
+        btn.disabled = false;
+      };
+      recognition.onerror = function() {
+        btn.textContent = '🎤 Try speaking';
+        btn.classList.remove('listening');
+        btn.disabled = false;
+      };
+      recognition.onend = function() {
+        if (btn.textContent === '🔴 Listening...') {
+          btn.textContent = '🎤 Try speaking';
+          btn.classList.remove('listening');
+          btn.disabled = false;
+        }
+      };
+      recognition.start();
+    };
   })();
   </script>
 

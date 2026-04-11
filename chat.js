@@ -681,6 +681,126 @@ const ChatEngine = (() => {
           fallback: { text: 'Nashledanou! Hodně štěstí. 💼', translation: 'Goodbye! Good luck. (Job interview scenario complete! 🎉)' }
         }
       }
+    },
+
+    doctor: {
+      language: 'czech',
+      persona: {
+        name: 'Dr. Procházka',
+        role: 'Praktický lékař — GP',
+        avatar: '🩺',
+        description: 'Efficient, thorough, and surprisingly patient with non-Czech speakers. Describe your symptoms clearly and he\'ll get you sorted fast.'
+      },
+      vocabulary: [
+        { cz: 'bolí mě', en: 'it hurts / I have pain in' },
+        { cz: 'od kdy', en: 'since when / how long' },
+        { cz: 'teplota', en: 'temperature / fever' },
+        { cz: 'předpis', en: 'prescription' },
+        { cz: 'pojišťovna', en: 'health insurance' },
+        { cz: 'léky', en: 'medication' },
+        { cz: 'alergie', en: 'allergies' },
+        { cz: 'odpočívat', en: 'to rest' }
+      ],
+      context: 'You\'re at a Czech GP practice. Dr. Procházka will ask about your symptoms, examine you, and write a prescription. Accents optional.',
+      tip: 'Start with "Dobry den, doktore" then describe what hurts: "Boli me hlava" = I have a headache.',
+      opening: { text: 'Dobrý den. Co vás trápí? 🩺', translation: 'Hello. What\'s troubling you?' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['dobry den', 'doktore', 'hello', 'ahoj', 'zdravim', 'good morning', 'good day'], text: 'Dobrý den. Posaďte se, prosím. Co vás přivedlo?', translation: 'Hello. Please sit down. What brings you in today?', next: 'symptoms', positive: true }
+          ],
+          fallback: { text: 'Pozdravte mě, prosím. (Try: "Dobry den, doktore")', translation: 'Please greet me. (Try: "Dobry den, doktore")' }
+        },
+        symptoms: {
+          responses: [
+            { triggers: ['hlava', 'head', 'bolest hlavy', 'headache', 'migrena', 'migraine'], text: 'Bolest hlavy. Jak dlouho? A máte teplotu?', translation: 'Headache. How long? And do you have a fever?', next: 'duration', positive: true },
+            { triggers: ['krk', 'throat', 'bolest v krku', 'sore throat', 'polykat', 'swallow', 'kaslet', 'cough', 'kaslem'], text: 'Krk. Ukažte mi. Jak dlouho to trvá?', translation: 'Throat. Show me. How long has this been going on?', next: 'duration', positive: true },
+            { triggers: ['zaludek', 'stomach', 'bricho', 'belly', 'nevolnost', 'nausea', 'zvraceni', 'vomit', 'prujmy', 'diarrhea', 'zanety'], text: 'Zažívací problémy. Jedl/a jste něco neobvyklého?', translation: 'Digestive issues. Did you eat anything unusual?', next: 'duration', positive: true },
+            { triggers: ['zada', 'back', 'bedra', 'lower back', 'bolest zad', 'back pain'], text: 'Záda. Sedavé zaměstnání?', translation: 'Back. Sedentary work?', next: 'duration', positive: true },
+            { triggers: ['unava', 'tired', 'unaveny', 'exhausted', 'slaby', 'weak', 'bez energie', 'no energy', 'horeckuji', 'fever'], text: 'Únava. Jak spíte? Jak dlouho se tak cítíte?', translation: 'Fatigue. How are you sleeping? How long have you felt this way?', next: 'duration', positive: true }
+          ],
+          fallback: { text: 'Kde vás to bolí? (Try: "Boli me hlava" = I have a headache, "Boli me krk" = sore throat)', translation: 'Where does it hurt? (Try: "Boli me hlava")' }
+        },
+        duration: {
+          responses: [
+            { triggers: ['den', 'day', 'dnes', 'today', 'rano', 'morning', 'zacala', 'started', 'zacal'], text: 'Jeden den. A máte teplotu? Alergie na léky?', translation: 'One day. Do you have a temperature? Any medication allergies?', next: 'examination', positive: true },
+            { triggers: ['tydny', 'weeks', 'tyden', 'week', 'mesic', 'month', 'dlouho', 'long', 'davno', 'ages', 'cas', 'while'], text: 'Delší dobu. Budu vás vyšetřit. Máte alergii na léky?', translation: 'A while. I\'ll examine you. Any medication allergies?', next: 'examination', positive: true },
+            { triggers: ['dva', 'two', 'tri', 'three', 'ctyri', 'four', 'pul', 'half', 'pár', 'par', 'few'], text: 'Rozumím. Vyšetřím vás. Berete v současnosti léky?', translation: 'I see. I\'ll examine you. Are you currently taking any medications?', next: 'examination', positive: true }
+          ],
+          fallback: { text: 'Jak dlouho vás to trápí? (Try: "Tydny" = weeks, "Jeden den" = one day)', translation: 'How long has this been going on?' }
+        },
+        examination: {
+          responses: [
+            { triggers: ['ne', 'no', 'zadna', 'none', 'nic', 'nothing', 'zdravy', 'healthy', 'bez alergii', 'no allergies'], text: 'Dobře. Vypadá to jako virová infekce. Předepíšu vám léky.', translation: 'Good. Looks like a viral infection. I\'ll prescribe medication.', next: 'prescription', positive: true },
+            { triggers: ['ano', 'yes', 'mam alergii', 'allergic', 'penicilin', 'penicillin', 'ibuprofen', 'aspirin', 'alergie'], text: 'Zaznamenám to. Předepíšu náhradu bez alergenů.', translation: 'I\'ll note that. I\'ll prescribe an allergen-free alternative.', next: 'prescription', positive: true }
+          ],
+          fallback: { text: 'Máte alergie na léky? (Try: "Ne, zadne alergie" or "Ano, mam alergii na...")', translation: 'Do you have medication allergies? (Try: "Ne, zadne alergie")' }
+        },
+        prescription: {
+          responses: [
+            { triggers: ['dekuji', 'thank', 'diky', 'rozumim', 'understood', 'ok', 'dobre', 'nashledanou', 'goodbye', 'bye', 'predpis', 'prescription', 'lekarna', 'pharmacy'], text: 'Předpis je vypsán. Lékárna je hned vedle. Klidový režim tři dny. Nashledanou! 🩺', translation: 'Prescription ready. Pharmacy is right next door. Rest for three days. Goodbye! (Doctor visit complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['kdy', 'when', 'jak dlouho', 'how long', 'uzdravim', 'recover', 'zlepsi', 'improve', 'navrat', 'jak brzy'], text: 'Za tři až pět dní byste měl/a být lepší. Pokud ne, přijďte znovu.', translation: 'In three to five days you should be better. If not, come again.', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Máte otázky k předpisu? (Try: "Dekuji, doktore. Nashledanou.")', translation: 'Any questions about the prescription? (Try: "Dekuji, nashledanou")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Brzy se uzdravte! 🩺', translation: 'Get well soon! (Doctor visit scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    grocery: {
+      language: 'czech',
+      persona: {
+        name: 'Paní Malinová',
+        role: 'Pokladní — Supermarket Cashier',
+        avatar: '🛒',
+        description: 'She\'s been at this checkout for 11 years. Efficient, a little weary, but not unkind. She respects the effort of trying Czech. Mostly.'
+      },
+      vocabulary: [
+        { cz: 'taška', en: 'bag' },
+        { cz: 'kolik to stojí?', en: 'how much is it?' },
+        { cz: 'platit kartou', en: 'pay by card' },
+        { cz: 'zákaznická karta', en: 'loyalty card' },
+        { cz: 'stvrzenka', en: 'receipt' },
+        { cz: 'hotově', en: 'cash' },
+        { cz: 'vrácení', en: 'change / return' },
+        { cz: 'prosím', en: 'please / here you go' }
+      ],
+      context: 'You\'re at the checkout in a Prague supermarket (Albert/Billa/Kaufland). She\'ll ask about a loyalty card, a bag, and payment. Keep it quick — there\'s a queue.',
+      tip: 'Say "Mam tasku" (I have a bag) right away to save time. Then "kartou" for card payment.',
+      opening: { text: 'Dobrý den. Máte zákaznickou kartu? 🛒', translation: 'Hello. Do you have a loyalty card?' },
+      corrections: CZ_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['ne', 'no', 'nemam', 'don\'t have', 'bez karty', 'no card', 'zapomnel', 'forgot', 'nemam kartu'], text: 'Dobře. Taška?', translation: 'Fine. Bag?', next: 'bag', positive: true },
+            { triggers: ['ano', 'yes', 'mam', 'have', 'zde', 'here', 'tady', 'karta', 'prikladam'], text: 'Naskenujte, prosím. Taška?', translation: 'Please scan it. Bag?', next: 'bag', positive: true },
+            { triggers: ['dobry den', 'hello', 'ahoj', 'hi', 'zdravim'], text: 'Dobrý den. Zákaznická karta?', translation: 'Hello. Loyalty card?', next: 'start', positive: true }
+          ],
+          fallback: { text: 'Zákaznická karta? (Try: "Ne, nemam" or "Ano, mam")', translation: 'Loyalty card? (Try: "Ne, nemam" = No, I don\'t)' }
+        },
+        bag: {
+          responses: [
+            { triggers: ['mam tasku', 'have bag', 'tasku', 'bag', 'mam', 'yes', 'ano', 'vlastni', 'own', 'uz mam', 'jo'], text: 'Dobře. Celkem 384 korun.', translation: 'Good. Total is 384 crowns.', next: 'payment', positive: true },
+            { triggers: ['ne', 'no', 'nemam', 'don\'t have', 'chci tasku', 'want bag', 'jednu', 'one', 'prosim'], text: 'Taška je 5 korun. Celkem 389 korun.', translation: 'Bag is 5 crowns. Total is 389 crowns.', next: 'payment', positive: true }
+          ],
+          fallback: { text: 'Taška? (Try: "Mam tasku" = I have a bag, or "Ne" = no)', translation: 'Bag? (Say "Mam tasku" if you have one)' }
+        },
+        payment: {
+          responses: [
+            { triggers: ['kartou', 'card', 'kreditni', 'debitni', 'visa', 'mastercard', 'platebni', 'bezdotykove', 'contactless'], text: 'Přiložte kartu, prosím. Hezký den! 🛒', translation: 'Tap your card, please. Have a nice day! (Supermarket complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['hotove', 'cash', 'koruny', 'koruna', 'penize', 'money', 'platim hotove'], text: 'Děkuji. Nazpátek 16 korun. Hezký den! 🛒', translation: 'Thank you. 16 crowns change. Have a nice day! (Supermarket complete! 🎉)', next: 'done', positive: true }
+          ],
+          fallback: { text: 'Kartou nebo hotově? (Try: "Kartou" = card, "Hotove" = cash)', translation: 'Card or cash? (Say "Kartou" for card)' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: 'Hezký den! 🛒', translation: 'Have a nice day! (Supermarket scenario complete! 🎉)' }
+        }
+      }
     }
   };
 
@@ -1030,6 +1150,343 @@ const ChatEngine = (() => {
           fallback: { text: '¡Me lo paso genial! ¿Quedamos otro día? 🌹', translation: 'I\'m having a great time! Shall we meet again? (Spanish date scenario complete! 🎉)' }
         }
       }
+    },
+
+    es_padel: {
+      language: 'spanish',
+      persona: {
+        name: 'Rodrigo',
+        role: 'Compañero de pádel — Padel Partner',
+        avatar: '🎾',
+        description: 'Rodrigo plays pádel three times a week. Competitive but welcoming. He will celebrate with cañas after. "Venga" is his favourite word.'
+      },
+      vocabulary: [
+        { cz: 'principiante', en: 'beginner' },
+        { cz: 'el tiro', en: 'the shot / hit' },
+        { cz: 'lo siento', en: 'I\'m sorry' },
+        { cz: '¡qué puntazo!', en: 'what a great shot!' },
+        { cz: '¡venga!', en: 'let\'s go! / come on!' },
+        { cz: 'la pareja', en: 'partner / pair' },
+        { cz: 'a por ellos', en: 'let\'s go get them' },
+        { cz: 'el marcador', en: 'the scoreboard / score' }
+      ],
+      context: 'You\'re at a padel club in Madrid. Rodrigo is your partner. Navigate the warmup, the game, and the essential post-match cañas. Keep replies short and fast — match the energy.',
+      tip: 'Start with "¡Hola!" and admit you\'re a principiante: "Soy principiante, pero lo intento." — it\'s the right opening.',
+      opening: { text: '¡Hola! ¡Ya estás aquí! ¿Tienes raqueta o pedimos prestada? 🎾', translation: 'Hey! You\'re here! Got a racket or do we borrow one?' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['hola', 'buenas', 'hello', 'aqui estoy', 'here i am', 'ya estoy', 'si', 'yes', 'que tal'], text: '¡Qué bien! Somos cuatro — tú y yo contra Javi y Marcos. ¿De acuerdo?', translation: 'Great! Four of us — you and me against Javi and Marcos. Sound good?', next: 'teams', positive: true }
+          ],
+          fallback: { text: '¡Ey! ¡Saluda! Las pistas no esperan. 😄 (Try: "Hola Rodrigo!")', translation: 'Hey! Say hello! The courts won\'t wait. (Try: "Hola!")' }
+        },
+        teams: {
+          responses: [
+            { triggers: ['ok', 'bien', 'venga', 'perfecto', 'claro', 'si', 'yes', 'guay', 'genial', 'de acuerdo', 'vamos'], text: '¡Venga! Cinco minutos de calentamiento. ¿Has jugado antes?', translation: 'Let\'s go! Five minutes warming up. Have you played before?', next: 'warmup', positive: true },
+            { triggers: ['como se juega', 'rules', 'reglas', 'tenis', 'tennis', 'puntos', 'points', 'como funciona', 'explicame'], text: 'Como el tenis — 15, 30, 40, juego. Las paredes cuentan. Lo pillas en seguida. ¡Venga!', translation: 'Like tennis — 15, 30, 40, game. Walls count. You\'ll get it fast. Let\'s go!', next: 'warmup', positive: true }
+          ],
+          fallback: { text: '¿De acuerdo? ¡A las pistas! (Say "venga" or ask "como se juega?" = how do you play?)', translation: 'Ready? To the courts! (Say "venga" or ask about the rules)' }
+        },
+        warmup: {
+          responses: [
+            { triggers: ['principiante', 'beginner', 'primera vez', 'first time', 'no he jugado', 'never played', 'novato', 'nuevo', 'poco', 'barely'], text: '¡Principiante! ¡Bienvenido al vicio! 😄 El pádel engancha. ¿Listo?', translation: 'Beginner! Welcome to the addiction! 😄 Padel hooks you. Ready?', next: 'game', positive: true },
+            { triggers: ['si', 'yes', 'algo', 'a bit', 'un poco', 'a little', 'he jugado', 'played before', 'alguna vez', 'sometimes', 'veces'], text: '¡Perfecto! Entonces vamos directos. Yo saco. ¡A por ellos!', translation: 'Perfect! Straight in then. I\'ll serve. Let\'s get them!', next: 'game', positive: true }
+          ],
+          fallback: { text: '¿Has jugado antes? (Try: "Soy principiante" or "Un poco")', translation: 'Have you played before? (Try: "Soy principiante" = I\'m a beginner)' }
+        },
+        game: {
+          responses: [
+            { triggers: ['lo siento', 'sorry', 'perdona', 'mal tiro', 'bad shot', 'fallo', 'missed', 'error', 'uy', 'ay', 'oops', 'vaya'], text: '¡No pasa nada! La próxima entra. ¡Venga! 🎾', translation: 'No worries! Next one goes in. Come on! 🎾', next: 'game', positive: true },
+            { triggers: ['que puntazo', 'great shot', 'bien', 'bueno', 'vaya', 'wow', 'impresionante', 'bonito tiro', 'brutal', 'genial'], text: '¡Eso es! ¡El pádel es lo tuyo! Vamos 2-1 a favor. 💪', translation: 'That\'s it! Padel suits you! We\'re 2-1 up. 💪', next: 'game', positive: true },
+            { triggers: ['cuanto van', 'score', 'marcador', 'puntos', 'how much', 'cuanto', 'van ganando', 'resultado'], text: '¡Vamos 3-2! Un juego más y ganamos el set. ¡A muerte!', translation: 'We\'re 3-2! One more game and we win the set. Fight!', next: 'game', positive: true },
+            { triggers: ['canas', 'caña', 'cerveza', 'beer', 'despues', 'after', 'bebidas', 'drinks', 'luego'], text: '¡Después del partido! Ahora, ¡concentración! 😄', translation: 'After the match! Focus now! 😄', next: 'after' }
+          ],
+          fallback: { text: '¡Jugamos! Di: "lo siento, mal tiro" o "¡qué puntazo!" 🎾', translation: 'We\'re playing! Say: "lo siento, mal tiro" (sorry, bad shot) or "¡qué puntazo!" (great shot)' }
+        },
+        after: {
+          responses: [
+            { triggers: ['venga', 'vamos', 'si', 'yes', 'claro', 'por supuesto', 'invito yo', 'i\'ll buy', 'yo pago', 'primera ronda', 'round', 'unas canas'], text: '¡Vamos! ¡Buen partido! Aprendes rápido. 🎾🍺', translation: 'Let\'s go! Good match! You learn fast. (Padel scenario complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['gracias', 'ha sido', 'genial', 'great', 'divertido', 'fun', 'guay', 'estupendo', 'fenomenal'], text: '¡La próxima vez juegas mejor! A por las cañas — ¡te las mereces! 🍺', translation: 'Next time you\'ll play even better! Off for cañas — you deserve them!', next: 'done', positive: true }
+          ],
+          fallback: { text: '¡Buen partido! ¿Unas cañas? 🍺 (Say "venga" or "invito yo" = I\'ll buy)', translation: 'Good match! A couple of beers? (Say "venga" or "invito yo")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Salud! ¡La próxima semana más! 🎾🍺', translation: 'Cheers! More next week! (Padel scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    es_flat: {
+      language: 'spanish',
+      persona: {
+        name: 'Sra. Montoya',
+        role: 'Propietaria — Landlady',
+        avatar: '🏠',
+        description: 'She\'s rented to internationals before. Warm but thorough. Ask about the deposit, bills, and contract — it shows you\'re serious. Don\'t just say "muy bonito" and leave.'
+      },
+      vocabulary: [
+        { cz: 'el alquiler', en: 'rent' },
+        { cz: 'la fianza', en: 'deposit' },
+        { cz: 'los gastos incluidos', en: 'bills included' },
+        { cz: 'el contrato', en: 'contract / lease' },
+        { cz: 'disponible desde', en: 'available from' },
+        { cz: '¿se admiten mascotas?', en: 'are pets allowed?' },
+        { cz: 'el empadronamiento', en: 'local registration' },
+        { cz: '¿cuándo puedo entrar?', en: 'when can I move in?' }
+      ],
+      context: 'You\'re viewing a flat in Madrid. Sra. Montoya is the landlady. Ask about rent, bills, deposit, and availability. Be polite, ask the right questions.',
+      tip: 'Start: "Buenas tardes, vengo a ver el piso." Then ask: "¿Cuánto es el alquiler?"',
+      opening: { text: '¡Buenas! Pase, le enseño el piso. 🏠', translation: 'Hello! Come in, I\'ll show you the flat.' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['buenas', 'buenos dias', 'buenas tardes', 'hola', 'hello', 'good', 'vengo a ver', 'ver el piso', 'disponible', 'viewing'], text: '¡Bienvenido/a! El piso está disponible desde el primero. Pase, pase.', translation: 'Welcome! The flat is available from the first. Come in, come in.', next: 'overview', positive: true }
+          ],
+          fallback: { text: '¡Hola! Salúdeme, por favor. (Try: "Buenas tardes, vengo a ver el piso")', translation: 'Hello! Please greet me. (Try: "Buenas tardes, vengo a ver el piso")' }
+        },
+        overview: {
+          responses: [
+            { triggers: ['alquiler', 'rent', 'cuanto', 'how much', 'precio', 'price', 'mensual', 'monthly', 'cuanto cuesta', 'coste'], text: 'El alquiler son 950 euros al mes. Los gastos aparte — luz y agua, unos 80 euros.', translation: 'Rent is €950 per month. Bills separate — electricity and water, about €80.', next: 'bills', positive: true },
+            { triggers: ['bonito', 'nice', 'precioso', 'beautiful', 'grande', 'big', 'luminoso', 'bright', 'espacioso', 'spacious', 'me gusta'], text: '¡Gracias! Son 60 metros, segunda planta con ascensor. ¿Alguna pregunta sobre el piso?', translation: 'Thank you! 60 square metres, second floor with lift. Any questions?', next: 'bills' },
+            { triggers: ['gastos', 'bills', 'suministros', 'supplies', 'incluidos', 'included', 'luz', 'electricity', 'agua', 'water', 'wifi', 'internet'], text: 'Los gastos no están incluidos — luz, agua, comunidad. Solo el internet ya está incluido.', translation: 'Bills not included — electricity, water, community fees. Only internet is already included.', next: 'bills', positive: true }
+          ],
+          fallback: { text: '¿Tiene preguntas? (Try: "¿Cuánto es el alquiler?" or "¿Los gastos están incluidos?")', translation: 'Any questions? (Try: "Cuanto es el alquiler?" = how much is the rent?)' }
+        },
+        bills: {
+          responses: [
+            { triggers: ['fianza', 'deposit', 'cuanta fianza', 'how much deposit', 'garantia', 'security', 'cuanto hay que pagar'], text: 'La fianza son dos meses — 1.900 euros. Se devuelve al final si todo está bien.', translation: 'Deposit is two months — €1,900. Returned at the end if everything is in order.', next: 'deposit', positive: true },
+            { triggers: ['mascotas', 'pets', 'perro', 'dog', 'gato', 'cat', 'animales', 'animals', 'admiten', 'se permite'], text: 'Mascotas pequeñas sí. Un perro hasta 10 kilos, sin problema.', translation: 'Small pets yes. A dog up to 10 kilos, no problem.', next: 'deposit', positive: true },
+            { triggers: ['internet', 'wifi', 'fibra', 'fiber', 'velocidad', 'speed', 'megas', 'megabit'], text: 'Hay fibra — 600 megas incluida en el alquiler. El router ya está instalado.', translation: 'Fibre internet — 600 megabits included in the rent. Router already installed.', next: 'deposit', positive: true },
+            { triggers: ['parking', 'garaje', 'garage', 'coche', 'car', 'moto', 'aparcamiento', 'aparcar'], text: 'Aparcamiento en la calle — zona azul. Garaje hay que alquilarlo aparte si se necesita.', translation: 'Street parking — blue zone. Garage must be rented separately if needed.', next: 'deposit', positive: true }
+          ],
+          fallback: { text: '¿Más preguntas? Fianza, mascotas, parking, internet... 🏠', translation: 'More questions? Deposit, pets, parking, internet... (Ask anything!)' }
+        },
+        deposit: {
+          responses: [
+            { triggers: ['contrato', 'contract', 'firmar', 'sign', 'cuando', 'when', 'entrar', 'move in', 'desde cuando', 'disponible'], text: 'El contrato lo firmamos esta semana. Entrada el día primero. ¿Le interesa?', translation: 'We sign the contract this week. Move in on the first. Are you interested?', next: 'decision', positive: true },
+            { triggers: ['pensar', 'think', 'tiempo', 'time', 'manana', 'tomorrow', 'consultar', 'check', 'hablar', 'talk', 'pensarlo'], text: 'Claro, tómese su tiempo. Tengo otra visita el jueves.', translation: 'Of course, take your time. I have another viewing on Thursday.', next: 'decision', positive: true },
+            { triggers: ['si', 'yes', 'me interesa', 'interested', 'lo quiero', 'i want it', 'perfecto', 'trato hecho', 'lo tomo'], text: '¡Estupendo! Preparo el contrato. Necesito su DNI o pasaporte y justificante de ingresos.', translation: 'Wonderful! I\'ll prepare the contract. I need your ID/passport and proof of income.', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Le interesa el piso? (Try: "Me interesa" or "Necesito tiempo para pensarlo")', translation: 'Are you interested? (Try: "Me interesa" or "Necesito pensarlo")' }
+        },
+        decision: {
+          responses: [
+            { triggers: ['gracias', 'muchas gracias', 'adios', 'hasta luego', 'bye', 'goodbye', 'llamo', 'call', 'me pongo', 'en contacto', 'contacto'], text: '¡Hasta luego! Estoy aquí cuando quiera. 🏠', translation: 'Goodbye! I\'m here whenever you need. (Flat viewing complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['lo tomo', 'i\'ll take it', 'me interesa', 'si', 'yes', 'acepto', 'de acuerdo', 'perfecto'], text: '¡Perfecto! Le mando el contrato por correo esta tarde. ¡Bienvenido/a al barrio! 🏠', translation: 'Perfect! I\'ll send the contract by email this afternoon. Welcome to the neighbourhood! 🎉', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Entonces? (Say "gracias, me pongo en contacto" or "lo tomo" = I\'ll take it)', translation: 'So? Shall I call you tomorrow? (Try "gracias" or "lo tomo")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Hasta pronto! 🏠', translation: 'See you soon! (Flat viewing scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    es_interview: {
+      language: 'spanish',
+      persona: {
+        name: 'Ricardo',
+        role: 'Responsable de RRHH — HR Manager',
+        avatar: '💼',
+        description: 'Ricardo has interviewed hundreds of candidates. He values concrete answers over enthusiasm. You\'re learning Spanish — that\'s already a plus. Be direct, give numbers, ask a good question at the end.'
+      },
+      vocabulary: [
+        { cz: 'experiencia laboral', en: 'work experience' },
+        { cz: 'puntos fuertes', en: 'strengths' },
+        { cz: 'a largo plazo', en: 'long-term' },
+        { cz: 'trabajo en equipo', en: 'teamwork' },
+        { cz: 'fecha de incorporación', en: 'start date' },
+        { cz: 'pretensiones salariales', en: 'salary expectations' },
+        { cz: 'motivación', en: 'motivation' },
+        { cz: 'encantado de conocerle', en: 'pleased to meet you (formal)' }
+      ],
+      context: 'Job interview at a Madrid company. Ricardo is the HR manager. Be direct, give concrete answers, show you\'re serious about Spain long-term. Speaking Spanish — even imperfect — is already impressive.',
+      tip: 'Start: "Buenos días, encantado/a de conocerle. Muchas gracias por recibirme." — gold standard opener.',
+      opening: { text: 'Buenos días. Siéntese, por favor. 💼', translation: 'Good morning. Please sit down.' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['buenos dias', 'buenas', 'hola', 'encantado', 'encantada', 'gracias por', 'thank you for', 'mucho gusto', 'pleased to meet', 'recibirme', 'invitarme'], text: 'Gracias por venir. Cuénteme — ¿por qué España?', translation: 'Thank you for coming. Tell me — why Spain?', next: 'why_es', positive: true }
+          ],
+          fallback: { text: '¡Buenos días! Salúdeme. (Try: "Buenos dias, encantado de conocerle. Muchas gracias por recibirme.")', translation: 'Good morning! Please greet me properly. (Try: "Buenos dias, encantado de conocerle")' }
+        },
+        why_es: {
+          responses: [
+            { triggers: ['quedarme', 'stay', 'largo plazo', 'long term', 'futuro', 'future', 'españa', 'spain', 'madrid', 'carrera', 'career', 'vida', 'life', 'me encanta', 'love it', 'oportunidad', 'opportunity'], text: 'Bien. Los planes a largo plazo son importantes aquí. ¿Cuál es su experiencia?', translation: 'Good. Long-term plans matter here. What is your experience?', next: 'expertise', positive: true },
+            { triggers: ['no se', 'don\'t know', 'quiza', 'maybe', 'veremos', 'we\'ll see', 'probar', 'try out'], text: 'Hmm. Buscamos personas que quieran quedarse. Inténtelo de nuevo — ¿por qué España?', translation: 'Hmm. We look for people who want to stay. Try again — why Spain?', next: 'why_es' }
+          ],
+          fallback: { text: '¿Por qué España? (Try: "Quiero quedarme a largo plazo" = I want to stay long-term)', translation: 'Why Spain? (Try: "Quiero quedarme a largo plazo")' }
+        },
+        expertise: {
+          responses: [
+            { triggers: ['it', 'tech', 'software', 'marketing', 'finanzas', 'finance', 'ventas', 'sales', 'gestion', 'management', 'diseno', 'design', 'anos', 'years', 'años', 'experiencia', 'experience', 'trabajo en', 'work in', 'sector', 'campo'], text: 'Interesante. ¿Cuáles son sus puntos fuertes?', translation: 'Interesting. What are your strengths?', next: 'strengths', positive: true }
+          ],
+          fallback: { text: '¿En qué sector trabaja? ¿Cuántos años de experiencia? (Describe your field and years)', translation: 'What sector do you work in? How many years of experience?' }
+        },
+        strengths: {
+          responses: [
+            { triggers: ['trabajo en equipo', 'teamwork', 'organizado', 'organized', 'comunicacion', 'communication', 'analitico', 'analytical', 'resultados', 'results', 'liderazgo', 'leadership', 'adaptable', 'flexible', 'proactivo', 'fiable', 'reliable'], text: 'Bien. ¿Está aprendiendo español?', translation: 'Good. Are you learning Spanish?', next: 'spanish_lang', positive: true },
+            { triggers: ['perfeccionista', 'perfectionist', 'workaholic', 'demasiado', 'too much'], text: 'Eso es un cliché. Dígame un punto fuerte genuino.', translation: 'That\'s a cliché. Tell me a genuine strength.', next: 'strengths' }
+          ],
+          fallback: { text: '¿Cuáles son sus puntos fuertes? (Try: "Soy organizado/a y trabajo bien en equipo")', translation: 'What are your strengths? (Try: "Soy organizado/a y trabajo bien en equipo")' }
+        },
+        spanish_lang: {
+          responses: [
+            { triggers: ['si', 'yes', 'lo estoy', 'learning', 'aprendo', 'estudiando', 'curso', 'course', 'prioridad', 'priority', 'un poco', 'poquito', 'nivel', 'level', 'mejorar', 'improve', 'clases'], text: 'Perfecto, es un plus importante. ¿Cuáles son sus pretensiones salariales?', translation: 'Perfect, that\'s an important plus. What are your salary expectations?', next: 'salary', positive: true },
+            { triggers: ['no', 'todavia no', 'not yet', 'pronto', 'soon', 'despues', 'later', 'ingles', 'english only'], text: 'Entendido. En esta empresa el español es clave. ¿Sería posible para usted aprender?', translation: 'Understood. Spanish is key at this company. Would learning it be possible for you?', next: 'spanish_lang' }
+          ],
+          fallback: { text: '¿Está aprendiendo español? (Try: "Sí, lo estoy aprendiendo. Es mi prioridad.")', translation: 'Are you learning Spanish? (Try: "Si, lo estoy aprendiendo")' }
+        },
+        salary: {
+          responses: [
+            { triggers: ['euros', 'bruto', 'neto', 'gross', 'net', 'mil', 'thousand', 'mensual', 'monthly', 'anual', 'annual', 'espero', 'expect', 'numero', 'number', 'cifra', 'rango', 'range'], text: 'Entendido. Estamos dentro del rango. ¿Cuándo podría incorporarse?', translation: 'Understood. We\'re within the range. When could you start?', next: 'start_date', positive: true },
+            { triggers: ['flexible', 'negociable', 'abierto', 'open', 'mercado', 'market', 'discutir', 'discuss', 'depende'], text: 'La flexibilidad está bien, pero dígame su límite mínimo.', translation: 'Flexibility is fine, but tell me your minimum.', next: 'salary' }
+          ],
+          fallback: { text: '¿Cuáles son sus pretensiones salariales? Dígame una cifra. (e.g. "Espero 35.000 euros brutos")', translation: 'What are your salary expectations? Give a number.' }
+        },
+        start_date: {
+          responses: [
+            { triggers: ['inmediatamente', 'immediately', 'ahora', 'now', 'mes', 'month', 'dos semanas', 'two weeks', 'proximo', 'next', 'negociable', 'negotiate', 'flexible', 'pronto', 'soon'], text: 'Perfecto. Le contactamos antes del viernes. ¿Tiene alguna pregunta para nosotros?', translation: 'Perfect. We\'ll contact you before Friday. Do you have any questions for us?', next: 'questions', positive: true }
+          ],
+          fallback: { text: '¿Cuándo podría incorporarse? (Try: "Inmediatamente" or "En un mes")', translation: 'When could you start? (Try: "Inmediatamente" or "En un mes")' }
+        },
+        questions: {
+          responses: [
+            { triggers: ['equipo', 'team', 'cultura', 'culture', 'proyectos', 'projects', 'crecimiento', 'growth', 'desarrollo', 'development', 'por que', 'why', 'que hacen', 'what do you do', 'ambiente'], text: 'Buena pregunta. Me alegra el interés. Le respondo con los resultados por correo. ¡Hasta pronto! 💼', translation: 'Good question. Glad you\'re interested. I\'ll answer with the results by email. See you soon! (Interview complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['no', 'ninguna', 'no questions', 'todo claro', 'all clear', 'gracias', 'thank you', 'hasta luego', 'goodbye', 'adios', 'perfecto'], text: 'Perfecto. Le contactamos esta semana. ¡Mucha suerte! 💼', translation: 'Perfect. We\'ll be in touch this week. Good luck! (Interview complete! 🎉)', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Alguna pregunta para nosotros? (Try: "¿Cómo es el equipo?" or "Muchas gracias, ninguna más.")', translation: 'Any questions for us? (Try: "Como es el equipo?" or "Muchas gracias, ninguna mas.")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Hasta pronto! ¡Mucha suerte! 💼', translation: 'See you soon! Good luck! (Job interview scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    es_doctor: {
+      language: 'spanish',
+      persona: {
+        name: 'Dra. Vega',
+        role: 'Médica de cabecera — GP',
+        avatar: '🩺',
+        description: 'Warm and thorough. Used to international patients — just describe your symptoms clearly and she\'ll handle the rest. Bring your tarjeta sanitaria (health card).'
+      },
+      vocabulary: [
+        { cz: 'me duele', en: 'it hurts / I have pain in' },
+        { cz: 'desde cuándo', en: 'since when / how long' },
+        { cz: 'la fiebre', en: 'fever' },
+        { cz: 'la receta', en: 'prescription' },
+        { cz: 'la tarjeta sanitaria', en: 'health card' },
+        { cz: 'los medicamentos', en: 'medication' },
+        { cz: 'la alergia', en: 'allergy' },
+        { cz: 'el descanso', en: 'rest' }
+      ],
+      context: 'You\'re at a Spanish GP (médico de cabecera). Dra. Vega will ask about your symptoms, examine you, and write a prescription if needed. Bring your tarjeta sanitaria.',
+      tip: 'Start: "Buenos días, doctora." Then describe what\'s wrong: "Me duele la cabeza" = I have a headache.',
+      opening: { text: 'Buenos días. ¿Qué le trae hoy? 🩺', translation: 'Good morning. What brings you in today?' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['buenos dias', 'buenas', 'hola', 'doctora', 'doctor', 'hello', 'good morning', 'buenas tardes'], text: 'Buenos días. Siéntese, por favor. ¿Qué le ocurre?', translation: 'Good morning. Please sit down. What\'s the matter?', next: 'symptoms', positive: true }
+          ],
+          fallback: { text: 'Salúdeme, por favor. (Try: "Buenos dias, doctora")', translation: 'Please greet me. (Try: "Buenos dias, doctora")' }
+        },
+        symptoms: {
+          responses: [
+            { triggers: ['cabeza', 'head', 'dolor de cabeza', 'headache', 'migrana', 'migraine', 'jaqueca', 'me duele la cabeza'], text: 'Dolor de cabeza. ¿Desde cuándo? ¿Tiene fiebre?', translation: 'Headache. Since when? Do you have a fever?', next: 'duration', positive: true },
+            { triggers: ['garganta', 'throat', 'dolor de garganta', 'sore throat', 'tragar', 'swallow', 'tos', 'cough', 'me duele al tragar'], text: 'La garganta. Déjeme mirar. ¿Desde hace cuánto tiempo?', translation: 'Your throat. Let me look. Since when?', next: 'duration', positive: true },
+            { triggers: ['estomago', 'stomach', 'barriga', 'belly', 'nauseas', 'nausea', 'vomito', 'vomit', 'diarrea', 'diarrhea', 'me duele el estomago'], text: 'Molestias digestivas. ¿Ha comido algo diferente?', translation: 'Digestive issues. Did you eat anything unusual?', next: 'duration', positive: true },
+            { triggers: ['espalda', 'back', 'lumbar', 'lower back', 'dolor de espalda', 'back pain', 'me duele la espalda', 'rinones', 'kidneys'], text: 'Espalda. ¿Trabaja sentado/a?', translation: 'Back. Sedentary work?', next: 'duration', positive: true },
+            { triggers: ['cansancio', 'tired', 'fatiga', 'fatigue', 'agotado', 'exhausted', 'sin energia', 'no energy', 'debil', 'weak', 'me siento mal'], text: 'Cansancio. ¿Cómo está durmiendo? ¿Desde cuándo?', translation: 'Tiredness. How are you sleeping? Since when?', next: 'duration', positive: true }
+          ],
+          fallback: { text: '¿Dónde le duele? (Try: "Me duele la cabeza" or "Me duele la garganta")', translation: 'Where does it hurt? (Try: "Me duele la cabeza" = I have a headache)' }
+        },
+        duration: {
+          responses: [
+            { triggers: ['hoy', 'today', 'esta manana', 'morning', 'un dia', 'one day', 'ayer', 'yesterday', 'poco', 'just started', 'hace poco'], text: 'Reciente. ¿Tiene fiebre? ¿Alguna alergia a medicamentos?', translation: 'Recent. Do you have a fever? Any medication allergies?', next: 'examination', positive: true },
+            { triggers: ['semanas', 'weeks', 'semana', 'week', 'mes', 'month', 'tiempo', 'while', 'hace', 'ago', 'dias', 'days', 'varios'], text: 'Lleva tiempo. La exploro. ¿Toma algún medicamento actualmente?', translation: 'It\'s been a while. I\'ll examine you. Are you currently taking any medication?', next: 'examination', positive: true },
+            { triggers: ['dos', 'two', 'tres', 'three', 'cuatro', 'four', 'cinco', 'five', 'par', 'couple'], text: 'Entendido. La voy a explorar. ¿Alguna alergia conocida?', translation: 'Understood. I\'ll examine you. Any known allergies?', next: 'examination', positive: true }
+          ],
+          fallback: { text: '¿Desde cuándo tiene estos síntomas? (Try: "Desde ayer" = since yesterday, "Hace una semana" = for a week)', translation: 'Since when have you had these symptoms?' }
+        },
+        examination: {
+          responses: [
+            { triggers: ['no', 'ninguna', 'none', 'sin alergias', 'no allergies', 'sano', 'healthy', 'nada', 'nothing', 'ninguna alergia'], text: 'Bien. Parece una infección viral. Le receto algo.', translation: 'Good. Looks like a viral infection. I\'ll prescribe something.', next: 'prescription', positive: true },
+            { triggers: ['si', 'yes', 'tengo alergia', 'allergic', 'soy alergico', 'penicilina', 'penicillin', 'ibuprofeno', 'ibuprofen', 'aspirina', 'aspirin'], text: 'Lo anoto. Le receto una alternativa sin ese componente.', translation: 'I\'ll note that. I\'ll prescribe an alternative without that component.', next: 'prescription', positive: true }
+          ],
+          fallback: { text: '¿Tiene alergia a algún medicamento? (Try: "No, ninguna" or "Sí, soy alérgico/a a...")', translation: 'Are you allergic to any medication? (Try: "No, ninguna" = none)' }
+        },
+        prescription: {
+          responses: [
+            { triggers: ['gracias', 'muchas gracias', 'thank', 'entendido', 'understood', 'ok', 'bien', 'adios', 'hasta luego', 'receta', 'farmacia', 'pharmacy', 'perfecto'], text: 'La receta está lista. La farmacia está al lado. Reposo tres días. ¡Que se mejore! 🩺', translation: 'Prescription ready. Pharmacy is right next door. Rest for three days. Get well soon! (Doctor visit complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['cuanto', 'how long', 'cuando', 'when', 'mejorar', 'better', 'recuperar', 'recover', 'tiempo', 'cuanto tarda'], text: 'En tres o cuatro días debería notar mejoría. Si no, vuelva a verme.', translation: 'In three or four days you should feel better. If not, come back.', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Alguna pregunta sobre la receta? (Try: "Muchas gracias, doctora. Hasta luego.")', translation: 'Any questions about the prescription? (Try: "Muchas gracias, doctora. Hasta luego.")' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Que se mejore pronto! 🩺', translation: 'Get well soon! (Doctor visit scenario complete! 🎉)' }
+        }
+      }
+    },
+
+    es_grocery: {
+      language: 'spanish',
+      persona: {
+        name: 'Pepe',
+        role: 'Cajero — Supermarket Cashier',
+        avatar: '🛒',
+        description: 'Pepe works the checkout at the local Mercadona. Efficient, quick, slightly bored — but he warms up if you try Spanish. He will ask about your tarjeta de fidelización before anything else.'
+      },
+      vocabulary: [
+        { cz: 'la bolsa', en: 'bag' },
+        { cz: '¿cuánto es?', en: 'how much is it?' },
+        { cz: 'pagar con tarjeta', en: 'pay by card' },
+        { cz: 'la tarjeta de fidelización', en: 'loyalty card' },
+        { cz: 'el ticket', en: 'receipt' },
+        { cz: 'en efectivo', en: 'cash' },
+        { cz: 'el cambio', en: 'change' },
+        { cz: 'sin bolsa', en: 'no bag needed' }
+      ],
+      context: 'You\'re at the checkout in a Spanish supermarket (Mercadona/Lidl/Carrefour). Pepe will scan your items, ask about your loyalty card and bag, then take payment. Quick — there\'s a queue!',
+      tip: 'Say "Tengo bolsa" (I have a bag) right away. Then "con tarjeta" for card. That\'s 90% of the interaction.',
+      opening: { text: 'Buenas. ¿Tienes tarjeta de fidelización? 🛒', translation: 'Hi. Do you have a loyalty card?' },
+      corrections: ES_CORRECTIONS,
+      states: {
+        start: {
+          responses: [
+            { triggers: ['no', 'no tengo', 'don\'t have', 'sin tarjeta', 'no card', 'olvide', 'forgot', 'nope'], text: 'Vale. ¿Bolsa?', translation: 'OK. Bag?', next: 'bag', positive: true },
+            { triggers: ['si', 'yes', 'tengo', 'aqui', 'here', 'la tarjeta', 'card', 'la tengo', 'toma'], text: 'Pásala. ¿Bolsa?', translation: 'Pass it. Bag?', next: 'bag', positive: true },
+            { triggers: ['buenas', 'hola', 'buenos dias', 'hello', 'hi', 'que tal'], text: 'Buenas. ¿Tarjeta de fidelización?', translation: 'Hi. Loyalty card?', next: 'start', positive: true }
+          ],
+          fallback: { text: '¿Tienes tarjeta de fidelización? (Try: "No, no tengo" or "Sí, aquí")', translation: 'Loyalty card? (Try: "No, no tengo" or "Si, aqui")' }
+        },
+        bag: {
+          responses: [
+            { triggers: ['tengo bolsa', 'have bag', 'bolsa', 'bag', 'si tengo', 'mi bolsa', 'ya tengo', 'traigo', 'brought', 'propia', 'own', 'si', 'yes'], text: 'Perfecto. Son 27,50 euros.', translation: 'Perfect. That\'s €27.50.', next: 'payment', positive: true },
+            { triggers: ['no', 'sin bolsa', 'no bag', 'una bolsa', 'one bag', 'necesito', 'need', 'dame una'], text: 'La bolsa son 10 céntimos. Total: 27,60 euros.', translation: 'Bag is 10 cents. Total: €27.60.', next: 'payment', positive: true }
+          ],
+          fallback: { text: '¿Bolsa? (Try: "Tengo bolsa" = I have a bag, or "No, sin bolsa" = no bag)', translation: 'Bag? (Say "Tengo bolsa" if you have one)' }
+        },
+        payment: {
+          responses: [
+            { triggers: ['tarjeta', 'card', 'con tarjeta', 'visa', 'mastercard', 'contactless', 'bizum', 'pago con tarjeta'], text: 'Acerca la tarjeta. ¡Listo! ¡Hasta luego! 🛒', translation: 'Tap your card. Done! Goodbye! (Supermarket complete! 🎉)', next: 'done', positive: true },
+            { triggers: ['efectivo', 'cash', 'billetes', 'euros', 'dinero', 'money', 'en efectivo', 'pago en efectivo'], text: 'Gracias. Su cambio, 2,50 euros. ¡Hasta luego! 🛒', translation: 'Thanks. Your change, €2.50. Goodbye! (Supermarket complete! 🎉)', next: 'done', positive: true }
+          ],
+          fallback: { text: '¿Con tarjeta o en efectivo? (Try: "Con tarjeta" = card, "En efectivo" = cash)', translation: 'Card or cash? (Say "Con tarjeta" for card)' }
+        },
+        done: {
+          responses: [],
+          fallback: { text: '¡Hasta luego! 🛒', translation: 'Goodbye! (Supermarket scenario complete! 🎉)' }
+        }
+      }
     }
   };
 
@@ -1083,6 +1540,153 @@ const ChatEngine = (() => {
     return null;
   }
 
+  // ── PERSONALITY FLAVOR ─────────────────────────────────
+  // Each persona has a style that wraps responses with flair
+  const PERSONALITY = {
+    pub:        { style: 'casual',  prefixes: ['', '', 'Hmm. '],   suffixes: [' 🍺', '', ''] },
+    parents:    { style: 'warm',    prefixes: ['', 'Hele, ', ''],   suffixes: [' 😊', '', ' ❤️'] },
+    police:     { style: 'formal',  prefixes: ['', 'Dobrá. ', ''], suffixes: ['', ' 📋', ''] },
+    office:     { style: 'dry',     prefixes: ['', 'Tak. ', ''],   suffixes: [' 😄', '', ''] },
+    date:       { style: 'flirty',  prefixes: ['', 'Haha. ', ''],  suffixes: [' 😊', ' ❤️', ''] },
+    flat:       { style: 'formal',  prefixes: ['', '', 'Dobrá. '], suffixes: ['', ' 🏠', ''] },
+    padel:      { style: 'sporty',  prefixes: ['', 'Tak! ', ''],   suffixes: [' 🎾', '', ' 💪'] },
+    interview:  { style: 'formal',  prefixes: ['', '', 'Hmm. '],   suffixes: ['', ' 💼', ''] },
+    es_tapas:     { style: 'casual',  prefixes: ['', '¡Venga! ', ''],  suffixes: [' 🍺', '', ''] },
+    es_family:    { style: 'warm',    prefixes: ['', '¡Ay! ', ''],     suffixes: [' 😊', '', ' ❤️'] },
+    es_nie:       { style: 'formal',  prefixes: ['', 'Bien. ', ''],    suffixes: ['', ' 📋', ''] },
+    es_office:    { style: 'chatty',  prefixes: ['', '¡Oye! ', ''],   suffixes: [' 😄', ' ☕', ''] },
+    es_date:      { style: 'flirty',  prefixes: ['', 'Jaja. ', ''],    suffixes: [' 😊', ' 🌹', ''] },
+    es_padel:     { style: 'sporty',  prefixes: ['', '¡Venga! ', ''],  suffixes: [' 🎾', '', ' 💪'] },
+    es_flat:      { style: 'formal',  prefixes: ['', 'Bien. ', ''],    suffixes: ['', ' 🏠', ''] },
+    es_interview: { style: 'formal',  prefixes: ['', '', 'Hmm. '],     suffixes: ['', ' 💼', ''] },
+    es_doctor:    { style: 'calm',    prefixes: ['', '', 'Bien. '],    suffixes: ['', ' 🩺', ''] },
+    es_grocery:   { style: 'bored',   prefixes: ['', '', 'Vale. '],    suffixes: ['', ' 🛒', ''] },
+    doctor:       { style: 'calm',    prefixes: ['', '', 'Dobře. '],   suffixes: ['', ' 🩺', ''] },
+    grocery:      { style: 'tired',   prefixes: ['', '', 'Dobře. '],   suffixes: ['', ' 🛒', ''] }
+  };
+
+  function addFlavor(text, scenarioId) {
+    const p = PERSONALITY[scenarioId];
+    if (!p) return text;
+    const prefix = p.prefixes[Math.floor(Math.random() * p.prefixes.length)];
+    const suffix = p.suffixes[Math.floor(Math.random() * p.suffixes.length)];
+    // Don't double-add emoji if text already ends with one
+    if (text.match(/[\u{1F300}-\u{1FAFF}]\s*$/u)) return prefix + text;
+    return prefix + text + suffix;
+  }
+
+  // ── QUICK BUTTON HINTS ─────────────────────────────────
+  // Returns contextual help without advancing state or resetting
+  const QUICK_HINTS = {
+    czech: {
+      'dont_understand': [
+        { text: 'Nerozumím. Můžete to zopakovat?', translation: 'I don\'t understand. Can you repeat that?' },
+        { text: 'Promiňte, nerozuměl/a jsem.', translation: 'Sorry, I didn\'t understand.' },
+        { text: 'Pomaleji, prosím.', translation: 'Slower, please.' }
+      ],
+      'repeat': [
+        { text: 'Můžete to zopakovat?', translation: 'Can you repeat that?' },
+        { text: 'Ještě jednou, prosím.', translation: 'One more time, please.' }
+      ],
+      'slower': [
+        { text: 'Mluvte pomaleji, prosím.', translation: 'Speak more slowly, please.' },
+        { text: 'Pomalu, prosím. Učím se česky.', translation: 'Slow down, please. I\'m learning Czech.' }
+      ]
+    },
+    spanish: {
+      'dont_understand': [
+        { text: 'Perdone, no entiendo.', translation: 'Sorry, I don\'t understand.' },
+        { text: 'No he entendido. ¿Puede repetir?', translation: 'I didn\'t get that. Can you repeat?' },
+        { text: 'Más despacio, por favor.', translation: 'Slower, please.' }
+      ],
+      'repeat': [
+        { text: '¿Puede repetirlo, por favor?', translation: 'Can you repeat that, please?' },
+        { text: 'Otra vez, por favor.', translation: 'Again, please.' }
+      ],
+      'slower': [
+        { text: 'Más despacio, por favor.', translation: 'Slower, please.' },
+        { text: 'Hable más lento, por favor. Estoy aprendiendo.', translation: 'Speak slower, please. I\'m learning.' }
+      ]
+    }
+  };
+
+  let lastHintType = null;
+
+  function processQuickButton(type) {
+    if (!currentScenario) return null;
+    const lang = currentScenario.language || 'czech';
+    const hints = QUICK_HINTS[lang]?.[type];
+    if (!hints || !hints.length) return null;
+    // Pick a random hint, avoid same one twice
+    let hint = hints[Math.floor(Math.random() * hints.length)];
+    if (hints.length > 1 && type === lastHintType) {
+      hint = hints.find(h => h.text !== hint.text) || hint;
+    }
+    lastHintType = type;
+
+    // Bot responds with encouragement + the current state fallback hint
+    const state = currentScenario.states[currentState];
+    const fallback = state?.fallback;
+    const encourageTexts = lang === 'spanish'
+      ? ['¡No te preocupes! ', 'Tranquilo/a. ', '¡Sin problema! ']
+      : ['Žádný problém! ', 'V klidu. ', 'Nevadí! '];
+    const encourage = encourageTexts[Math.floor(Math.random() * encourageTexts.length)];
+
+    return {
+      userHint: hint,
+      botResponse: {
+        text: encourage + (fallback ? fallback.text : ''),
+        translation: (fallback ? fallback.translation : 'Try again!')
+      }
+    };
+  }
+
+  // ── SWEAR WORD DETECTION ──────────────────────────────
+  const SWEAR_WORDS = {
+    czech:   ['kurva', 'prdele', 'hovno', 'picka', 'jebat', 'zkurveny'],
+    spanish: ['coño', 'joder', 'puta', 'mierda', 'hostia', 'follar', 'cojones']
+  };
+
+  function checkSwear(input, lang) {
+    const words = SWEAR_WORDS[lang] || [];
+    const n = norm(input);
+    return words.some(w => n.includes(norm(w)));
+  }
+
+  // ── IMPRESS MODE ─────────────────────────────────────
+  const IMPRESS_TRIGGERS = ['impress', 'help me impress', 'impress mode', 'sound good', 'sound native',
+                            'impresionar', 'quedar bien', 'ayudame', 'como digo', 'que digo'];
+
+  function checkImpress(input) {
+    return IMPRESS_TRIGGERS.some(t => norm(input).includes(norm(t)));
+  }
+
+  function getImpressResponse(lang, stateKey) {
+    const stateData = currentScenario ? currentScenario.states[stateKey] : null;
+    const hint = stateData?.fallback;
+    // Strip the (Try: ...) helper portion, leaving the actual phrase suggestion
+    const phrase = hint ? hint.text.replace(/\(Try:.*\)/, '').replace(/\(Say.*\)/, '').trim() : '';
+    if (lang === 'spanish') {
+      const intros = ['¡Claro! Di esto: ', '¡Fácil! Prueba así: ', '¡Venga! Di: '];
+      const intro = intros[Math.floor(Math.random() * intros.length)];
+      return {
+        text: intro + (phrase ? `"${phrase}"` : '¡Tú puedes! 😄'),
+        translation: hint ? hint.translation : 'You can do it!'
+      };
+    } else {
+      const intros = ['Jasně! Zkus: ', 'Jednoduché — řekni: ', 'Takhle: '];
+      const intro = intros[Math.floor(Math.random() * intros.length)];
+      return {
+        text: intro + (phrase ? `"${phrase}"` : 'Zvládneš to! 😄'),
+        translation: hint ? hint.translation : 'You can do it!'
+      };
+    }
+  }
+
+  // Track last fallback to add variety on repeat
+  let lastFallbackState = null;
+  let fallbackRepeatCount = 0;
+
   function findResponse(input, stateKey) {
     const state = currentScenario.states[stateKey];
     if (!state) return null;
@@ -1095,7 +1699,23 @@ const ChatEngine = (() => {
   function process(userInput) {
     if (!currentScenario) return { response: { text: 'Error: no scenario loaded.', translation: '' }, correction: null };
 
+    const lang = currentScenario.language || 'czech';
     messageCount++;
+
+    // ── Swear word check ──────────────────────────────
+    if (checkSwear(userInput, lang)) {
+      const resp = lang === 'spanish'
+        ? { text: '¡Ey! 😄 Habla bien o te respondo igual. ¡Inténtalo de nuevo!', translation: 'Hey! Speak nicely or I\'ll do the same. Try again!' }
+        : { text: 'Hele! 😄 Mluv slušně, nebo budu taky hrubý. Zkus to znovu!', translation: 'Hey! Speak nicely or I\'ll be rude too. Try again!' };
+      return { response: resp, correction: null, encouragement: null, state: currentState };
+    }
+
+    // ── Impress mode ──────────────────────────────────
+    if (checkImpress(userInput)) {
+      const resp = getImpressResponse(lang, currentState);
+      return { response: resp, correction: null, encouragement: null, state: currentState };
+    }
+
     const correction = checkCorrections(userInput);
     const match = findResponse(userInput, currentState);
 
@@ -1103,25 +1723,68 @@ const ChatEngine = (() => {
     let nextState = currentState;
 
     if (match) {
-      response = { text: match.text, translation: match.translation, positive: match.positive || false };
+      // Reset repeat counter on successful match
+      fallbackRepeatCount = 0;
+      lastFallbackState = null;
+      response = { text: addFlavor(match.text, currentScenarioId), translation: match.translation, positive: match.positive || false };
       nextState = match.next || currentState;
     } else {
+      // Track repeats to add variety when user is stuck
+      if (lastFallbackState === currentState) {
+        fallbackRepeatCount++;
+      } else {
+        fallbackRepeatCount = 0;
+        lastFallbackState = currentState;
+      }
+
       const fallback = currentScenario.states[currentState]?.fallback;
+
+      // Add a friendly nudge prefix on second+ repeat to avoid robotic loops
+      let prefix = '';
+      if (fallbackRepeatCount >= 2) {
+        const nudges = lang === 'spanish'
+          ? ['¡Casi! ', '¡No te rindas! ', '¡Prueba de nuevo! ']
+          : ['Skoro! ', 'Zkus to jinak. ', 'Žádný strach — '];
+        prefix = nudges[Math.floor(Math.random() * nudges.length)];
+      } else if (fallbackRepeatCount === 1) {
+        prefix = lang === 'spanish' ? '¿Seguro? ' : 'Hmm? ';
+      }
+
       response = fallback
-        ? { text: fallback.text, translation: fallback.translation, positive: false }
-        : { text: '...', translation: 'I didn\'t understand that. Try again!', positive: false };
+        ? { text: prefix + fallback.text, translation: fallback.translation, positive: false }
+        : {
+            text: lang === 'spanish'
+              ? '¿Puedes repetirlo de otra forma? 😄'
+              : 'Nerozuměl jsem — zkus to trochu jinak. 😄',
+            translation: 'Could you put that a different way?',
+            positive: false
+          };
     }
 
     currentState = nextState;
 
     let encouragement = null;
     if (messageCount === 3 && correctionsGiven === 0) {
-      encouragement = 'Great start — your ' + (currentScenario.language === 'spanish' ? 'Spanish' : 'Czech') + ' is looking solid!';
+      encouragement = 'Great start — your ' + (lang === 'spanish' ? 'Spanish' : 'Czech') + ' is looking solid!';
     } else if (currentState === 'done') {
       encouragement = 'Scenario complete! You nailed it. 🎉';
     }
 
     return { response, correction, encouragement, state: currentState };
+  }
+
+  // ── SPEECH SYNTHESIS ─────────────────────────────────────
+  function speak(text, lang) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = lang === 'spanish' ? 'es-ES' : 'cs-CZ';
+    utter.rate = 0.85;
+    window.speechSynthesis.speak(utter);
+  }
+
+  function getLanguage() {
+    return currentScenario ? currentScenario.language : 'czech';
   }
 
   function getAvailableScenarios() {
@@ -1133,12 +1796,10 @@ const ChatEngine = (() => {
   }
 
   // ── SAVE / RESTORE STATE ───────────────────────────────
-  // Returns a snapshot of internal state for localStorage persistence.
   function getState() {
     return { state: currentState, messageCount, correctionsGiven };
   }
 
-  // Restores engine to a previously saved snapshot (for conversation resume).
   function restoreState(snapshot) {
     if (!currentScenario || !snapshot) return;
     currentState      = snapshot.state      || 'start';
@@ -1146,6 +1807,6 @@ const ChatEngine = (() => {
     correctionsGiven  = snapshot.correctionsGiven  || 0;
   }
 
-  return { init, process, getAvailableScenarios, hasChatSupport, getState, restoreState };
+  return { init, process, processQuickButton, speak, getLanguage, getAvailableScenarios, hasChatSupport, getState, restoreState };
 
 })();

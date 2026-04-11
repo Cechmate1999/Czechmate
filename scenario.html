@@ -54,65 +54,130 @@
   </style>
 
   <script>
+  (function() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id') || 'pub';
-    const scenario = SCENARIOS.find(s => s.id === id) || SCENARIOS[0];
 
-    const LANG_FLAGS = { czech: '🇨🇿', spanish: '🇪🇸' };
-    const LANG_LABELS = { czech: 'Czech', spanish: 'Spanish' };
+    // Try SCENARIOS_V2 first (unified), fall back to old SCENARIOS
+    let scenario = getScenarioV2(id);
+    const isV2 = !!scenario;
 
-    const lang = scenario.language || 'czech';
-
-    // Check if this scenario has Spanish translations in dialogue
-    const hasSpanish = lang === 'czech' && scenario.dialogue.some(l => l.spanish);
-
-    // Translation display language: 'english' or 'spanish'
-    let displayLang = localStorage.getItem('cm_display_lang') || 'english';
-    if (!hasSpanish) displayLang = 'english';
-
-    document.getElementById('navPracticeBtn').href = `practice.html?scenario=${scenario.id}`;
-    document.title = `${scenario.title} — CzechMate`;
-
-    function getTranslation(line) {
-      if (displayLang === 'spanish' && line.spanish) return line.spanish;
-      return line.english;
+    if (!isV2) {
+      // Legacy scenario (Spanish-only es_ scenarios) — fall back gracefully
+      const legacy = SCENARIOS.find(s => s.id === id);
+      if (legacy) {
+        window.location.href = 'scenarios.html';
+        return;
+      }
+      document.getElementById('scenarioHeader').innerHTML = `<a href="scenarios.html" class="back-link">← All Scenarios</a><h1>Scenario not found</h1>`;
+      return;
     }
 
-    // ── HEADER ──
-    document.getElementById('scenarioHeader').innerHTML = `
-      <a href="scenarios.html" class="back-link">← All Scenarios</a>
-      <h1>${scenario.icon} ${scenario.title}</h1>
-      <div class="detail-cz">${scenario.subtitle}</div>
-      <p>${scenario.context}</p>
-      <div class="detail-badges">
-        <span class="badge difficulty ${scenario.difficulty}">${scenario.difficulty}</span>
-        <span class="badge">${scenario.category}</span>
-        <span class="badge">${LANG_FLAGS[lang]} ${LANG_LABELS[lang]}</span>
-        <span class="badge">${scenario.dialogue.length} lines of dialogue</span>
-      </div>
-    `;
+    let displayLang = LangUtils.get() || 'czech';
+
+    const FLAG = { czech: '🇨🇿', english: '🇬🇧', spanish: '🇪🇸' };
+    const LABEL = { czech: 'Czech', english: 'English', spanish: 'Spanish' };
+
+    document.getElementById('navPracticeBtn').href = `practice.html?scenario=${id}`;
+    document.title = `${scenario.title[displayLang] || scenario.title.english} — Czech Mate`;
+
+    function renderHeader() {
+      const otherLang = displayLang === 'czech' ? 'spanish' : 'czech';
+      document.getElementById('scenarioHeader').innerHTML = `
+        <a href="scenarios.html" class="back-link">← All Scenarios</a>
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
+          <div style="display:inline-flex;background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:.25rem .35rem;gap:.25rem">
+            <button class="tt-btn ${displayLang==='czech'?'active':''}" onclick="switchLang('czech')">🇨🇿 Czech</button>
+            <button class="tt-btn ${displayLang==='spanish'?'active':''}" onclick="switchLang('spanish')">🇪🇸 Spanish</button>
+          </div>
+          <span style="font-size:.78rem;color:var(--t3)">Showing ${FLAG[displayLang]} ${LABEL[displayLang]} as primary</span>
+        </div>
+        <h1>${scenario.icon} ${scenario.title[displayLang] || scenario.title.english}</h1>
+        <div class="detail-cz">${scenario.subtitle[displayLang] || scenario.subtitle.english}</div>
+        <p>${scenario.context[displayLang] || scenario.context.english}</p>
+        <div class="detail-badges">
+          <span class="badge difficulty ${scenario.difficulty}">${scenario.difficulty}</span>
+          <span class="badge">${scenario.category}</span>
+          <span class="badge">${FLAG[displayLang]} ${LABEL[displayLang]} primary</span>
+          <span class="badge">${scenario.dialogue.length} lines</span>
+        </div>
+      `;
+    }
 
     function renderDialogue() {
+      const otherLang = displayLang === 'czech' ? 'spanish' : 'czech';
       return `
         <div class="content-block">
-          <div class="content-block-title">
-            💬 The Dialogue
-            ${hasSpanish ? `
-              <span class="translation-toggle" id="translationToggle">
-                <button class="tt-btn ${displayLang === 'english' ? 'active' : ''}" data-lang="english">🇬🇧 EN</button>
-                <button class="tt-btn ${displayLang === 'spanish' ? 'active' : ''}" data-lang="spanish">🇪🇸 ES</button>
-              </span>
-            ` : ''}
-          </div>
-          <div class="dialogue-box" id="dialogueBox">
-            ${scenario.dialogue.map(line => `
-              <div class="dialogue-line ${line.role === 'you' ? 'you-line' : ''}">
-                <div class="dl-speaker">${line.role === 'you' ? 'You' : line.speaker}</div>
-                <div>
-                  <div class="dl-czech">${line.czech}</div>
-                  <div class="dl-english">${getTranslation(line)}</div>
-                  ${line.note ? `<div class="dl-note">💡 ${line.note}</div>` : ''}
+          <div class="content-block-title">💬 The Dialogue</div>
+          <div class="dialogue-box">
+            ${scenario.dialogue.map(line => {
+              const primaryText = line[displayLang] || line.czech;
+              const otherText = line[otherLang] || '';
+              const speakerName = (line.speaker && line.speaker[displayLang]) ? line.speaker[displayLang] : (line.speaker || 'Speaker');
+              const note = line.note ? (line.note[displayLang] || line.note.english || '') : '';
+              return `
+                <div class="dialogue-line ${line.role === 'you' ? 'you-line' : ''}">
+                  <div class="dl-speaker">${line.role === 'you' ? 'You' : speakerName}</div>
+                  <div>
+                    <div class="dl-czech">${primaryText}</div>
+                    <div class="dl-english">🇬🇧 ${line.english}</div>
+                    ${otherText ? `<div class="dl-english" style="color:var(--t3);font-size:.82rem">${FLAG[otherLang]} ${otherText}</div>` : ''}
+                    ${note ? `<div class="dl-note">💡 ${note}</div>` : ''}
+                  </div>
                 </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function speakPhrase(text, lang) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang === 'spanish' ? 'es-ES' : 'cs-CZ';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function renderKeyPhrases() {
+      const otherLang = displayLang === 'czech' ? 'spanish' : 'czech';
+      return `
+        <div class="content-block">
+          <div class="content-block-title">🔑 Key Phrases</div>
+          <div class="phrases-list">
+            ${scenario.keyPhrases.map(p => {
+              const primaryText = p[displayLang] || p.czech;
+              const otherText = p[otherLang] || '';
+              const pronunciation = p.pronunciation ? (p.pronunciation[displayLang] || '') : '';
+              return `
+                <div class="phrase-row" style="grid-template-columns:1.4fr 1fr 1fr">
+                  <div class="p-cz">${primaryText}${otherText ? `<div style="font-size:.76rem;color:var(--t3);margin-top:.2rem">${FLAG[otherLang]} ${otherText}</div>` : ''}</div>
+                  <div class="p-en">🇬🇧 ${p.english}</div>
+                  <div class="p-ph">
+                    ${pronunciation ? `🔊 ${pronunciation}` : ''}
+                    <button onclick="speakPhrase('${primaryText.replace(/'/g,"\\'")}','${displayLang}')" style="display:inline-flex;align-items:center;gap:.2rem;margin-top:.3rem;padding:.2rem .5rem;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--t3);font-size:.68rem;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--t3)'">🔊 Listen</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCulturalTips() {
+      const tips = scenario.culturalTips[displayLang] || scenario.culturalTips.czech || [];
+      const flagLabel = FLAG[displayLang];
+      return `
+        <div class="content-block">
+          <div class="content-block-title">${flagLabel} Cultural Tips</div>
+          <div class="tips-list">
+            ${tips.map(t => `
+              <div class="tip">
+                <h4>${t.title}</h4>
+                <p>${t.body}</p>
               </div>
             `).join('')}
           </div>
@@ -120,105 +185,49 @@
       `;
     }
 
-    function attachToggleListener() {
-      const toggle = document.getElementById('translationToggle');
-      if (!toggle) return;
-      toggle.addEventListener('click', e => {
-        const btn = e.target.closest('.tt-btn');
-        if (!btn) return;
-        displayLang = btn.dataset.lang;
-        localStorage.setItem('cm_display_lang', displayLang);
-        // Re-render just the dialogue section
-        document.querySelector('.content-block').outerHTML = renderDialogue();
-        // Re-attach listener on new element
-        attachToggleListener();
-        // Sync toggle button states
-        document.querySelectorAll('.tt-btn').forEach(b => {
-          b.classList.toggle('active', b.dataset.lang === displayLang);
-        });
-      });
+    function renderRealVsTextbook() {
+      const rvt = scenario.realVsTextbook[displayLang] || scenario.realVsTextbook.czech || [];
+      return `
+        <div class="content-block">
+          <div class="content-block-title">⚡ Real vs. Textbook</div>
+          <div class="rvt-grid">
+            <div class="rvt-col textbook">
+              <h4>📖 Textbook says...</h4>
+              ${rvt.map(r => `<div class="rvt-item">${r.textbook}</div>`).join('')}
+            </div>
+            <div class="rvt-col real">
+              <h4>✅ Locals actually say...</h4>
+              ${rvt.map(r => `<div class="rvt-item">${r.real}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
     }
 
-    const dialogueHtml = renderDialogue();
-
-    // ── KEY PHRASES ──
-    // Czech scenarios use .czech / .english / .phonetic
-    // Spanish scenarios also use same structure (we reused the field names)
-    const phrasesHtml = `
-      <div class="content-block">
-        <div class="content-block-title">🔑 Key Phrases</div>
-        <div class="phrases-list">
-          ${scenario.keyPhrases.map(p => `
-            <div class="phrase-row">
-              <div class="p-cz">${p.czech}</div>
-              <div class="p-en">${p.english}</div>
-              <div class="p-ph">${p.phonetic}</div>
-            </div>
-          `).join('')}
+    function renderPracticeCTA() {
+      return `
+        <div class="practice-cta-box">
+          <h3>Ready to practice?</h3>
+          <p>Chat with a simulated character. Get gentle corrections. Build confidence before the real thing.</p>
+          <a href="practice.html?scenario=${id}" class="btn btn-primary btn-lg">Start AI Practice →</a>
         </div>
-      </div>
-    `;
+      `;
+    }
 
-    // ── CULTURAL TIPS ──
-    const flagLabel = LANG_FLAGS[lang] || '🌍';
-    const tipsHtml = `
-      <div class="content-block">
-        <div class="content-block-title">${flagLabel} Cultural Tips</div>
-        <div class="tips-list">
-          ${scenario.culturalTips.map(t => `
-            <div class="tip">
-              <h4>${t.title}</h4>
-              <p>${t.body}</p>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
+    function renderAll() {
+      renderHeader();
+      document.getElementById('scenarioContent').innerHTML =
+        renderDialogue() + renderKeyPhrases() + renderCulturalTips() + renderRealVsTextbook() + renderPracticeCTA();
+    }
 
-    // ── REAL VS TEXTBOOK ──
-    const rvtHtml = `
-      <div class="content-block">
-        <div class="content-block-title">⚡ Real vs. Textbook</div>
-        <div class="rvt-grid">
-          <div class="rvt-col textbook">
-            <h4>📖 Textbook says...</h4>
-            ${scenario.realVsTextbook.map(r => `<div class="rvt-item">${r.textbook}</div>`).join('')}
-          </div>
-          <div class="rvt-col real">
-            <h4>✅ Locals actually say...</h4>
-            ${scenario.realVsTextbook.map(r => `<div class="rvt-item">${r.real}</div>`).join('')}
-          </div>
-        </div>
-      </div>
-    `;
+    window.switchLang = function(lang) {
+      displayLang = lang;
+      LangUtils.set(lang);
+      renderAll();
+    };
 
-    // ── PRACTICE CTA ──
-    const ctaHtml = `
-      <div class="practice-cta-box">
-        <h3>Ready to practice?</h3>
-        <p>Chat with a simulated ${LANG_LABELS[lang]} character. Get gentle corrections. Build confidence before the real thing.</p>
-        <a href="practice.html?scenario=${scenario.id}" class="btn btn-primary btn-lg">Start AI Practice →</a>
-      </div>
-    `;
-
-    // ── NEXT SCENARIO ──
-    const currentIdx = SCENARIOS.findIndex(s => s.id === id);
-    const sameLangScenarios = SCENARIOS.filter(s => s.language === lang);
-    const nextIdx = (sameLangScenarios.findIndex(s => s.id === id) + 1) % sameLangScenarios.length;
-    const nextScenario = sameLangScenarios[nextIdx];
-    const nextHtml = nextScenario ? `
-      <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-        <span style="color:var(--t3);font-size:.88rem">Next ${LANG_LABELS[lang]} scenario:</span>
-        <a href="scenario.html?id=${nextScenario.id}" class="btn btn-ghost">
-          ${nextScenario.icon} ${nextScenario.title} →
-        </a>
-      </div>
-    ` : '';
-
-    document.getElementById('scenarioContent').innerHTML =
-      dialogueHtml + phrasesHtml + tipsHtml + rvtHtml + ctaHtml + nextHtml;
-
-    attachToggleListener();
+    renderAll();
+  })();
   </script>
 </body>
 </html>

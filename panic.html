@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panic Mode 😅 · Czech Mate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js"></script>
+  <style>
+    .panic-hero { padding: 6rem 2rem 2.5rem; text-align: center; }
+    .panic-badge { display:inline-flex; align-items:center; gap:.45rem; background:rgba(230,57,70,.12); border:1px solid rgba(230,57,70,.35); padding:.4rem 1rem; border-radius:100px; font-size:.85rem; color:var(--red); font-weight:700; margin-bottom:1.5rem; }
+    .panic-hero h1 { font-family:var(--font-h); font-size:clamp(2rem,5vw,3rem); font-weight:700; margin-bottom:.75rem; }
+    .panic-hero p { color:var(--t2); font-size:1rem; max-width:440px; margin:0 auto; }
+
+    .panic-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; max-width:1100px; margin:2.5rem auto 0; padding:0 2rem 5rem; }
+    @media(max-width:768px){ .panic-grid{ grid-template-columns:1fr; } }
+
+    .panic-cat { background:var(--s2); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
+    .panic-cat-header { padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:.75rem; }
+    .panic-cat-header h2 { font-family:var(--font-h); font-size:1.1rem; font-weight:700; }
+    .panic-cat-icon { font-size:1.5rem; }
+
+    .panic-phrase { padding:1rem 1.5rem; border-bottom:1px solid var(--border); cursor:pointer; transition:background .15s; }
+    .panic-phrase:last-child { border-bottom:none; }
+    .panic-phrase:hover { background:var(--s3); }
+    .panic-phrase:active { background:rgba(230,57,70,.08); }
+    .panic-phrase-primary { font-size:1.05rem; font-weight:600; color:var(--t1); margin-bottom:.2rem; }
+    .panic-phrase-en { font-size:.85rem; color:var(--gold); margin-bottom:.15rem; }
+    .panic-phrase-secondary { font-size:.82rem; color:var(--t3); }
+
+    .lang-bar { display:flex; align-items:center; justify-content:center; gap:.75rem; margin-top:1.25rem; }
+    .lang-bar-label { font-size:.82rem; color:var(--t3); }
+    .lang-toggle { display:flex; gap:.5rem; }
+    .lang-toggle-btn { padding:.4rem .9rem; border-radius:var(--r); border:1px solid var(--border); background:var(--s2); color:var(--t2); font-size:.83rem; font-weight:600; cursor:pointer; transition:all .2s; }
+    .lang-toggle-btn.active { border-color:var(--red); color:var(--red); background:rgba(230,57,70,.08); }
+
+    .more-link { text-align:center; padding:0 2rem 4rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Czech<span class="accent">Mate</span></a>
+    <ul class="nav-links">
+      <li><a href="survival.html">⚡ Survival</a></li>
+      <li><a href="scenarios.html">Scenarios</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="survival.html" class="btn btn-ghost" style="font-size:.85rem">All phrases</a>
+      <a href="scenarios.html" class="btn btn-primary">Scenarios →</a>
+    </div>
+  </nav>
+
+  <header class="panic-hero">
+    <div class="panic-badge">😅 Panic Mode</div>
+    <h1>I need this NOW</h1>
+    <p>Quick-access phrases for the three most urgent situations. Tap any phrase to highlight it.</p>
+    <div class="lang-bar">
+      <span class="lang-bar-label">Show primary in:</span>
+      <div class="lang-toggle">
+        <button class="lang-toggle-btn" id="btnCzech" onclick="setPrimaryLang('czech')">🇨🇿 Czech</button>
+        <button class="lang-toggle-btn" id="btnSpanish" onclick="setPrimaryLang('spanish')">🇪🇸 Spanish</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="panic-grid" id="panicGrid"></div>
+
+  <div class="more-link">
+    <a href="survival.html" class="btn btn-ghost">All Survival Phrases →</a>
+  </div>
+
+  <script>
+  (function() {
+    const PANIC_CATS = ['bathroom', 'directions', 'restaurant'];
+    let primaryLang = LangUtils.get() || 'czech';
+
+    function setPrimaryLang(lang) {
+      primaryLang = lang;
+      LangUtils.set(lang);
+      render();
+      document.getElementById('btnCzech').classList.toggle('active', lang === 'czech');
+      document.getElementById('btnSpanish').classList.toggle('active', lang === 'spanish');
+    }
+    window.setPrimaryLang = setPrimaryLang;
+
+    function render() {
+      const grid = document.getElementById('panicGrid');
+      grid.innerHTML = PANIC_CATS.map(key => {
+        const data = PHRASES[key];
+        if (!data) return '';
+        const phrases = data.phrases.slice(0, 5).map(p => {
+          const primary = primaryLang === 'spanish' ? p.spanish : p.czech;
+          const secondary = primaryLang === 'spanish' ? p.czech : p.spanish;
+          const secLabel = primaryLang === 'spanish' ? '🇨🇿' : '🇪🇸';
+          return `
+            <div class="panic-phrase" onclick="this.style.background='rgba(230,57,70,.1)'">
+              <div class="panic-phrase-primary">${primary}</div>
+              <div class="panic-phrase-en">🇬🇧 ${p.english}</div>
+              <div class="panic-phrase-secondary">${secLabel} ${secondary}</div>
+            </div>`;
+        }).join('');
+        return `
+          <div class="panic-cat">
+            <div class="panic-cat-header">
+              <span class="panic-cat-icon">${data.icon}</span>
+              <h2>${data.title}</h2>
+            </div>
+            ${phrases}
+          </div>`;
+      }).join('');
+
+      document.getElementById('btnCzech').classList.toggle('active', primaryLang === 'czech');
+      document.getElementById('btnSpanish').classList.toggle('active', primaryLang === 'spanish');
+    }
+
+    render();
+  })();
+  </script>
+
+</body>
+</html>
