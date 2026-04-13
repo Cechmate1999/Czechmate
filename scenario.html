@@ -20,6 +20,10 @@
       <li><a href="scenarios.html">Scenarios</a></li>
     </ul>
     <div class="nav-right">
+      <div class="lang-toggle" id="navLangToggle">
+        <button class="lang-toggle-opt" id="navLangOptCz" onclick="window.switchLang && window.switchLang('czech')">🇨🇿 Czech</button>
+        <button class="lang-toggle-opt" id="navLangOptEs" onclick="window.switchLang && window.switchLang('spanish')">🇪🇸 Spanish</button>
+      </div>
       <a href="#" id="navPracticeBtn" class="btn btn-primary">Practice This →</a>
     </div>
   </nav>
@@ -220,13 +224,22 @@
         renderDialogue() + renderKeyPhrases() + renderCulturalTips() + renderRealVsTextbook() + renderPracticeCTA();
     }
 
+    function syncNavToggle(lang) {
+      const cz = document.getElementById('navLangOptCz');
+      const es = document.getElementById('navLangOptEs');
+      if (cz) cz.classList.toggle('active', lang === 'czech');
+      if (es) es.classList.toggle('active', lang === 'spanish');
+    }
+
     window.switchLang = function(lang) {
       displayLang = lang;
       LangUtils.set(lang);
+      syncNavToggle(lang);
       renderAll();
     };
 
     renderAll();
+    syncNavToggle(displayLang);
   })();
   </script>
 </body>

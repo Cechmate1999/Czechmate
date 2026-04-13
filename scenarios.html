@@ -52,6 +52,10 @@
       <li><a href="index.html#how">How it works</a></li>
     </ul>
     <div class="nav-right">
+      <div class="lang-toggle" id="navLangToggle">
+        <button class="lang-toggle-opt" id="navLangOptCz" onclick="setNavLang('czech')">🇨🇿 Czech</button>
+        <button class="lang-toggle-opt" id="navLangOptEs" onclick="setNavLang('spanish')">🇪🇸 Spanish</button>
+      </div>
       <a href="practice.html?scenario=pub" class="btn btn-primary">Practice Now →</a>
     </div>
   </nav>
@@ -167,7 +171,23 @@
       else b.classList.remove('active');
     });
 
+    // Nav toggle
+    window.setNavLang = function(lang) {
+      displayLang = lang;
+      LangUtils.set(lang);
+      // Sync in-page lang buttons
+      document.querySelectorAll('[data-lang]').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === lang);
+      });
+      document.getElementById('navLangOptCz').classList.toggle('active', lang === 'czech');
+      document.getElementById('navLangOptEs').classList.toggle('active', lang === 'spanish');
+      renderScenarios();
+    };
+
     renderScenarios();
+    // Init nav toggle state
+    document.getElementById('navLangOptCz').classList.toggle('active', displayLang === 'czech');
+    document.getElementById('navLangOptEs').classList.toggle('active', displayLang === 'spanish');
   </script>
 </body>
 </html>

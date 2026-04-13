@@ -79,6 +79,10 @@
       <li><a href="panic.html" style="color:var(--red)">😅 Panic</a></li>
     </ul>
     <div class="nav-right">
+      <div class="lang-toggle" id="langToggle">
+        <button class="lang-toggle-opt" id="langOptCz" onclick="setLang('czech')">🇨🇿 Czech</button>
+        <button class="lang-toggle-opt" id="langOptEs" onclick="setLang('spanish')">🇪🇸 Spanish</button>
+      </div>
       <a href="scenarios.html" class="btn btn-primary">Full Scenarios →</a>
     </div>
   </nav>
@@ -129,7 +133,12 @@
       renderAll();
       document.getElementById('btnCzech').classList.toggle('active', lang === 'czech');
       document.getElementById('btnSpanish').classList.toggle('active', lang === 'spanish');
+      // Sync nav toggle
+      document.getElementById('langOptCz').classList.toggle('active', lang === 'czech');
+      document.getElementById('langOptEs').classList.toggle('active', lang === 'spanish');
     }
+    // Nav toggle calls this
+    window.setLang = setPrimaryLang;
 
     function renderCard(p) {
       const isSpanishPrimary = primaryLang === 'spanish';
@@ -262,6 +271,8 @@
     renderAll();
     document.getElementById('btnCzech').classList.toggle('active', primaryLang === 'czech');
     document.getElementById('btnSpanish').classList.toggle('active', primaryLang === 'spanish');
+    document.getElementById('langOptCz').classList.toggle('active', primaryLang === 'czech');
+    document.getElementById('langOptEs').classList.toggle('active', primaryLang === 'spanish');
 
     // Handle hash-based deep links
     const hash = window.location.hash.replace('#','');

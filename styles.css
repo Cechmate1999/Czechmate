@@ -29,7 +29,7 @@
 }
 
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--t1); font-family: var(--font-b); line-height: 1.65; }
+body { background: var(--bg); color: var(--t1); font-family: var(--font-b); line-height: 1.7; }
 
 /* ─── TYPOGRAPHY ─── */
 h1,h2,h3,h4 { font-family: var(--font-h); letter-spacing: -0.02em; line-height: 1.15; }
@@ -111,7 +111,7 @@ nav {
 .stat-label { font-size:.8rem; color:var(--t3); margin-top:.2rem; }
 
 /* ─── SECTIONS ─── */
-.section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section { padding: 5.5rem 2rem; max-width: 1100px; margin: 0 auto; }
 .section-center { text-align: center; }
 .section-center .section-title { margin-left: auto; margin-right: auto; }
 .section-center .section-sub { margin-left: auto; margin-right: auto; }
@@ -144,8 +144,9 @@ nav {
 .scenarios-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1.25rem; margin-top:3rem; }
 .scenario-card {
   background:var(--s2); border:1px solid var(--border); border-radius:var(--r-lg);
-  padding:1.75rem; cursor:pointer; text-decoration:none; color:inherit; display:block;
+  padding:2rem; cursor:pointer; text-decoration:none; color:inherit; display:block;
   transition:all .25s; position:relative; overflow:hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 .scenario-card::before {
   content:''; position:absolute; top:0; left:0; right:0; height:3px;
@@ -153,7 +154,7 @@ nav {
   transform:scaleX(0); transform-origin:left; transition:transform .3s;
 }
 .scenario-card:hover::before { transform:scaleX(1); }
-.scenario-card:hover { border-color:var(--border-l); transform:translateY(-4px); box-shadow:var(--shadow); }
+.scenario-card:hover { border-color:var(--border-l); transform:translateY(-5px); box-shadow:0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px var(--border-l); }
 .scenario-icon { font-size:2.5rem; margin-bottom:1rem; display:block; }
 .scenario-card h3 { font-size:1.15rem; font-weight:600; margin-bottom:.2rem; }
 .cz-title { font-size:.82rem; color:var(--gold); margin-bottom:.75rem; font-style:italic; }
@@ -171,9 +172,10 @@ nav {
 
 /* ─── TESTIMONIALS ─── */
 .testimonials-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.25rem; margin-top:3rem; }
-.testimonial { background:var(--s2); border:1px solid var(--border); border-radius:var(--r-lg); padding:1.75rem; }
+.testimonial { background:var(--s2); border:1px solid var(--border); border-radius:var(--r-lg); padding:2rem; box-shadow:0 2px 12px rgba(0,0,0,0.3); transition: transform .2s, box-shadow .2s; }
+.testimonial:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(0,0,0,0.45); }
 .stars { color:var(--gold); font-size:.9rem; margin-bottom:1rem; letter-spacing:2px; }
-.testimonial blockquote { color:var(--t2); font-size:.92rem; line-height:1.75; margin-bottom:1.25rem; font-style:italic; }
+.testimonial blockquote { color:var(--t2); font-size:.95rem; line-height:1.8; margin-bottom:1.25rem; font-style:italic; }
 .t-author { display:flex; align-items:center; gap:.75rem; }
 .t-avatar { width:40px; height:40px; border-radius:50%; background:var(--s3); display:flex; align-items:center; justify-content:center; font-size:1.2rem; border:1px solid var(--border-l); }
 .t-name { font-size:.88rem; font-weight:600; }
@@ -235,28 +237,31 @@ footer a:hover { color:var(--t2); }
 .dialogue-box { background:var(--s2); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
 .dialogue-line {
   display:grid; grid-template-columns:90px 1fr; gap:1rem; align-items:start;
-  padding:1.35rem 1.5rem; border-bottom:1px solid var(--border);
+  padding:1.6rem 1.75rem; border-bottom:1px solid var(--border);
 }
 .dialogue-line:last-child { border-bottom:none; }
 .dialogue-line.you-line { background:rgba(230,57,70,.04); }
-.dl-speaker { font-size:.75rem; font-weight:700; color:var(--t3); padding-top:.25rem; text-transform:uppercase; letter-spacing:.05em; }
-.dl-czech { font-size:1.15rem; font-weight:600; color:var(--t1); margin-bottom:.3rem; line-height:1.5; }
-.dl-english { font-size:.85rem; color:var(--t2); margin-bottom:.4rem; }
+.dl-speaker { font-size:.75rem; font-weight:700; color:var(--t3); padding-top:.3rem; text-transform:uppercase; letter-spacing:.05em; }
+.dl-czech { font-size:1.75rem; font-weight:700; color:var(--t1); margin-bottom:.35rem; line-height:1.35; }
+.dl-english { font-size:1rem; color:var(--t2); margin-bottom:.45rem; line-height:1.6; }
 .dl-note {
-  font-size:.78rem; color:var(--gold); display:inline-block;
+  font-size:.82rem; color:var(--gold); display:inline-block;
   background:rgba(244,162,97,.1); border-left:2px solid var(--gold);
-  padding:.3rem .7rem; border-radius:0 6px 6px 0; margin-top:.2rem; line-height:1.5;
+  padding:.35rem .8rem; border-radius:0 6px 6px 0; margin-top:.25rem; line-height:1.55;
 }
 
 /* ─── KEY PHRASES ─── */
-.phrases-list { display:grid; gap:.7rem; }
+.phrases-list { display:grid; gap:.85rem; }
 .phrase-row {
   background:var(--s2); border:1px solid var(--border); border-radius:var(--r);
-  padding:1.1rem 1.25rem; display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:1rem; align-items:center;
+  padding:1.35rem 1.5rem; display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:1rem; align-items:center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transition: box-shadow .2s, border-color .2s, transform .2s;
 }
-.p-cz { font-weight:600; font-size:1.1rem; line-height:1.45; }
-.p-en { color:var(--t2); font-size:.88rem; }
-.p-ph { color:var(--t3); font-size:.78rem; font-style:italic; }
+.phrase-row:hover { border-color:var(--border-l); box-shadow:0 6px 24px rgba(0,0,0,0.4); transform:translateY(-2px); }
+.p-cz { font-weight:700; font-size:1.75rem; line-height:1.35; }
+.p-en { color:var(--t2); font-size:1rem; line-height:1.6; }
+.p-ph { color:var(--t3); font-size:.82rem; font-style:italic; }
 
 /* ─── CULTURAL TIPS ─── */
 .tips-list { display:grid; gap:.85rem; }
@@ -403,7 +408,20 @@ footer a:hover { color:var(--t2); }
 }
 .panic-btn:hover { background: rgba(230,57,70,.2); border-color: var(--red); }
 
-/* ─── LANG SWITCHER BTN (nav) ─── */
+/* ─── LANG TOGGLE (nav) ─── */
+.lang-toggle {
+  display: flex; align-items: center;
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden; flex-shrink: 0;
+}
+.lang-toggle-opt {
+  padding: .38rem .85rem; font-size: .8rem; font-weight: 600;
+  background: transparent; border: none; color: var(--t3);
+  cursor: pointer; transition: all .18s; white-space: nowrap; line-height: 1;
+}
+.lang-toggle-opt.active { background: var(--red); color: #fff; }
+.lang-toggle-opt:not(.active):hover { color: var(--t1); background: var(--s3); }
+/* legacy — kept for any page still using it */
 .lang-switcher-btn {
   display: flex; align-items: center; gap: .4rem;
   background: var(--s2); border: 1px solid var(--border);

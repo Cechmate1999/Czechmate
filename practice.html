@@ -86,11 +86,11 @@
 
       <div class="chat-input-area" id="chatInputArea" style="display:none">
         <div class="quick-btns" id="quickBtns">
-          <button class="quick-btn" onclick="handleQuickHint('dont_understand')">🤷 I don't understand</button>
-          <button class="quick-btn" onclick="handleQuickHint('repeat')">🔁 Repeat please</button>
-          <button class="quick-btn" onclick="handleQuickHint('slower')">🐢 Speak slower</button>
-          <button class="quick-btn" id="impressBtn" onclick="activateImpressMode()" style="border-color:rgba(244,162,97,.4);color:var(--gold)">😏 Impress mode</button>
-          <button class="quick-btn voice-quick-btn" id="voiceBtn" onclick="startVoice()">🎤 Try speaking</button>
+          <button class="quick-btn" onclick="handleQuickHint('dont_understand')">🤷 Lost — help me</button>
+          <button class="quick-btn" onclick="handleQuickHint('repeat')">🔁 Say that again</button>
+          <button class="quick-btn" onclick="handleQuickHint('slower')">🐢 Slower please</button>
+          <button class="quick-btn" id="impressBtn" onclick="activateImpressMode()" style="border-color:rgba(244,162,97,.4);color:var(--gold)">😏 Help me impress</button>
+          <button class="quick-btn voice-quick-btn" id="voiceBtn" onclick="startVoice()">🎤 Speak it</button>
         </div>
         <form class="chat-form" id="chatForm" onsubmit="handleSubmit(event)">
           <input
@@ -143,8 +143,8 @@
     scenarioId = chatId;
 
     const LANG_INFO = {
-      czech:   { flag: '🇨🇿', label: 'Czech',         placeholder: 'Type in Czech… accents optional 😊',   hint: 'Accents optional — "jedno pivo" and "jedno pivo" both work. Focus on the words.' },
-      spanish: { flag: '🇪🇸', label: 'Spain Spanish',  placeholder: 'Type in Spanish… ¡sin presión! 😄',   hint: 'Spain Spanish dialect — phrases like "ponme" and "caña" are Spain-specific. Accents optional.' }
+      czech:   { flag: '🇨🇿', label: 'Czech',         placeholder: 'Try a phrase… 😊 no pressure',   hint: 'Spelling doesn\'t need to be perfect — just try the words. You got this.' },
+      spanish: { flag: '🇪🇸', label: 'Spain Spanish',  placeholder: 'Escribe algo… ¡sin presión! 😄',   hint: 'Spain Spanish — try phrases like "ponme" and "caña". Typos are fine, just give it a go.' }
     };
     const li = LANG_INFO[lang] || LANG_INFO[userLang] || LANG_INFO.czech;
 
@@ -321,17 +321,17 @@
           ▶ Resume Conversation
         </button>
         <div style="font-size:.78rem;color:var(--t3);margin-bottom:1rem">
-          Saved ${timeAgo(savedSession.timestamp)} · ${savedSession.messages.filter(m=>m.role==='user').length} messages sent
+          Saved ${timeAgo(savedSession.timestamp)} · ${savedSession.messages.filter(m=>m.role==='user').length} replies in — you got this 😄
         </div>
         <button class="btn btn-ghost" onclick="window.startFresh()" style="font-size:.85rem">
-          Start Fresh
+          Start fresh instead
         </button>
       `;
     } else {
       document.getElementById('welcomeActions').innerHTML = `
-        <button class="btn btn-primary btn-lg" onclick="window.startChat()">Start Conversation →</button>
+        <button class="btn btn-primary btn-lg" onclick="window.startChat()">Let's try this 😄</button>
         <div style="margin-top:.75rem;font-size:.78rem;color:var(--t3)">
-          ${li.flag} Type in ${li.label} — accents are optional, just focus on the words.
+          ${li.flag} Type in ${li.label} — accents don't matter, just try the words.
         </div>
       `;
     }
@@ -417,9 +417,9 @@
       clearSession();
       // Rebuild welcome with the normal start button
       document.getElementById('welcomeActions').innerHTML = `
-        <button class="btn btn-primary btn-lg" onclick="window.startChat()">Start Conversation →</button>
+        <button class="btn btn-primary btn-lg" onclick="window.startChat()">Let's try this 😄</button>
         <div style="margin-top:.75rem;font-size:.78rem;color:var(--t3)">
-          ${li.flag} Type in ${li.label} — accents are optional, just focus on the words.
+          ${li.flag} Type in ${li.label} — accents don't matter, just try the words.
         </div>
       `;
       document.getElementById('welcomeTitle').textContent = `Practice: ${scenarioMeta.title}`;
