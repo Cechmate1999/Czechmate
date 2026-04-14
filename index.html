@@ -43,10 +43,16 @@
     /* ── Survival grid ── */
     .survival-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
     .surv-card {
-      background: var(--s1); border: 1px solid var(--border);
+      background: var(--s2); border: 1px solid var(--border);
       border-radius: var(--r-lg); padding: 1.4rem;
       text-decoration: none; color: inherit; transition: all .25s;
       display: flex; flex-direction: column; gap: .5rem;
+    }
+    .surv-card .surv-icon {
+      font-size: 1.75rem; width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(255,170,60,0.15), rgba(255,53,71,0.1));
+      border: 1px solid rgba(255,170,60,0.2); border-radius: 12px;
     }
     .surv-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(255,170,60,.2), 0 0 0 1px rgba(255,170,60,.1); }
     .surv-card .surv-icon { font-size: 1.75rem; }
@@ -94,7 +100,11 @@
 
     /* ── Why grid ── */
     .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
-    .why-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1.5rem; }
+    .why-card { background: var(--s2); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1.5rem; position: relative; overflow: hidden; }
+    .why-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+    .why-card:nth-child(1)::before { background: var(--red); }
+    .why-card:nth-child(2)::before { background: linear-gradient(90deg, var(--green), var(--blue)); }
+    .why-card:nth-child(3)::before { background: linear-gradient(90deg, var(--gold), var(--purple)); }
     .why-icon { font-size: 1.6rem; margin-bottom: .75rem; }
     .why-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
     .why-card p  { font-size: .88rem; color: var(--t2); line-height: 1.6; }
