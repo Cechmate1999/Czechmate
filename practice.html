@@ -12,11 +12,38 @@
   <script src="chat.js"></script>
   <style>
     .quick-btns { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.65rem; }
-    .quick-btn { padding:.38rem .8rem; border-radius:var(--r); border:1px solid var(--border); background:var(--s2); color:var(--t2); font-size:.78rem; font-weight:500; cursor:pointer; transition:all .15s; }
-    .quick-btn:hover { border-color:var(--border-l); color:var(--t1); }
+    .quick-btn { padding:.38rem .8rem; border-radius:var(--r); border:1px solid var(--border); background:var(--s2); color:var(--t2); font-size:.78rem; font-weight:500; cursor:pointer; transition:border-color .15s, color .15s, background .15s, transform .15s; }
+    .quick-btn:hover { border-color:var(--border-l); color:var(--t1); transform:translateY(-1px); }
+    .quick-btn:active { transform:translateY(0); }
     .voice-quick-btn { border-color:rgba(230,57,70,.4); color:var(--red); }
     .voice-quick-btn:hover { border-color:var(--red); background:rgba(230,57,70,.08); }
     .voice-quick-btn.listening { background:rgba(230,57,70,.12); color:var(--red); animation: pulse 1s infinite; }
+
+    /* Mobile sidebar toggle */
+    .sidebar-toggle-btn {
+      display:none; align-items:center; gap:.35rem;
+      background:var(--s2); border:1px solid var(--border); border-radius:var(--r);
+      padding:.4rem .75rem; font-size:.78rem; font-weight:600; color:var(--t2);
+      cursor:pointer; transition:all .2s; flex-shrink:0;
+    }
+    .sidebar-toggle-btn:hover { border-color:var(--border-l); color:var(--t1); }
+
+    /* Sidebar overlay on mobile */
+    .sidebar-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,.6);
+      z-index:150; backdrop-filter:blur(4px);
+    }
+    .sidebar-overlay.open { display:block; }
+
+    @media (max-width:900px) {
+      .sidebar-toggle-btn { display:flex; }
+      .chat-sidebar {
+        position:fixed; top:64px; left:0; bottom:0; z-index:160;
+        transform:translateX(-100%); transition:transform .3s var(--ease);
+        width:280px; display:block !important;
+      }
+      .chat-sidebar.open { transform:translateX(0); }
+    }
   </style>
 </head>
 <body>
@@ -61,6 +88,7 @@
 
       <div class="chat-topbar">
         <div class="chat-persona">
+          <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Show vocabulary">📚 Vocab</button>
           <div class="persona-avatar" id="personaAvatar">…</div>
           <div>
             <div class="persona-name" id="personaName">Loading…</div>
@@ -72,6 +100,7 @@
           <span id="langBadge" style="font-size:.75rem;font-weight:700;padding:.25rem .65rem;border-radius:100px;background:var(--s3);color:var(--t2);border:1px solid var(--border)"></span>
         </div>
       </div>
+      <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
       <div class="chat-msgs" id="chatMsgs">
         <div id="welcomeState" style="flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;">
@@ -762,6 +791,23 @@
       recognition.start();
     };
   })();
+  </script>
+
+  <script>
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+      const sidebar = document.getElementById('chatSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const isOpen  = sidebar.classList.contains('open');
+      sidebar.classList.toggle('open', !isOpen);
+      overlay.classList.toggle('open', !isOpen);
+      document.body.style.overflow = isOpen ? '' : 'hidden';
+    }
+
+    // Nav scroll shadow
+    window.addEventListener('scroll', () => {
+      document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
   </script>
 
 </body>

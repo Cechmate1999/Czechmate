@@ -69,22 +69,28 @@
     .sp-card .sp-tag.ai { background: rgba(6,214,160,.12); color: var(--green); border: 1px solid rgba(6,214,160,.25); }
 
     /* ── Mode pills ── */
-    .hero-mode-pills { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+    .hero-mode-pills { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; max-width: 680px; margin-left: auto; margin-right: auto; }
     .mode-pill {
       display: flex; align-items: center; gap: .5rem;
       background: var(--s2); border: 1px solid var(--border-l);
       border-radius: var(--r); padding: .65rem 1.1rem;
-      font-size: .88rem; font-weight: 600; text-decoration: none; color: var(--t1); transition: all .2s;
+      font-size: .88rem; font-weight: 600; text-decoration: none; color: var(--t1);
+      transition: border-color .2s, background .2s, transform .2s var(--ease), box-shadow .2s;
     }
-    .mode-pill:hover { border-color: var(--t2); transform: translateY(-2px); }
+    .mode-pill:hover { border-color: var(--t2); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .mode-pill:active { transform: translateY(-1px); }
     .mode-pill.survival { border-color: rgba(244,162,97,.4); color: var(--gold); }
-    .mode-pill.survival:hover { border-color: var(--gold); background: rgba(244,162,97,.06); }
+    .mode-pill.survival:hover { border-color: var(--gold); background: rgba(244,162,97,.08); box-shadow: 0 6px 20px rgba(244,162,97,.12); }
     .mode-pill.conversations { border-color: rgba(230,57,70,.4); color: var(--red); }
-    .mode-pill.conversations:hover { border-color: var(--red); background: rgba(230,57,70,.06); }
+    .mode-pill.conversations:hover { border-color: var(--red); background: rgba(230,57,70,.08); box-shadow: 0 6px 20px rgba(230,57,70,.15); }
     .mode-pill.date { border-color: rgba(255,105,180,.4); color: #ff69b4; }
-    .mode-pill.date:hover { border-color: #ff69b4; background: rgba(255,105,180,.06); }
+    .mode-pill.date:hover { border-color: #ff69b4; background: rgba(255,105,180,.08); box-shadow: 0 6px 20px rgba(255,105,180,.15); }
     .mode-pill.impress { border-color: rgba(244,162,97,.4); color: var(--gold); }
-    .mode-pill.impress:hover { border-color: var(--gold); background: rgba(244,162,97,.06); }
+    .mode-pill.impress:hover { border-color: var(--gold); background: rgba(244,162,97,.08); box-shadow: 0 6px 20px rgba(244,162,97,.12); }
+    @media (max-width: 600px) {
+      .hero-mode-pills { gap: .5rem; }
+      .mode-pill { font-size: .8rem; padding: .55rem .85rem; }
+    }
 
     /* ── Why grid ── */
     .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
@@ -404,6 +410,11 @@
     // Auto-default to Czech on first visit
     if (!LangUtils.isSet()) LangUtils.set('czech');
     updateNavToggle();
+
+    // Nav scroll shadow
+    window.addEventListener('scroll', () => {
+      document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
   </script>
 </body>
 </html>
